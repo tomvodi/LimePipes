@@ -1,0 +1,336 @@
+openapi: 3.0.0
+info:
+  title: Set and Tune API
+  description: API for managing sets and tunes
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8000/v1'
+paths:
+  '/tunes':
+    get:
+      summary: List all tunes
+      operationId: listTunes
+      responses:
+        '200':
+          description: A list of tunes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tune'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      summary: Create a new tune
+      operationId: createTune
+      requestBody:
+        description: Tune object to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTune'
+      responses:
+        '201':
+          description: The created tune
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tune'
+        '400':
+          $ref: '#/components/responses/InvalidInput'
+        default:
+          $ref: '#/components/responses/Error'
+  '/tunes/{tuneId}':
+    get:
+      summary: Get a tune by ID
+      operationId: getTune
+      parameters:
+        - $ref: '#/components/parameters/tuneId'
+      responses:
+        '200':
+          description: The requested tune
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tune'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      summary: Update a tune by ID
+      operationId: updateTune
+      parameters:
+        - $ref: '#/components/parameters/tuneId'
+      requestBody:
+        description: Tune object to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTune'
+      responses:
+        '204':
+          description: The tune was updated
+          content: {}
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+    delete:
+      summary: Delete a tune by ID
+      operationId: deleteTune
+      parameters:
+        - $ref: '#/components/parameters/tuneId'
+      responses:
+        '204':
+          description: Tune deleted
+          content: {}
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+  '/sets':
+    get:
+      summary: List all sets
+      operationId: listSets
+      responses:
+        '200':
+          description: A list of sets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MusicSet'
+        default:
+          $ref: '#/components/responses/Error'
+    post:
+      summary: Create a new set
+      operationId: createSet
+      requestBody:
+        description: Set object to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSet'
+      responses:
+        '201':
+          description: The created set
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MusicSet'
+        '400':
+          $ref: '#/components/responses/InvalidInput'
+        default:
+          $ref: '#/components/responses/Error'
+  '/sets/{setId}':
+    get:
+      summary: Get a set by ID
+      operationId: getSet
+      parameters:
+        - $ref: '#/components/parameters/setId'
+      responses:
+        '200':
+          description: The requested set
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MusicSet'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+    put:
+      summary: Update a set by ID
+      operationId: updateSet
+      parameters:
+        - $ref: '#/components/parameters/setId'
+      requestBody:
+        description: Set object to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSet'
+      responses:
+        '204':
+          description: The updated set
+          content: {}
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+    delete:
+      summary: Delete a set by ID
+      operationId: deleteSet
+      parameters:
+        - $ref: '#/components/parameters/setId'
+      responses:
+        '204':
+          description: Set deleted
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+  '/sets/{setId}/tunes':
+    put:
+      summary: Assign tunes to a set
+      operationId: assignTunesToSet
+      parameters:
+        - $ref: '#/components/parameters/setId'
+      requestBody:
+        description: Array of tune IDs which should be the tunes of the set
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Id'
+              example:
+                - 1
+                - 2
+                - 3
+      responses:
+        '200':
+          description: The updated set
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MusicSet'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+
+components:
+  schemas:
+    Error:
+      required:
+        - code
+        - message
+      type: object
+      properties:
+        code:
+          description: HTTP status code
+          type: integer
+          format: int32
+        message:
+          type: string
+    Id:
+      type: integer
+      description: Unique identifier for an object
+      minimum: 1
+      format: int64
+
+    ObjectId:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+      required:
+        - id
+
+    BasicSetProperties:
+      type: object
+      properties:
+        title:
+          type: string
+          description: The name of the Set
+        description:
+          type: string
+          description: A description of the Set
+        creator:
+          type: string
+          description: The name of the creator of the set
+      required:
+        - title
+
+    SetProperties:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BasicSetProperties'
+      properties:
+        tunes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tune'
+          description: The IDs of the Tunes in the Set
+      required:
+        - title
+    MusicSet:
+      description: Called MusicSet and not only Set because of name clash in e.g. typescript
+      allOf:
+        - $ref: '#/components/schemas/ObjectId'
+        - $ref: '#/components/schemas/SetProperties'
+    CreateSet:
+      allOf:
+        - $ref: '#/components/schemas/BasicSetProperties'
+    UpdateSet:
+      allOf:
+        - $ref: '#/components/schemas/BasicSetProperties'
+
+    TuneProperties:
+      type: object
+      properties:
+        title:
+          type: string
+        type:
+          type: string
+        timeSig:
+          type: string
+        composer:
+          type: string
+        arranger:
+          type: string
+      required:
+        - title
+    Tune:
+      allOf:
+        - $ref: '#/components/schemas/ObjectId'
+        - $ref: '#/components/schemas/TuneProperties'
+
+    CreateTune:
+      allOf:
+        - $ref: '#/components/schemas/TuneProperties'
+    UpdateTune:
+      allOf:
+        - $ref: '#/components/schemas/TuneProperties'
+  responses:
+    Error:
+      description: General error for the service
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InvalidInput:
+      description: Invalid input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Unable to find resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    tuneId:
+      name: tuneId
+      in: path
+      required: true
+      schema:
+        type: integer
+    setId:
+      name: setId
+      in: path
+      required: true
+      schema:
+        type: integer
