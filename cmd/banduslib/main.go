@@ -3,11 +3,14 @@ package main
 import (
 	"banduslib/internal/api"
 	"banduslib/internal/database"
+	"banduslib/internal/utils"
 	"fmt"
-	"log"
+	"github.com/rs/zerolog/log"
 )
 
 func main() {
+	utils.SetupConsoleLogger()
+
 	db, err := database.GetInitSqliteDb("main.db")
 	if err != nil {
 		panic(fmt.Sprintf("failed initializing database: %s", err.Error()))
@@ -19,5 +22,5 @@ func main() {
 
 	router := apiRouter.GetEngine()
 
-	log.Fatal(router.Run(":8081"))
+	log.Fatal().Err(router.Run(":8081"))
 }
