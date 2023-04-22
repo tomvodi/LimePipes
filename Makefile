@@ -1,0 +1,3 @@
+
+mocks:
+	go generate mockgen ./...

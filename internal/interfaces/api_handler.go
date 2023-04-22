@@ -4,6 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//go:generate mockgen -source api_handler.go -destination ./mocks/mock_api_handler.go
+
 type ApiHandler interface {
 	Index(c *gin.Context)
 	// AssignTunesToSet - Assign tunes to a set

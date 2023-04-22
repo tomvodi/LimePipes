@@ -2,6 +2,8 @@ package interfaces
 
 import "banduslib/internal/api/apimodel"
 
+//go:generate mockgen -source data_service.go -destination ./mocks/mock_data_service.go
+
 type DataService interface {
 	Tunes() ([]*apimodel.Tune, error)
 	CreateTune(tune apimodel.CreateTune) (*apimodel.Tune, error)
