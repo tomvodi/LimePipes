@@ -256,14 +256,12 @@ components:
       type: object
       allOf:
         - $ref: '#/components/schemas/BasicSetProperties'
-      properties:
-        tunes:
-          type: array
-          items:
-            $ref: '#/components/schemas/Tune'
-          description: The IDs of the Tunes in the Set
-      required:
-        - title
+        - type: object
+          properties:
+            tunes:
+              type: array
+              items:
+                $ref: '#/components/schemas/Tune'
     MusicSet:
       description: Called MusicSet and not only Set because of name clash in e.g. typescript
       allOf:
