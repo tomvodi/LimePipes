@@ -35,6 +35,7 @@ var _ = Describe("DbDataService", func() {
 		var tune3 *apimodel.Tune
 		var initialMusicSet *apimodel.MusicSet
 		var musicSetAfterAssignment *apimodel.MusicSet
+		var musicSets []*apimodel.MusicSet
 
 		BeforeEach(func() {
 			tune1, err = service.CreateTune(apimodel.CreateTune{Title: "tune 1"})
@@ -84,6 +85,42 @@ var _ = Describe("DbDataService", func() {
 							*tune1,
 							*tune3,
 						}))
+				})
+			})
+
+			When("getting the list of sets", func() {
+				BeforeEach(func() {
+					musicSets, err = service.MusicSets()
+				})
+
+				It("should also have the tunes in the same order", func() {
+					Expect(err).ShouldNot(HaveOccurred())
+					Expect(musicSets[0].Tunes).To(Equal(
+						[]apimodel.Tune{
+							*tune2,
+							*tune1,
+							*tune3,
+						}))
+				})
+			})
+
+			When("trying to delete a tune that is assigned to the set", func() {
+				BeforeEach(func() {
+					err = service.DeleteTune(musicSetAfterAssignment.Tunes[0].ID)
+				})
+
+				It("should not be possible", func() {
+					Expect(err).Should(HaveOccurred())
+				})
+			})
+
+			When("deleting that set", func() {
+				BeforeEach(func() {
+					err = service.DeleteMusicSet(musicSetAfterAssignment.ID)
+				})
+
+				It("should get deleted", func() {
+					Expect(err).ShouldNot(HaveOccurred())
 				})
 			})
 		})

@@ -12,11 +12,16 @@ package apimodel
 type UpdateSet struct {
 
 	// The name of the Set
-	Title string `json:"title"`
+	Title string `json:"title" binding:"required"`
 
 	// A description of the Set
 	Description string `json:"description,omitempty"`
 
 	// The name of the creator of the set
 	Creator string `json:"creator,omitempty"`
+}
+
+func (u UpdateSet) Validate() error {
+	v := NewApimodelValidator()
+	return v.Struct(u)
 }

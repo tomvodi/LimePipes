@@ -10,7 +10,7 @@
 package apimodel
 
 type UpdateTune struct {
-	Title string `json:"title"`
+	Title string `json:"title" binding:"required"`
 
 	Type string `json:"type,omitempty"`
 
@@ -19,4 +19,9 @@ type UpdateTune struct {
 	Composer string `json:"composer,omitempty"`
 
 	Arranger string `json:"arranger,omitempty"`
+}
+
+func (u UpdateTune) Validate() error {
+	v := NewApimodelValidator()
+	return v.Struct(u)
 }

@@ -64,6 +64,10 @@ func (d *dbService) GetTune(id uint64) (*apimodel.Tune, error) {
 }
 
 func (d *dbService) UpdateTune(id uint64, updateTune apimodel.UpdateTune) (*apimodel.Tune, error) {
+	if err := updateTune.Validate(); err != nil {
+		return nil, err
+	}
+
 	var tune = &model.Tune{}
 	if err := d.db.First(tune, id).Error; err != nil {
 		return nil, common.NotFound
@@ -110,6 +114,12 @@ func (d *dbService) MusicSets() ([]*apimodel.MusicSet, error) {
 		return nil, err
 	}
 
+	for _, apiSet := range apiSets {
+		if err := d.setTunesInApiSet(apiSet); err != nil {
+			return nil, err
+		}
+	}
+
 	return apiSets, nil
 }
 
@@ -138,28 +148,40 @@ func (d *dbService) GetMusicSet(id uint64) (*apimodel.MusicSet, error) {
 		return &apimodel.MusicSet{}, common.NotFound
 	}
 
-	var setTunes []model.Tune
-	err := d.db.Joins("JOIN music_set_tunes mst on tunes.id = mst.tune_id").
-		Where("mst.music_set_id=?", set.ID).
-		Order("mst.\"order\"").
-		Find(&setTunes).Error
-	if err != nil {
-		return &apimodel.MusicSet{},
-			fmt.Errorf("failed getting music set tunes: %s", err.Error())
-	}
-
 	apiSet := &apimodel.MusicSet{}
 	if err := copier.Copy(apiSet, set); err != nil {
 		return &apimodel.MusicSet{}, err
 	}
-	if err := copier.Copy(&apiSet.Tunes, &setTunes); err != nil {
+
+	if err := d.setTunesInApiSet(apiSet); err != nil {
 		return &apimodel.MusicSet{}, err
 	}
 
 	return apiSet, nil
 }
 
+func (d *dbService) setTunesInApiSet(apiSet *apimodel.MusicSet) error {
+	var setTunes []model.Tune
+	err := d.db.Joins("JOIN music_set_tunes mst on tunes.id = mst.tune_id").
+		Where("mst.music_set_id=?", apiSet.ID).
+		Order("mst.\"order\"").
+		Find(&setTunes).Error
+	if err != nil {
+		return fmt.Errorf("failed getting music set tunes: %s", err.Error())
+	}
+
+	if err := copier.Copy(&apiSet.Tunes, &setTunes); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (d *dbService) UpdateMusicSet(id uint64, updateSet apimodel.UpdateSet) (*apimodel.MusicSet, error) {
+	if err := updateSet.Validate(); err != nil {
+		return nil, err
+	}
+
 	var set = &model.MusicSet{}
 	if err := d.db.First(set, id).Error; err != nil {
 		return nil, common.NotFound
@@ -184,15 +206,23 @@ func (d *dbService) UpdateMusicSet(id uint64, updateSet apimodel.UpdateSet) (*ap
 
 func (d *dbService) DeleteMusicSet(id uint64) error {
 	var set = &model.MusicSet{}
-	if err := d.db.First(set, id).Error; err != nil {
+	if err := d.db.Preload("Tunes").First(set, id).Error; err != nil {
 		return common.NotFound
 	}
 
-	if err := d.db.Delete(set).Error; err != nil {
-		return err
-	}
+	err := d.db.Transaction(func(tx *gorm.DB) error {
+		if err := d.deleteMusicSetTunes(set); err != nil {
+			return err
+		}
 
-	return nil
+		if err := d.db.Delete(set).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	return err
 }
 
 func (d *dbService) AssignTunesToMusicSet(
@@ -216,13 +246,8 @@ func (d *dbService) AssignTunesToMusicSet(
 
 	// delete old music set -> tune relations and create new ones
 	err := d.db.Transaction(func(tx *gorm.DB) error {
-		for _, tune := range set.Tunes {
-			if err := d.db.Delete(&model.MusicSetTunes{
-				MusicSetID: setId,
-				TuneID:     tune.ID,
-			}).Error; err != nil {
-				return err
-			}
+		if err := d.deleteMusicSetTunes(set); err != nil {
+			return err
 		}
 
 		for i, tune := range newTunes {
@@ -251,6 +276,19 @@ func (d *dbService) AssignTunesToMusicSet(
 	}
 
 	return apiSet, nil
+}
+
+func (d *dbService) deleteMusicSetTunes(set *model.MusicSet) error {
+	for _, tune := range set.Tunes {
+		if err := d.db.Delete(&model.MusicSetTunes{
+			MusicSetID: set.ID,
+			TuneID:     tune.ID,
+		}).Error; err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func tunesOrderedByIds(tunes []model.Tune, tuneIds []uint64) []model.Tune {

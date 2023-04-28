@@ -84,7 +84,7 @@ var _ = Describe("DbDataService", func() {
 				}))
 		})
 
-		Context("when getting it again from service", func() {
+		When("getting it again from service", func() {
 			var returnedTune *apimodel.Tune
 			BeforeEach(func() {
 				returnedTune, err = service.GetTune(tune.ID)
@@ -96,7 +96,7 @@ var _ = Describe("DbDataService", func() {
 			})
 		})
 
-		Context("when updating that tune", func() {
+		When("updating that tune", func() {
 			BeforeEach(func() {
 				update := apimodel.UpdateTune{
 					Title:    "new title",
@@ -120,7 +120,7 @@ var _ = Describe("DbDataService", func() {
 				}))
 			})
 
-			Context("when retrieving that updated tune", func() {
+			When("retrieving that updated tune", func() {
 				BeforeEach(func() {
 					tune, err = service.GetTune(tune.ID)
 				})
@@ -139,7 +139,24 @@ var _ = Describe("DbDataService", func() {
 			})
 		})
 
-		Context("when deleting that tune", func() {
+		When("updating that tune with an empty title", func() {
+			BeforeEach(func() {
+				update := apimodel.UpdateTune{
+					Title:    "",
+					Type:     "new type",
+					TimeSig:  "new time signature",
+					Composer: "new composer",
+					Arranger: "new arranger",
+				}
+				tune, err = service.UpdateTune(tune.ID, update)
+			})
+
+			It("should fail", func() {
+				Expect(err).Should(HaveOccurred())
+			})
+		})
+
+		When("deleting that tune", func() {
 			BeforeEach(func() {
 				err = service.DeleteTune(tune.ID)
 			})
@@ -148,7 +165,7 @@ var _ = Describe("DbDataService", func() {
 				Expect(err).ShouldNot(HaveOccurred())
 			})
 
-			Context("when retrieving that tune again", func() {
+			When("retrieving that tune again", func() {
 				BeforeEach(func() {
 					tune, err = service.GetTune(tune.ID)
 				})
@@ -237,7 +254,7 @@ var _ = Describe("DbDataService", func() {
 				}))
 		})
 
-		Context("when getting it again from service", func() {
+		When("getting it again from service", func() {
 			var returnedSet *apimodel.MusicSet
 			BeforeEach(func() {
 				returnedSet, err = service.GetMusicSet(musicSet.ID)
@@ -249,7 +266,7 @@ var _ = Describe("DbDataService", func() {
 			})
 		})
 
-		Context("when updating that music set", func() {
+		When("updating that music set", func() {
 			BeforeEach(func() {
 				update := apimodel.UpdateSet{
 					Title:       "new title",
@@ -269,7 +286,7 @@ var _ = Describe("DbDataService", func() {
 				}))
 			})
 
-			Context("when retrieving that updated set", func() {
+			When("retrieving that updated set", func() {
 				BeforeEach(func() {
 					musicSet, err = service.GetMusicSet(musicSet.ID)
 				})
@@ -286,7 +303,22 @@ var _ = Describe("DbDataService", func() {
 			})
 		})
 
-		Context("when deleting that music set", func() {
+		When("updating that music set with an empty title", func() {
+			BeforeEach(func() {
+				update := apimodel.UpdateSet{
+					Title:       "",
+					Description: "new desc",
+					Creator:     "new creator",
+				}
+				musicSet, err = service.UpdateMusicSet(musicSet.ID, update)
+			})
+
+			It("should fail", func() {
+				Expect(err).Should(HaveOccurred())
+			})
+		})
+
+		When("deleting that music set", func() {
 			BeforeEach(func() {
 				err = service.DeleteMusicSet(musicSet.ID)
 			})
@@ -295,7 +327,7 @@ var _ = Describe("DbDataService", func() {
 				Expect(err).ShouldNot(HaveOccurred())
 			})
 
-			Context("when retrieving that music set again", func() {
+			When("retrieving that music set again", func() {
 				BeforeEach(func() {
 					musicSet, err = service.GetMusicSet(musicSet.ID)
 				})
