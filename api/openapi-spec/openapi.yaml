@@ -190,13 +190,7 @@ paths:
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Id'
-              example:
-                - 1
-                - 2
-                - 3
+              $ref: '#/components/schemas/TuneIdList'
       responses:
         '200':
           description: The updated set
@@ -262,6 +256,16 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Tune'
+
+    CreateUpdateSetProperties:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BasicSetProperties'
+        - type: object
+          properties:
+            tunes:
+              $ref: '#/components/schemas/TuneIdList'
+
     MusicSet:
       description: Called MusicSet and not only Set because of name clash in e.g. typescript
       allOf:
@@ -269,10 +273,10 @@ components:
         - $ref: '#/components/schemas/SetProperties'
     CreateSet:
       allOf:
-        - $ref: '#/components/schemas/BasicSetProperties'
+        - $ref: '#/components/schemas/CreateUpdateSetProperties'
     UpdateSet:
       allOf:
-        - $ref: '#/components/schemas/BasicSetProperties'
+        - $ref: '#/components/schemas/CreateUpdateSetProperties'
 
     TuneProperties:
       type: object
@@ -300,6 +304,14 @@ components:
     UpdateTune:
       allOf:
         - $ref: '#/components/schemas/TuneProperties'
+
+    TuneIdList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Id'
+      example:
+        [1, 2, 3]
+
   responses:
     Error:
       description: General error for the service

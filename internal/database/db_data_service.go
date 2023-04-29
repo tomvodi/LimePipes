@@ -123,23 +123,39 @@ func (d *dbService) MusicSets() ([]*apimodel.MusicSet, error) {
 	return apiSets, nil
 }
 
-func (d *dbService) CreateMusicSet(tune apimodel.CreateSet) (*apimodel.MusicSet, error) {
+func (d *dbService) CreateMusicSet(musicSet apimodel.CreateSet) (*apimodel.MusicSet, error) {
 	dbSet := model.MusicSet{}
-	err := copier.Copy(&dbSet, &tune)
-	if err != nil {
+	if err := copier.Copy(&dbSet, &musicSet); err != nil {
 		return &apimodel.MusicSet{}, fmt.Errorf("could not create db object")
 	}
 
-	if err = d.db.Create(&dbSet).Error; err != nil {
-		return &apimodel.MusicSet{}, err
-	}
-
-	apiTune := &apimodel.MusicSet{}
-	if err := copier.Copy(apiTune, dbSet); err != nil {
+	newTunes, err := d.dbTunesFromIds(musicSet.Tunes)
+	if err != nil {
 		return nil, err
 	}
 
-	return apiTune, nil
+	err = d.db.Transaction(func(tx *gorm.DB) error {
+		if err = d.db.Create(&dbSet).Error; err != nil {
+			return err
+		}
+
+		if err := d.assignMusicSetTunes(dbSet.ID, musicSet.Tunes); err != nil {
+			return err
+		}
+
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	dbSet.Tunes = newTunes
+	apiSet := &apimodel.MusicSet{}
+	if err := copier.Copy(apiSet, dbSet); err != nil {
+		return nil, err
+	}
+
+	return apiSet, nil
 }
 
 func (d *dbService) GetMusicSet(id uint64) (*apimodel.MusicSet, error) {
@@ -182,8 +198,8 @@ func (d *dbService) UpdateMusicSet(id uint64, updateSet apimodel.UpdateSet) (*ap
 		return nil, err
 	}
 
-	var set = &model.MusicSet{}
-	if err := d.db.First(set, id).Error; err != nil {
+	var dbSet = &model.MusicSet{}
+	if err := d.db.Preload("Tunes").First(dbSet, id).Error; err != nil {
 		return nil, common.NotFound
 	}
 
@@ -192,12 +208,33 @@ func (d *dbService) UpdateMusicSet(id uint64, updateSet apimodel.UpdateSet) (*ap
 		return nil, err
 	}
 
-	if err := d.db.Model(set).Updates(updateVals).Error; err != nil {
+	newTunes, err := d.dbTunesFromIds(updateSet.Tunes)
+	if err != nil {
 		return nil, err
 	}
 
+	err = d.db.Transaction(func(tx *gorm.DB) error {
+		if err := d.deleteMusicSetTunes(dbSet); err != nil {
+			return err
+		}
+
+		if err := d.db.Model(dbSet).Updates(updateVals).Error; err != nil {
+			return err
+		}
+
+		if err := d.assignMusicSetTunes(dbSet.ID, updateSet.Tunes); err != nil {
+			return err
+		}
+
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	dbSet.Tunes = newTunes
 	apiSet := &apimodel.MusicSet{}
-	if err := copier.Copy(apiSet, set); err != nil {
+	if err := copier.Copy(apiSet, dbSet); err != nil {
 		return nil, err
 	}
 
@@ -234,31 +271,19 @@ func (d *dbService) AssignTunesToMusicSet(
 		return nil, common.NotFound
 	}
 
-	var newTunes []model.Tune
-	if err := d.db.Where("id IN (?)", tuneIds).Find(&newTunes).Error; err != nil {
+	newTunes, err := d.dbTunesFromIds(tuneIds)
+	if err != nil {
 		return nil, err
 	}
 
-	if len(newTunes) != len(tuneIds) {
-		return nil, fmt.Errorf("not all tune IDs are from valid tunes")
-	}
-	newTunes = tunesOrderedByIds(newTunes, tuneIds)
-
 	// delete old music set -> tune relations and create new ones
-	err := d.db.Transaction(func(tx *gorm.DB) error {
+	err = d.db.Transaction(func(tx *gorm.DB) error {
 		if err := d.deleteMusicSetTunes(set); err != nil {
 			return err
 		}
 
-		for i, tune := range newTunes {
-			setTune := &model.MusicSetTunes{
-				MusicSetID: setId,
-				TuneID:     tune.ID,
-				Order:      uint(i + 1),
-			}
-			if err := d.db.Create(setTune).Error; err != nil {
-				return err
-			}
+		if err := d.assignMusicSetTunes(set.ID, tuneIds); err != nil {
+			return err
 		}
 
 		return nil
@@ -278,12 +303,50 @@ func (d *dbService) AssignTunesToMusicSet(
 	return apiSet, nil
 }
 
+// dbTunesFromIds returns the database tune objects in the same order as the
+// given tuneIds. If there is an id that belongs to a non existing tune,
+// an error will be returned.
+func (d *dbService) dbTunesFromIds(tuneIds []uint64) ([]model.Tune, error) {
+	if len(tuneIds) == 0 {
+		return nil, nil
+	}
+
+	var dbTunes []model.Tune
+	if err := d.db.Where("id IN (?)", tuneIds).Find(&dbTunes).Error; err != nil {
+		return nil, err
+	}
+
+	if len(dbTunes) != len(tuneIds) {
+		return nil, fmt.Errorf("not all tune IDs are from valid tunes")
+	}
+
+	return tunesOrderedByIds(dbTunes, tuneIds), nil
+}
+
 func (d *dbService) deleteMusicSetTunes(set *model.MusicSet) error {
 	for _, tune := range set.Tunes {
 		if err := d.db.Delete(&model.MusicSetTunes{
 			MusicSetID: set.ID,
 			TuneID:     tune.ID,
 		}).Error; err != nil {
+			return err
+		}
+	}
+
+	// set tunes to nil to reflect the database state
+	set.Tunes = nil
+
+	return nil
+}
+
+func (d *dbService) assignMusicSetTunes(setId uint64, tuneIds []uint64) error {
+	for i, tuneId := range tuneIds {
+		setTune := &model.MusicSetTunes{
+			MusicSetID: setId,
+			TuneID:     tuneId,
+			Order:      uint(i + 1),
+		}
+		if err := d.db.Create(setTune).Error; err != nil {
 			return err
 		}
 	}

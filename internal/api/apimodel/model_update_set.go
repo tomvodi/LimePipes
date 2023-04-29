@@ -19,6 +19,8 @@ type UpdateSet struct {
 
 	// The name of the creator of the set
 	Creator string `json:"creator,omitempty"`
+
+	Tunes []uint64 `json:"tunes,omitempty"`
 }
 
 func (u UpdateSet) Validate() error {
