@@ -114,15 +114,15 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 		},
 		{
 			Name:    "EIGHTH_NOTE",
-			Pattern: `LG_8|LA_8|B_8|C_8|D_8|E_8|F_8|HG_8|HA_8`,
+			Pattern: `LG_8|LA_8|B_8|C_8|D_8|E_8|F_8|HG_8|HA_8|LGl_8|LAl_8|Bl_8|Cl_8|Dl_8|El_8|Fl_8|HGl_8|HAl_8|LGr_8|LAr_8|Br_8|Cr_8|Dr_8|Er_8|Fr_8|HGr_8|HAr_8`,
 		},
 		{
 			Name:    "SIXTEENTH_NOTE",
-			Pattern: `LG_16|LA_16|B_16|C_16|D_16|E_16|F_16|HG_16|HA_16`,
+			Pattern: `LG_16|LA_16|B_16|C_16|D_16|E_16|F_16|HG_16|HA_16|LGl_16|LAl_16|Bl_16|Cl_16|Dl_16|El_16|Fl_16|HGl_16|HAl_16|LGr_16|LAr_16|Br_16|Cr_16|Dr_16|Er_16|Fr_16|HGr_16|HAr_16`,
 		},
 		{
 			Name:    "THIRTYSECOND_NOTE",
-			Pattern: `LG_32|LA_32|B_32|C_32|D_32|E_32|F_32|HG_32|HA_32`,
+			Pattern: `LG_32|LA_32|B_32|C_32|D_32|E_32|F_32|HG_32|HA_32|LGl_32|LAl_32|Bl_32|Cl_32|Dl_32|El_32|Fl_32|HGl_32|HAl_32|LGr_32|LAr_32|Br_32|Cr_32|Dr_32|Er_32|Fr_32|HGr_32|HAr_32`,
 		},
 		{
 			Name:    "WHOLE_NOTE",
