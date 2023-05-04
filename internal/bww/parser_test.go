@@ -31,7 +31,7 @@ var _ = Describe("BWW Parser", func() {
 
 		It("should succeed", func() {
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(bwwDoc.Tunes).To(HaveLen(1))
+			Expect(bwwDoc.Tunes).To(HaveLen(2))
 		})
 	})
 })

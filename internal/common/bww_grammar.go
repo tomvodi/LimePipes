@@ -5,13 +5,13 @@ type BwwDocument struct {
 }
 
 type Tune struct {
-	BagpipePlayerVersion string      `BagpipeReader VERSION_SEP @VersionNumber`
-	Header               *TuneHeader `@@`
+	BagpipePlayerVersion string      `(BagpipeReader VERSION_SEP @VersionNumber)?`
+	Header               *TuneHeader `@@+`
 	Body                 *TuneBody   `@@`
 }
 
 type TuneHeader struct {
-	TuneParameter []*TuneParameter `@@*`
+	TuneParameter []*TuneParameter `@@`
 }
 
 type TuneParameter struct {

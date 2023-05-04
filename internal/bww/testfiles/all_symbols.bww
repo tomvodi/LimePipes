@@ -23,6 +23,8 @@ TuneTempo,50
 &  I!'' I! !t
 & 2_2 3_2 2_4 3_4 4_4 5_4 5_4 6_4 7_4 C_ C 2_8 3_8 4_8 5_8 6_8 7_8 8_8 9_8 10_8 11_8 12_8 15_8 18_8 21_8 2_16 3_16 4_16 5_16 6_16 7_16 8_16 9_16 10_16 11_16 12_16 !t
 
+"Next tune after some staves",(T,L,0,0,Times New Roman,15,700,0,1,2,0,0,32768)
+
 & sharplg sharpla sharpb sharpc sharpd sharpe sharpf sharphg sharpha !t
 & naturallg naturalla naturalb naturalc naturald naturale naturalf naturalhg naturalha !t
 & flatlg flatla flatb flatc flatd flate flatf flathg flatha !t
