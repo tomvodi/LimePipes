@@ -7,10 +7,14 @@ FontSizes,(56,100,120,75,265)
 TuneFormat,(1,1,M,L,500,500,500,550,P,0,0)
 TuneTempo,50
 
+"just a comment"
+
 "Tune Title",(T,L,0,0,Times New Roman,15,700,0,1,2,0,0,32768)
 "6/8 March",(Y,C,0,0,Times New Roman,11,400,0,0,18,0,0,0)
 "Composer",(M,R,0,0,Courier New,12,400,255,0,49,0,0,0)
 "Some other text",(I,L,0,0,Times New Roman,10,400,0,0,18,0,0,0)
+
+"and another comment"
 
 & ! !t
 &  !I
