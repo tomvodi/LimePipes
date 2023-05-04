@@ -46,6 +46,7 @@ type Staff struct {
 
 type StaffSymbols struct {
 	PartStart           *string `@PART_START`
+	Barline             *string `| @BARLINE`
 	TimeSig             *string `| @TIME_SIG`
 	Sharp               *string `| @SHARP`
 	Natural             *string `| @NATURAL`

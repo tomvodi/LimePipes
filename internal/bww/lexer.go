@@ -89,6 +89,10 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Pattern: `I!''|I!`,
 		},
 		{
+			Name:    "BARLINE",
+			Pattern: `!\s`,
+		},
+		{
 			Name:    "SHARP",
 			Pattern: `sharplg|sharpla|sharpb|sharpc|sharpd|sharpe|sharpf|sharphg|sharpha`,
 		},
