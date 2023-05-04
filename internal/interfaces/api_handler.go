@@ -30,4 +30,5 @@ type ApiHandler interface {
 	UpdateSet(c *gin.Context)
 	// UpdateTune - Update a tune by ID
 	UpdateTune(c *gin.Context)
+	AddTuneFiles(c *gin.Context)
 }

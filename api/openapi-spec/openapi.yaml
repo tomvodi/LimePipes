@@ -92,6 +92,34 @@ paths:
           $ref: '#/components/responses/NotFound'
         default:
           $ref: '#/components/responses/Error'
+  '/tunes/{tuneId}/files':
+    post:
+      summary: Add files to a tune
+      operationId: addTuneFiles
+      parameters:
+        - $ref: '#/components/parameters/tuneId'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                filename:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '200':
+          description: The requested tune
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tune'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
 
   '/sets':
     get:

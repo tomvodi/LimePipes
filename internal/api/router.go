@@ -61,6 +61,13 @@ func (a *apiRouter) getRoutes() routes {
 		},
 
 		{
+			"AddTuneFiles",
+			http.MethodPost,
+			"/tunes/:tuneId/files",
+			a.apiHandler.AddTuneFiles,
+		},
+
+		{
 			"AssignTunesToSet",
 			http.MethodPut,
 			"/sets/:setId/tunes",
