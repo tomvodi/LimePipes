@@ -6,7 +6,7 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 	"Root": {
 		{
 			Name:    "BagpipeReader",
-			Pattern: `Bagpipe Reader`,
+			Pattern: `Bagpipe Reader|Bagpipe Music Writer Gold`,
 			Action:  lexer.Push("BagpipeReader"),
 		},
 		{
