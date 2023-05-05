@@ -1,0 +1,121 @@
+- title: Tune Title
+  tempo: 0
+  measures:
+    - symbols:
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: Doubling
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: Doubling
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: Doubling
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: Doubling
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: Doubling
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: Doubling
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: Doubling
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: Doubling
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: Doubling
+    - symbols:
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: ThumbDoubling
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: ThumbDoubling
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: ThumbDoubling
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: ThumbDoubling
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: ThumbDoubling
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: ThumbDoubling
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: ThumbDoubling
+    - symbols:
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: HalfDoubling
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: HalfDoubling
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: HalfDoubling
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: HalfDoubling
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: HalfDoubling
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: HalfDoubling
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: HalfDoubling

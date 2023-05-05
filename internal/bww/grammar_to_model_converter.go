@@ -135,8 +135,29 @@ func appendStaffSymbolToMeasureSymbols(
 	if staffSym.SingleDots != nil || staffSym.DoubleDots != nil {
 		handleDots(staffSym, lastSym)
 	}
+	if staffSym.Doubling != nil {
+		return handleEmbellishment(symbols.Doubling)
+	}
+	if staffSym.HalfDoubling != nil {
+		return handleEmbellishment(symbols.HalfDoubling)
+	}
+	if staffSym.ThumbDoubling != nil {
+		return handleEmbellishment(symbols.ThumbDoubling)
+	}
 
 	return nil, nil //fmt.Errorf("staff symbol %v not handled", staffSym)
+}
+
+func handleEmbellishment(
+	emb symbols.EmbellishmentType,
+) (*music_model.Symbol, error) {
+	return &music_model.Symbol{
+		Note: &symbols.Note{
+			Embellishment: &symbols.Embellishment{
+				Type: emb,
+			},
+		},
+	}, nil
 }
 
 func handleDots(staffSym *StaffSymbols, lastSym *music_model.Symbol) {
