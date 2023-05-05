@@ -1,0 +1,8 @@
+- title: Tune Title
+  tempo: 0
+  measures:
+    - symbols:
+        - note:
+            embellishment:
+                type: SingleGrace
+                pitch: HighG

@@ -1,0 +1,52 @@
+- title: Single Grace Test
+  tempo: 0
+  measures:
+    - symbols:
+        - note:
+            pitch: LowG
+            length: Whole
+            embellishment:
+                type: SingleGrace
+                pitch: LowA
+        - note:
+            pitch: LowG
+            length: Whole
+            embellishment:
+                type: SingleGrace
+                pitch: B
+        - note:
+            pitch: LowG
+            length: Whole
+            embellishment:
+                type: SingleGrace
+                pitch: C
+        - note:
+            pitch: LowG
+            length: Whole
+            embellishment:
+                type: SingleGrace
+                pitch: D
+        - note:
+            pitch: LowG
+            length: Whole
+            embellishment:
+                type: SingleGrace
+                pitch: E
+        - note:
+            pitch: LowG
+            length: Whole
+            embellishment:
+                type: SingleGrace
+                pitch: F
+        - note:
+            pitch: LowG
+            length: Whole
+            embellishment:
+                type: SingleGrace
+                pitch: HighG
+        - note:
+            pitch: LowG
+            length: Whole
+            embellishment:
+                type: SingleGrace
+                pitch: HighA

@@ -1,7 +1,7 @@
 package bww
 
 import (
-	"banduslib/internal/common"
+	"banduslib/internal/common/music_model"
 	"banduslib/internal/interfaces"
 	"github.com/alecthomas/participle/v2"
 )
@@ -9,8 +9,8 @@ import (
 type bwwParser struct {
 }
 
-func (b *bwwParser) ParseBwwData(data []byte) (*common.BwwDocument, error) {
-	parser, err := participle.Build[common.BwwDocument](
+func (b *bwwParser) ParseBwwData(data []byte) ([]*music_model.Tune, error) {
+	parser, err := participle.Build[BwwDocument](
 		participle.Elide("WHITESPACE"),
 		participle.Lexer(BwwLexer),
 		participle.Unquote("STRING"),
@@ -19,13 +19,13 @@ func (b *bwwParser) ParseBwwData(data []byte) (*common.BwwDocument, error) {
 		return nil, err
 	}
 
-	var bwwDoc *common.BwwDocument
+	var bwwDoc *BwwDocument
 	bwwDoc, err = parser.ParseBytes("", data)
 	if err != nil {
 		return nil, err
 	}
 
-	return bwwDoc, nil
+	return convertGrammarToModel(bwwDoc)
 }
 
 func NewBwwParser() interfaces.BwwParser {
