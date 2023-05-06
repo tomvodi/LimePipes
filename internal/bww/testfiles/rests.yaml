@@ -1,0 +1,16 @@
+- title: Tune Title
+  tempo: 0
+  measures:
+    - symbols:
+        - rest:
+            length: Whole
+        - rest:
+            length: Half
+        - rest:
+            length: Quarter
+        - rest:
+            length: Eighth
+        - rest:
+            length: Sixteenth
+        - rest:
+            length: Thirtysecond

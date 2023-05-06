@@ -144,6 +144,12 @@ func appendStaffSymbolToMeasureSymbols(
 	if staffSym.ThumbDoubling != nil {
 		return handleEmbellishment(symbols.ThumbDoubling)
 	}
+	if staffSym.Rest != nil {
+		newSym.Rest = &symbols.Rest{
+			Length: lengthFromSuffix(staffSym.Rest),
+		}
+		return newSym, nil
+	}
 
 	return nil, nil //fmt.Errorf("staff symbol %v not handled", staffSym)
 }
@@ -200,7 +206,7 @@ func handleNote(staffSym *StaffSymbols, note *symbols.Note) {
 	if staffSym.ThirtysecondNote != nil {
 		token = staffSym.ThirtysecondNote
 	}
-	note.Length = lengthFromStaffNoteSuffix(token)
+	note.Length = lengthFromSuffix(token)
 	note.Pitch = pitchFromStaffNotePrefix(token)
 }
 
@@ -267,7 +273,7 @@ func pitchFromStaffNotePrefix(note *string) symbols.Pitch {
 
 	return symbols.NoPitch
 }
-func lengthFromStaffNoteSuffix(note *string) symbols.Length {
+func lengthFromSuffix(note *string) symbols.Length {
 	if strings.HasSuffix(*note, "16") {
 		return symbols.Sixteenth
 	}
