@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-const _LengthName = "NoLengthWholeHalfQuarterEigthSixteenthThirtysecond"
+const _LengthName = "NoLengthWholeHalfQuarterEighthSixteenthThirtysecond"
 
-var _LengthIndex = [...]uint8{0, 8, 13, 17, 24, 29, 38, 50}
+var _LengthIndex = [...]uint8{0, 8, 13, 17, 24, 30, 39, 51}
 
-const _LengthLowerName = "nolengthwholehalfquartereigthsixteenththirtysecond"
+const _LengthLowerName = "nolengthwholehalfquartereighthsixteenththirtysecond"
 
 func (i Length) String() string {
 	if i >= Length(len(_LengthIndex)-1) {
@@ -29,12 +29,12 @@ func _LengthNoOp() {
 	_ = x[Whole-(1)]
 	_ = x[Half-(2)]
 	_ = x[Quarter-(3)]
-	_ = x[Eigth-(4)]
+	_ = x[Eighth-(4)]
 	_ = x[Sixteenth-(5)]
 	_ = x[Thirtysecond-(6)]
 }
 
-var _LengthValues = []Length{NoLength, Whole, Half, Quarter, Eigth, Sixteenth, Thirtysecond}
+var _LengthValues = []Length{NoLength, Whole, Half, Quarter, Eighth, Sixteenth, Thirtysecond}
 
 var _LengthNameToValueMap = map[string]Length{
 	_LengthName[0:8]:        NoLength,
@@ -45,12 +45,12 @@ var _LengthNameToValueMap = map[string]Length{
 	_LengthLowerName[13:17]: Half,
 	_LengthName[17:24]:      Quarter,
 	_LengthLowerName[17:24]: Quarter,
-	_LengthName[24:29]:      Eigth,
-	_LengthLowerName[24:29]: Eigth,
-	_LengthName[29:38]:      Sixteenth,
-	_LengthLowerName[29:38]: Sixteenth,
-	_LengthName[38:50]:      Thirtysecond,
-	_LengthLowerName[38:50]: Thirtysecond,
+	_LengthName[24:30]:      Eighth,
+	_LengthLowerName[24:30]: Eighth,
+	_LengthName[30:39]:      Sixteenth,
+	_LengthLowerName[30:39]: Sixteenth,
+	_LengthName[39:51]:      Thirtysecond,
+	_LengthLowerName[39:51]: Thirtysecond,
 }
 
 var _LengthNames = []string{
@@ -58,9 +58,9 @@ var _LengthNames = []string{
 	_LengthName[8:13],
 	_LengthName[13:17],
 	_LengthName[17:24],
-	_LengthName[24:29],
-	_LengthName[29:38],
-	_LengthName[38:50],
+	_LengthName[24:30],
+	_LengthName[30:39],
+	_LengthName[39:51],
 }
 
 // LengthString retrieves an enum value from the enum constants string name.

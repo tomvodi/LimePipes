@@ -284,7 +284,7 @@ func lengthFromStaffNoteSuffix(note *string) symbols.Length {
 		return symbols.Quarter
 	}
 	if strings.HasSuffix(*note, "8") {
-		return symbols.Eigth
+		return symbols.Eighth
 	}
 
 	return symbols.NoLength

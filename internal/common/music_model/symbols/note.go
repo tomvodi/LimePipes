@@ -25,7 +25,7 @@ const (
 	Whole
 	Half
 	Quarter
-	Eigth
+	Eighth
 	Sixteenth
 	Thirtysecond
 )
