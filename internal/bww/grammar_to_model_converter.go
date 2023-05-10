@@ -14,7 +14,7 @@ func convertGrammarToModel(grammar *BwwDocument) ([]*music_model.Tune, error) {
 
 	for _, tune := range grammar.Tunes {
 		newTune := &music_model.Tune{}
-		if err := fillTuneWithParmeter(newTune, tune.Header.TuneParameter); err != nil {
+		if err := fillTuneWithParameter(newTune, tune.Header.TuneParameter); err != nil {
 			return nil, err
 		}
 
@@ -28,7 +28,7 @@ func convertGrammarToModel(grammar *BwwDocument) ([]*music_model.Tune, error) {
 	return tunes, nil
 }
 
-func fillTuneWithParmeter(tune *music_model.Tune, params []*TuneParameter) error {
+func fillTuneWithParameter(tune *music_model.Tune, params []*TuneParameter) error {
 	for _, param := range params {
 		if param.Tempo != nil {
 			tempo, err := strconv.ParseUint(param.Tempo.Tempo, 10, 64)
@@ -78,11 +78,11 @@ func fillTunePartsFromStaves(tune *music_model.Tune, staves []*Staff) error {
 func getMeasuresFromStave(stave *Staff) ([]*music_model.Measure, error) {
 	var measures []*music_model.Measure
 	currMeasure := &music_model.Measure{}
-	for _, symbol := range stave.Symbols {
-		// if symbol bar or part start => new measure
+	for _, staffSym := range stave.Symbols {
+		// if staffSym bar or part start => new measure
 		// currMeasure to return measures
-		if symbol.Barline != nil ||
-			symbol.PartStart != nil {
+		if staffSym.Barline != nil ||
+			staffSym.PartStart != nil {
 			measures = append(measures, currMeasure)
 			currMeasure = &music_model.Measure{}
 
@@ -94,7 +94,7 @@ func getMeasuresFromStave(stave *Staff) ([]*music_model.Measure, error) {
 		if len(currMeasure.Symbols) > 0 {
 			lastSym = currMeasure.Symbols[measSymLen-1]
 		}
-		newSym, err := appendStaffSymbolToMeasureSymbols(symbol, lastSym)
+		newSym, err := appendStaffSymbolToMeasureSymbols(staffSym, lastSym)
 		if err != nil {
 			return nil, err
 		}
