@@ -1,0 +1,80 @@
+###
+GET http://{{host}}/v1/
+
+
+### List tunes
+GET http://{{host}}/v1/tunes
+
+### Show tune 2
+GET http://{{host}}/v1/tunes/2
+
+
+### Update tune 2
+PUT http://{{host}}/v1/tunes/2
+Content-Type: application/json
+
+{
+  "title": "My Second Tune - updated",
+  "timeSig":"2/4 - updatd",
+  "type": "Hornpipe - updated",
+  "composer": "Mr. Nobody - updated",
+  "arranger": "Mr. Arrange - updated"
+}
+
+### Add files to tune
+POST http://{{host}}/v1/tunes/1/files
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="upload[]"; filename="scotland_the_brave.bww"
+
+< ./scotland_the_brave.bww
+
+--boundary
+Content-Disposition: form-data; name="upload[]"; filename="the_high_road_to_linton_kate_dalrymple_jock_wilsons_ball.bww"
+
+< ./the_high_road_to_linton_kate_dalrymple_jock_wilsons_ball.bww
+
+
+### Delete tune 2
+DELETE http://{{host}}/v1/tunes/2
+
+### List sets
+GET http://{{host}}/v1/sets
+
+### Show set 2
+GET http://{{host}}/v1/sets/1
+
+
+### Update set 2
+PUT http://{{host}}/v1/sets/2
+Content-Type: application/json
+
+{
+  "title": "First Set - updated",
+  "description":"first set for tests - updated",
+  "creator": "Henry R. - updated",
+  "tunes": [
+    2, 3, 1
+  ]
+}
+
+### Change tunes of set 2
+PUT http://{{host}}/v1/sets/2/tunes
+Content-Type: application/json
+
+[
+  1,
+  2,
+  3
+]
+
+<> 2023-05-10T062838.200.json
+###
+DELETE http://{{host}}/v1/sets/1
+
+<> 2023-05-02T151022.200.txt
+<> 2023-05-02T150957.200.txt
+<> 2023-05-02T150928.200.txt
+<> 2023-05-02T145810.404.txt
+

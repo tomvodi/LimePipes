@@ -1,0 +1,156 @@
+
+###
+POST http://{{host}}/v1/tunes
+Content-Type: application/json
+
+{
+  "title": "My First Tune",
+  "timeSig":"3/4",
+  "type": "March",
+  "composer": "Mr. Nobody",
+  "arranger": "Mr. Arrange"
+}
+
+> {%
+    client.global.set("tune1_id", response.body.id);
+%}
+
+<> 2023-05-02T145756.500.json
+<> 2023-05-02T100331.500.json
+<> 2023-05-02T064044.500.json
+<> 2023-05-01T110754.500.json
+<> 2023-04-29T185426.200.json
+<> 2023-04-08T154656.200.json
+
+###
+POST http://{{host}}/v1/tunes
+Content-Type: application/json
+
+{
+  "title": "My Second Tune",
+  "timeSig":"3/4",
+  "type": "Waltz",
+  "composer": "Mr. Nobody",
+  "arranger": "Mr. Arrange"
+}
+
+> {%
+    client.global.set("tune2_id", response.body.id);
+%}
+
+<> 2023-05-02T145756-1.500.json
+<> 2023-05-02T100331-1.500.json
+<> 2023-05-02T064046.500.json
+<> 2023-05-01T110755.500.json
+<> 2023-04-29T185427.200.json
+
+###
+POST http://{{host}}/v1/tunes
+Content-Type: application/json
+
+{
+  "title": "My Third Tune",
+  "timeSig":"2/4",
+  "type": "Hornpipe",
+  "composer": "Mr. Nobody",
+  "arranger": "Mr. Arrange"
+}
+
+<> 2023-05-02T145757.500.json
+<> 2023-05-02T100332.500.json
+<> 2023-05-02T064046-1.500.json
+<> 2023-05-01T110756.500.json
+<> 2023-04-29T185427-1.200.json
+
+###
+POST http://{{host}}/v1/tunes
+Content-Type: application/json
+
+{
+  "title": "My Fourth Tune",
+  "timeSig":"6/8",
+  "type": "Jig",
+  "composer": "Mr. Nobody",
+  "arranger": "Mr. Arrange"
+}
+
+> {%
+    client.global.set("tune4_id", response.body.id);
+%}
+
+<> 2023-05-02T145757-1.500.json
+<> 2023-05-02T100332-1.500.json
+<> 2023-05-02T064047.500.json
+<> 2023-05-01T110756-1.500.json
+<> 2023-04-29T185427-2.200.json
+<> 2023-04-29T184153-1.200.json
+
+###
+POST http://{{host}}/v1/sets
+Content-Type: application/json
+
+{
+  "title": "First Set",
+  "description":"first set for tests",
+  "creator": "Henry R."
+}
+
+> {%
+    client.global.set("set1_id", response.body.id);
+%}
+
+<> 2023-05-02T145757-2.500.json
+<> 2023-05-02T100332-2.500.json
+<> 2023-05-02T064047-1.500.json
+<> 2023-05-01T110757.500.json
+<> 2023-04-29T185428.200.json
+<> 2023-04-29T184153-2.200.json
+
+###
+POST http://{{host}}/v1/sets
+Content-Type: application/json
+
+{
+  "title": "Second Set",
+  "description":"second set for tests",
+  "creator": "Henry R."
+}
+
+> {%
+    client.global.set("set2_id", response.body.id);
+%}
+
+<> 2023-05-02T145757-3.500.json
+<> 2023-05-02T100332-3.500.json
+<> 2023-05-02T064047-2.500.json
+<> 2023-05-01T110757-1.500.json
+<> 2023-04-29T185428-1.200.json
+<> 2023-04-29T184154.200.json
+
+###
+PUT http://{{host}}/v1/sets/1/tunes
+Content-Type: application/json
+
+< /home/vm-develop/.config/JetBrains/GoLand2023.1/scratches/set1_tune_ids.json
+
+<> 2023-05-02T145757.200.json
+<> 2023-05-02T100333.200.json
+<> 2023-05-02T064048.200.json
+<> 2023-05-01T110758.200.json
+<> 2023-04-29T185428-2.200.json
+<> 2023-04-29T184154-1.200.json
+
+
+###
+PUT http://{{host}}/v1/sets/2/tunes
+Content-Type: application/json
+
+< /home/vm-develop/.config/JetBrains/GoLand2023.1/scratches/set2_tune_ids.json
+
+<> 2023-05-02T145758.200.json
+<> 2023-05-02T100333-1.200.json
+<> 2023-05-02T064048-1.200.json
+<> 2023-05-01T110758-1.200.json
+<> 2023-04-29T185429.200.json
+<> 2023-04-29T184154-2.200.json
+
