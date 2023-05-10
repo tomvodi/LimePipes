@@ -1,0 +1,16 @@
+- title: Tune Title
+  tempo: 0
+  measures:
+    - symbols:
+        - note:
+            pitch: LowG
+            length: Whole
+            accidental: sharp
+        - note:
+            pitch: LowA
+            length: Whole
+            accidental: natural
+        - note:
+            pitch: B
+            length: Whole
+            accidental: flat

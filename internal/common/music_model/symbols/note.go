@@ -2,6 +2,7 @@ package symbols
 
 //go:generate go run github.com/dmarkham/enumer -json -yaml -type=Pitch
 //go:generate go run github.com/dmarkham/enumer -json -yaml -type=Length
+//go:generate go run github.com/dmarkham/enumer -json -yaml -type=Accidental
 
 type Pitch uint
 
@@ -30,10 +31,20 @@ const (
 	Thirtysecond
 )
 
+type Accidental uint
+
+const (
+	NoAccidental Accidental = iota
+	Sharp
+	Flat
+	Natural
+)
+
 type Note struct {
 	Pitch         Pitch          `yaml:"pitch,omitempty"`
 	Length        Length         `yaml:"length,omitempty"`
 	Dots          uint8          `yaml:"dots,omitempty"`
+	Accidental    Accidental     `yaml:"accidental,omitempty"`
 	Embellishment *Embellishment `yaml:"embellishment,omitempty"`
 }
 

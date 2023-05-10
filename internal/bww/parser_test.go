@@ -141,6 +141,21 @@ var _ = Describe("BWW Parser", func() {
 			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
 		})
 	})
+
+	When("having accidentals", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/accidentals.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/accidentals.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
 	When("having doublings", func() {
 		BeforeEach(func() {
 			bwwData := dataFromFile("./testfiles/doublings.bww")
