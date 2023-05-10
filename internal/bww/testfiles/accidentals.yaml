@@ -3,6 +3,10 @@
   measures:
     - symbols:
         - note:
+            pitch: HighA
+            length: Eighth
+    - symbols:
+        - note:
             pitch: LowG
             length: Whole
             accidental: sharp
