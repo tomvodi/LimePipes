@@ -2,6 +2,7 @@
   tempo: 0
   measures:
     - symbols:
+    - symbols:
         - note:
             pitch: HighA
             length: Eighth

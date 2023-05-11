@@ -55,9 +55,25 @@ func (n *Note) IsValid() bool {
 	return true
 }
 
-func (n *Note) IsEmbellishmentOnly() bool {
+// IsIncomplete returns true, if the note has no pitch and length but already other
+// properties like an embellishment or an accidental
+// this is the case, when the bww symbols which modify the note are preceding the note in
+// bww code
+func (n *Note) IsIncomplete() bool {
 	if n.Pitch == NoPitch && n.Length == NoLength {
 		if n.Embellishment != nil {
+			return true
+		}
+		if n.Accidental != NoAccidental {
+			return true
+		}
+	}
+	return false
+}
+
+func (n *Note) IsOnlyAccidental() bool {
+	if n.Pitch == NoPitch && n.Length == NoLength {
+		if n.Accidental != NoAccidental {
 			return true
 		}
 	}

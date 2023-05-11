@@ -5,6 +5,7 @@ import (
 	"banduslib/internal/common/music_model/symbols"
 	"fmt"
 	"github.com/rs/zerolog/log"
+	"reflect"
 	"strconv"
 	"strings"
 )
@@ -83,7 +84,7 @@ func getMeasuresFromStave(stave *Staff) ([]*music_model.Measure, error) {
 		// currMeasure to return measures
 		if staffSym.Barline != nil ||
 			staffSym.PartStart != nil {
-			measures = append(measures, currMeasure)
+			measures = cleanupAndAppendMeasure(measures, currMeasure)
 			currMeasure = &music_model.Measure{}
 
 			continue
@@ -103,8 +104,53 @@ func getMeasuresFromStave(stave *Staff) ([]*music_model.Measure, error) {
 		}
 	}
 
-	measures = append(measures, currMeasure)
+	measures = cleanupAndAppendMeasure(measures, currMeasure)
 	return measures, nil
+}
+
+func cleanupAndAppendMeasure(
+	measures []*music_model.Measure,
+	measure *music_model.Measure,
+) []*music_model.Measure {
+	cleanupMeasure(measure)
+	if len(measure.Symbols) == 0 {
+		measure.Symbols = nil
+	}
+	return append(measures, measure)
+}
+
+// cleanupMeasure removes invalid symbols from the measure
+// this may be the case for the accidentals at the beginning of the measure which are
+// indicating the key of the measure. For bagpipes the key is always sharpf sharpc,
+// so we delete these symbols here.
+func cleanupMeasure(meas *music_model.Measure) {
+	for _, symbol := range meas.Symbols {
+		if symbol.Note == nil {
+			continue
+		}
+
+		if symbol.Note.IsOnlyAccidental() {
+			idx := symbolIndexOf(meas.Symbols, symbol)
+			if idx == -1 {
+				log.Error().Msgf("symbol index could not be found for cleanup of measure")
+			} else {
+				meas.Symbols = removeSymbol(meas.Symbols, idx)
+			}
+		}
+	}
+}
+
+func symbolIndexOf(symbols []*music_model.Symbol, findSym *music_model.Symbol) int {
+	for i, symbol := range symbols {
+		if reflect.DeepEqual(symbol, findSym) {
+			return i
+		}
+	}
+	return -1
+}
+
+func removeSymbol(symbols []*music_model.Symbol, idx int) []*music_model.Symbol {
+	return append(symbols[:idx], symbols[idx+1:]...)
 }
 
 func appendStaffSymbolToMeasureSymbols(
@@ -117,7 +163,7 @@ func appendStaffSymbolToMeasureSymbols(
 		staffSym.QuarterNote != nil || staffSym.EighthNote != nil ||
 		staffSym.SixteenthNote != nil || staffSym.ThirtysecondNote != nil {
 		// add melody note to last note if it is an embellishment
-		if lastSym != nil && lastSym.Note != nil && lastSym.Note.IsEmbellishmentOnly() {
+		if lastSym != nil && lastSym.Note != nil && lastSym.Note.IsIncomplete() {
 			handleNote(staffSym, lastSym.Note)
 			return nil, nil
 		} else {
@@ -135,6 +181,15 @@ func appendStaffSymbolToMeasureSymbols(
 	if staffSym.SingleDots != nil || staffSym.DoubleDots != nil {
 		handleDots(staffSym, lastSym)
 	}
+	if staffSym.Flat != nil {
+		return handleAccidential(symbols.Flat), nil
+	}
+	if staffSym.Natural != nil {
+		return handleAccidential(symbols.Natural), nil
+	}
+	if staffSym.Sharp != nil {
+		return handleAccidential(symbols.Sharp), nil
+	}
 	if staffSym.Doubling != nil {
 		return handleEmbellishment(symbols.Doubling)
 	}
@@ -151,7 +206,7 @@ func appendStaffSymbolToMeasureSymbols(
 		return newSym, nil
 	}
 
-	return nil, nil //fmt.Errorf("staff symbol %v not handled", staffSym)
+	return nil, nil // fmt.Errorf("staff symbol %v not handled", staffSym)
 }
 
 func handleEmbellishment(
@@ -208,6 +263,14 @@ func handleNote(staffSym *StaffSymbols, note *symbols.Note) {
 	}
 	note.Length = lengthFromSuffix(token)
 	note.Pitch = pitchFromStaffNotePrefix(token)
+}
+
+func handleAccidential(acc symbols.Accidental) *music_model.Symbol {
+	return &music_model.Symbol{
+		Note: &symbols.Note{
+			Accidental: acc,
+		},
+	}
 }
 
 func embellishmentForSingleGrace(grace *string) *symbols.Embellishment {
