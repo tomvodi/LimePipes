@@ -300,6 +300,24 @@ func appendStaffSymbolToMeasureSymbols(
 	if staffSym.LightThumbStrike != nil {
 		return handleEmbellishmentVariant(symbols.Strike, symbols.Thumb, symbols.Light)
 	}
+	if staffSym.Pele != nil {
+		return handleEmbellishment(symbols.Pele)
+	}
+	if staffSym.LightPele != nil {
+		return handleEmbellishmentVariant(symbols.Pele, symbols.NoVariant, symbols.Light)
+	}
+	if staffSym.ThumbPele != nil {
+		return handleEmbellishmentVariant(symbols.Pele, symbols.Thumb, symbols.NoWeight)
+	}
+	if staffSym.LightThumbPele != nil {
+		return handleEmbellishmentVariant(symbols.Pele, symbols.Thumb, symbols.Light)
+	}
+	if staffSym.HalfPele != nil {
+		return handleEmbellishmentVariant(symbols.Pele, symbols.Half, symbols.NoWeight)
+	}
+	if staffSym.LightHalfPele != nil {
+		return handleEmbellishmentVariant(symbols.Pele, symbols.Half, symbols.Light)
+	}
 	if staffSym.GBirl != nil ||
 		staffSym.ThumbBirl != nil {
 		return handleEmbellishment(symbols.GraceBirl)

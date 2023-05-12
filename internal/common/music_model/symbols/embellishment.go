@@ -23,8 +23,6 @@ const (
 	Birl
 	ThrowD
 	Pele
-	ThumbPele
-	HalfPele
 	DoubleStrike
 	GDoubleStrike
 	ThumbDoubleStrike

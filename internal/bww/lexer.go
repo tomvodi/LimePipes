@@ -237,16 +237,28 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Pattern: `hhvthrd|hvthrd`,
 		},
 		{
+			Name:    "LIGHT_PELE",
+			Pattern: `lpeld`,
+		},
+		{
 			Name:    "PELE",
-			Pattern: `pella|pelb|pelc|peld|lpeld|pele|pelf`,
+			Pattern: `pella|pelb|pelc|peld|pele|pelf`,
+		},
+		{
+			Name:    "LIGHT_THUMB_PELE",
+			Pattern: `ltpeld`,
 		},
 		{
 			Name:    "THUMB_PELE",
-			Pattern: `tpella|tpelb|tpelc|tpeld|ltpeld|tpele|tpelf|tpelhg`,
+			Pattern: `tpella|tpelb|tpelc|tpeld|tpele|tpelf|tpelhg`,
+		},
+		{
+			Name:    "LIGHT_HALF_PELE",
+			Pattern: `lhpeld`,
 		},
 		{
 			Name:    "HALF_PELE",
-			Pattern: `hpella|hpelb|hpelc|hpeld|lhpeld|hpele|hpelf|hpelhg`,
+			Pattern: `hpella|hpelb|hpelc|hpeld|hpele|hpelf|hpelhg`,
 		},
 		{
 			Name:    "DOUBLE_STRIKE",

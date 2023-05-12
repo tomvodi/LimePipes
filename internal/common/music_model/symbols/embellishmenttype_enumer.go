@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-const _EmbellishmentTypeName = "NoEmbellishmentSingleGraceDoublingStrikeGripTaorluathBubblyGraceBirlABirlBirlThrowDPeleThumbPeleHalfPeleDoubleStrikeGDoubleStrikeThumbDoubleStrikeHalfDoubleStrikeTripleStrikeGTripleStrikeThumbTripleStrikeHalfTripleStrikeDDoubleGraceEDoubleGraceFDoubleGraceGDoubleGraceThumbDoubleGrace"
+const _EmbellishmentTypeName = "NoEmbellishmentSingleGraceDoublingStrikeGripTaorluathBubblyGraceBirlABirlBirlThrowDPeleDoubleStrikeGDoubleStrikeThumbDoubleStrikeHalfDoubleStrikeTripleStrikeGTripleStrikeThumbTripleStrikeHalfTripleStrikeDDoubleGraceEDoubleGraceFDoubleGraceGDoubleGraceThumbDoubleGrace"
 
-var _EmbellishmentTypeIndex = [...]uint16{0, 15, 26, 34, 40, 44, 53, 59, 68, 73, 77, 83, 87, 96, 104, 116, 129, 146, 162, 174, 187, 204, 220, 232, 244, 256, 268, 284}
+var _EmbellishmentTypeIndex = [...]uint16{0, 15, 26, 34, 40, 44, 53, 59, 68, 73, 77, 83, 87, 99, 112, 129, 145, 157, 170, 187, 203, 215, 227, 239, 251, 267}
 
-const _EmbellishmentTypeLowerName = "noembellishmentsinglegracedoublingstrikegriptaorluathbubblygracebirlabirlbirlthrowdpelethumbpelehalfpeledoublestrikegdoublestrikethumbdoublestrikehalfdoublestriketriplestrikegtriplestrikethumbtriplestrikehalftriplestrikeddoublegraceedoublegracefdoublegracegdoublegracethumbdoublegrace"
+const _EmbellishmentTypeLowerName = "noembellishmentsinglegracedoublingstrikegriptaorluathbubblygracebirlabirlbirlthrowdpeledoublestrikegdoublestrikethumbdoublestrikehalfdoublestriketriplestrikegtriplestrikethumbtriplestrikehalftriplestrikeddoublegraceedoublegracefdoublegracegdoublegracethumbdoublegrace"
 
 func (i EmbellishmentType) String() string {
 	if i >= EmbellishmentType(len(_EmbellishmentTypeIndex)-1) {
@@ -37,24 +37,22 @@ func _EmbellishmentTypeNoOp() {
 	_ = x[Birl-(9)]
 	_ = x[ThrowD-(10)]
 	_ = x[Pele-(11)]
-	_ = x[ThumbPele-(12)]
-	_ = x[HalfPele-(13)]
-	_ = x[DoubleStrike-(14)]
-	_ = x[GDoubleStrike-(15)]
-	_ = x[ThumbDoubleStrike-(16)]
-	_ = x[HalfDoubleStrike-(17)]
-	_ = x[TripleStrike-(18)]
-	_ = x[GTripleStrike-(19)]
-	_ = x[ThumbTripleStrike-(20)]
-	_ = x[HalfTripleStrike-(21)]
-	_ = x[DDoubleGrace-(22)]
-	_ = x[EDoubleGrace-(23)]
-	_ = x[FDoubleGrace-(24)]
-	_ = x[GDoubleGrace-(25)]
-	_ = x[ThumbDoubleGrace-(26)]
+	_ = x[DoubleStrike-(12)]
+	_ = x[GDoubleStrike-(13)]
+	_ = x[ThumbDoubleStrike-(14)]
+	_ = x[HalfDoubleStrike-(15)]
+	_ = x[TripleStrike-(16)]
+	_ = x[GTripleStrike-(17)]
+	_ = x[ThumbTripleStrike-(18)]
+	_ = x[HalfTripleStrike-(19)]
+	_ = x[DDoubleGrace-(20)]
+	_ = x[EDoubleGrace-(21)]
+	_ = x[FDoubleGrace-(22)]
+	_ = x[GDoubleGrace-(23)]
+	_ = x[ThumbDoubleGrace-(24)]
 }
 
-var _EmbellishmentTypeValues = []EmbellishmentType{NoEmbellishment, SingleGrace, Doubling, Strike, Grip, Taorluath, Bubbly, GraceBirl, ABirl, Birl, ThrowD, Pele, ThumbPele, HalfPele, DoubleStrike, GDoubleStrike, ThumbDoubleStrike, HalfDoubleStrike, TripleStrike, GTripleStrike, ThumbTripleStrike, HalfTripleStrike, DDoubleGrace, EDoubleGrace, FDoubleGrace, GDoubleGrace, ThumbDoubleGrace}
+var _EmbellishmentTypeValues = []EmbellishmentType{NoEmbellishment, SingleGrace, Doubling, Strike, Grip, Taorluath, Bubbly, GraceBirl, ABirl, Birl, ThrowD, Pele, DoubleStrike, GDoubleStrike, ThumbDoubleStrike, HalfDoubleStrike, TripleStrike, GTripleStrike, ThumbTripleStrike, HalfTripleStrike, DDoubleGrace, EDoubleGrace, FDoubleGrace, GDoubleGrace, ThumbDoubleGrace}
 
 var _EmbellishmentTypeNameToValueMap = map[string]EmbellishmentType{
 	_EmbellishmentTypeName[0:15]:         NoEmbellishment,
@@ -81,36 +79,32 @@ var _EmbellishmentTypeNameToValueMap = map[string]EmbellishmentType{
 	_EmbellishmentTypeLowerName[77:83]:   ThrowD,
 	_EmbellishmentTypeName[83:87]:        Pele,
 	_EmbellishmentTypeLowerName[83:87]:   Pele,
-	_EmbellishmentTypeName[87:96]:        ThumbPele,
-	_EmbellishmentTypeLowerName[87:96]:   ThumbPele,
-	_EmbellishmentTypeName[96:104]:       HalfPele,
-	_EmbellishmentTypeLowerName[96:104]:  HalfPele,
-	_EmbellishmentTypeName[104:116]:      DoubleStrike,
-	_EmbellishmentTypeLowerName[104:116]: DoubleStrike,
-	_EmbellishmentTypeName[116:129]:      GDoubleStrike,
-	_EmbellishmentTypeLowerName[116:129]: GDoubleStrike,
-	_EmbellishmentTypeName[129:146]:      ThumbDoubleStrike,
-	_EmbellishmentTypeLowerName[129:146]: ThumbDoubleStrike,
-	_EmbellishmentTypeName[146:162]:      HalfDoubleStrike,
-	_EmbellishmentTypeLowerName[146:162]: HalfDoubleStrike,
-	_EmbellishmentTypeName[162:174]:      TripleStrike,
-	_EmbellishmentTypeLowerName[162:174]: TripleStrike,
-	_EmbellishmentTypeName[174:187]:      GTripleStrike,
-	_EmbellishmentTypeLowerName[174:187]: GTripleStrike,
-	_EmbellishmentTypeName[187:204]:      ThumbTripleStrike,
-	_EmbellishmentTypeLowerName[187:204]: ThumbTripleStrike,
-	_EmbellishmentTypeName[204:220]:      HalfTripleStrike,
-	_EmbellishmentTypeLowerName[204:220]: HalfTripleStrike,
-	_EmbellishmentTypeName[220:232]:      DDoubleGrace,
-	_EmbellishmentTypeLowerName[220:232]: DDoubleGrace,
-	_EmbellishmentTypeName[232:244]:      EDoubleGrace,
-	_EmbellishmentTypeLowerName[232:244]: EDoubleGrace,
-	_EmbellishmentTypeName[244:256]:      FDoubleGrace,
-	_EmbellishmentTypeLowerName[244:256]: FDoubleGrace,
-	_EmbellishmentTypeName[256:268]:      GDoubleGrace,
-	_EmbellishmentTypeLowerName[256:268]: GDoubleGrace,
-	_EmbellishmentTypeName[268:284]:      ThumbDoubleGrace,
-	_EmbellishmentTypeLowerName[268:284]: ThumbDoubleGrace,
+	_EmbellishmentTypeName[87:99]:        DoubleStrike,
+	_EmbellishmentTypeLowerName[87:99]:   DoubleStrike,
+	_EmbellishmentTypeName[99:112]:       GDoubleStrike,
+	_EmbellishmentTypeLowerName[99:112]:  GDoubleStrike,
+	_EmbellishmentTypeName[112:129]:      ThumbDoubleStrike,
+	_EmbellishmentTypeLowerName[112:129]: ThumbDoubleStrike,
+	_EmbellishmentTypeName[129:145]:      HalfDoubleStrike,
+	_EmbellishmentTypeLowerName[129:145]: HalfDoubleStrike,
+	_EmbellishmentTypeName[145:157]:      TripleStrike,
+	_EmbellishmentTypeLowerName[145:157]: TripleStrike,
+	_EmbellishmentTypeName[157:170]:      GTripleStrike,
+	_EmbellishmentTypeLowerName[157:170]: GTripleStrike,
+	_EmbellishmentTypeName[170:187]:      ThumbTripleStrike,
+	_EmbellishmentTypeLowerName[170:187]: ThumbTripleStrike,
+	_EmbellishmentTypeName[187:203]:      HalfTripleStrike,
+	_EmbellishmentTypeLowerName[187:203]: HalfTripleStrike,
+	_EmbellishmentTypeName[203:215]:      DDoubleGrace,
+	_EmbellishmentTypeLowerName[203:215]: DDoubleGrace,
+	_EmbellishmentTypeName[215:227]:      EDoubleGrace,
+	_EmbellishmentTypeLowerName[215:227]: EDoubleGrace,
+	_EmbellishmentTypeName[227:239]:      FDoubleGrace,
+	_EmbellishmentTypeLowerName[227:239]: FDoubleGrace,
+	_EmbellishmentTypeName[239:251]:      GDoubleGrace,
+	_EmbellishmentTypeLowerName[239:251]: GDoubleGrace,
+	_EmbellishmentTypeName[251:267]:      ThumbDoubleGrace,
+	_EmbellishmentTypeLowerName[251:267]: ThumbDoubleGrace,
 }
 
 var _EmbellishmentTypeNames = []string{
@@ -126,21 +120,19 @@ var _EmbellishmentTypeNames = []string{
 	_EmbellishmentTypeName[73:77],
 	_EmbellishmentTypeName[77:83],
 	_EmbellishmentTypeName[83:87],
-	_EmbellishmentTypeName[87:96],
-	_EmbellishmentTypeName[96:104],
-	_EmbellishmentTypeName[104:116],
-	_EmbellishmentTypeName[116:129],
-	_EmbellishmentTypeName[129:146],
-	_EmbellishmentTypeName[146:162],
-	_EmbellishmentTypeName[162:174],
-	_EmbellishmentTypeName[174:187],
-	_EmbellishmentTypeName[187:204],
-	_EmbellishmentTypeName[204:220],
-	_EmbellishmentTypeName[220:232],
-	_EmbellishmentTypeName[232:244],
-	_EmbellishmentTypeName[244:256],
-	_EmbellishmentTypeName[256:268],
-	_EmbellishmentTypeName[268:284],
+	_EmbellishmentTypeName[87:99],
+	_EmbellishmentTypeName[99:112],
+	_EmbellishmentTypeName[112:129],
+	_EmbellishmentTypeName[129:145],
+	_EmbellishmentTypeName[145:157],
+	_EmbellishmentTypeName[157:170],
+	_EmbellishmentTypeName[170:187],
+	_EmbellishmentTypeName[187:203],
+	_EmbellishmentTypeName[203:215],
+	_EmbellishmentTypeName[215:227],
+	_EmbellishmentTypeName[227:239],
+	_EmbellishmentTypeName[239:251],
+	_EmbellishmentTypeName[251:267],
 }
 
 // EmbellishmentTypeString retrieves an enum value from the enum constants string name.

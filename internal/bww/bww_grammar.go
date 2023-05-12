@@ -91,8 +91,11 @@ type StaffSymbols struct {
 	Birl                *string `| @BIRL`
 	ThrowD              *string `| @THROWD`
 	HeavyThrowD         *string `| @HEAVY_THROWD`
+	LightPele           *string `| @LIGHT_PELE`
 	Pele                *string `| @PELE`
+	LightThumbPele      *string `| @LIGHT_THUMB_PELE`
 	ThumbPele           *string `| @THUMB_PELE`
+	LightHalfPele       *string `| @LIGHT_HALF_PELE`
 	HalfPele            *string `| @HALF_PELE`
 	DoubleStrike        *string `| @DOUBLE_STRIKE`
 	GDoubleStrike       *string `| @G_DOUBLE_STRIKE`
