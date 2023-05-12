@@ -197,7 +197,7 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Pattern: `tarb|tar|htar`,
 		},
 		{
-			Name:    "BUBLY",
+			Name:    "BUBBLY",
 			Pattern: `bubly|hbubly`,
 		},
 		{

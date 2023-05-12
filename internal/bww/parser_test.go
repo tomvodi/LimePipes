@@ -146,7 +146,6 @@ var _ = Describe("BWW Parser", func() {
 			bwwData := dataFromFile("./testfiles/fermatas.bww")
 			musicTunesBww, err = parser.ParseBwwData(bwwData)
 			musicTunesExpect = importFromYaml("./testfiles/fermatas.yaml")
-			//exportToYaml(musicTunesBww, "./testfiles/fermatas.yaml")
 		})
 
 		It("should have parsed file correctly", func() {
@@ -203,6 +202,33 @@ var _ = Describe("BWW Parser", func() {
 			musicTunesBww, err = parser.ParseBwwData(bwwData)
 			musicTunesExpect = importFromYaml("./testfiles/grips.yaml")
 			//exportToYaml(musicTunesBww, "./testfiles/.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
+	When("having taorluaths", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/taorluaths.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/taorluaths.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
+	When("having bubblys", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/bubblys.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/bubblys.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/bubblys.yaml")
 		})
 
 		It("should have parsed file correctly", func() {

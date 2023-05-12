@@ -19,7 +19,7 @@ const (
 	ThumbGrip
 	GGrip
 	Taorluath
-	Bubly
+	Bubbly
 	Birl
 	ThrowD
 	HeavyThrowD
