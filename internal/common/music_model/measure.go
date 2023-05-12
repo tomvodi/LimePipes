@@ -1,5 +1,6 @@
 package music_model
 
 type Measure struct {
-	Symbols []*Symbol `yaml:"symbols"`
+	Time    *TimeSignature `yaml:"time,omitempty"`
+	Symbols []*Symbol      `yaml:"symbols,omitempty"`
 }

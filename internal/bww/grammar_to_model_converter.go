@@ -90,6 +90,11 @@ func getMeasuresFromStave(stave *Staff) ([]*music_model.Measure, error) {
 			continue
 		}
 
+		if staffSym.TimeSig != nil {
+			setMeasureTimeSig(currMeasure, staffSym.TimeSig)
+			continue
+		}
+
 		var lastSym *music_model.Symbol
 		measSymLen := len(currMeasure.Symbols)
 		if len(currMeasure.Symbols) > 0 {
@@ -137,6 +142,50 @@ func cleanupMeasure(meas *music_model.Measure) {
 				meas.Symbols = removeSymbol(meas.Symbols, idx)
 			}
 		}
+	}
+}
+
+func setMeasureTimeSig(measure *music_model.Measure, timeSigSym *string) {
+	timeSig := timeSigFromSymbol(timeSigSym)
+	measure.Time = timeSig
+}
+
+func timeSigFromSymbol(sym *string) *music_model.TimeSignature {
+	if *sym == "C" {
+		return &music_model.TimeSignature{
+			Beats:    4,
+			BeatType: 4,
+		}
+	}
+
+	if *sym == "C_" {
+		return &music_model.TimeSignature{
+			Beats:    2,
+			BeatType: 2,
+		}
+	}
+
+	parts := strings.Split(*sym, "_")
+	if len(parts) != 2 {
+		log.Error().Msgf("time signature symbol %s can't be parsed", *sym)
+		return nil
+	}
+
+	beat, err := strconv.ParseUint(parts[0], 10, 32)
+	if err != nil {
+		log.Error().Msgf("failed parsing time signature beats part %s: %s", parts[0], err.Error())
+		return nil
+	}
+
+	beatTime, err := strconv.ParseUint(parts[1], 10, 32)
+	if err != nil {
+		log.Error().Msgf("failed parsing time signature beat type part %s: %s", parts[1], err.Error())
+		return nil
+	}
+
+	return &music_model.TimeSignature{
+		Beats:    uint8(beat),
+		BeatType: uint8(beatTime),
 	}
 }
 

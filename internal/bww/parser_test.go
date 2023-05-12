@@ -76,6 +76,19 @@ var _ = Describe("BWW Parser", func() {
 		})
 	})
 
+	When("having all possible time signatures", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/time_signatures.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/time_signatures.yaml")
+		})
+
+		It("should have parsed all measures", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
 	When("having a tune with all kinds of melody notes", func() {
 		BeforeEach(func() {
 			bwwData := dataFromFile("./testfiles/all_melody_notes.bww")
