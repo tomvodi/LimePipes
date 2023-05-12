@@ -45,6 +45,7 @@ type Note struct {
 	Length        Length         `yaml:"length,omitempty"`
 	Dots          uint8          `yaml:"dots,omitempty"`
 	Accidental    Accidental     `yaml:"accidental,omitempty"`
+	Fermata       bool           `yaml:"fermata,omitempty"`
 	Embellishment *Embellishment `yaml:"embellishment,omitempty"`
 }
 
@@ -60,7 +61,7 @@ func (n *Note) IsValid() bool {
 // this is the case, when the bww symbols which modify the note are preceding the note in
 // bww code
 func (n *Note) IsIncomplete() bool {
-	if n.Pitch == NoPitch && n.Length == NoLength {
+	if !n.HasPitchAndLength() {
 		if n.Embellishment != nil {
 			return true
 		}
@@ -69,6 +70,10 @@ func (n *Note) IsIncomplete() bool {
 		}
 	}
 	return false
+}
+
+func (n *Note) HasPitchAndLength() bool {
+	return n.Pitch != NoPitch && n.Length != NoLength
 }
 
 func (n *Note) IsOnlyAccidental() bool {

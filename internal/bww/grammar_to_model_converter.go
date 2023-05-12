@@ -260,6 +260,11 @@ func appendStaffSymbolToMeasureSymbols(
 	if staffSym.HalfGrip != nil {
 		return handleEmbellishment(symbols.HalfGrip)
 	}
+	if staffSym.Fermata != nil {
+		if lastSym != nil && lastSym.Note != nil && lastSym.Note.HasPitchAndLength() {
+			lastSym.Note.Fermata = true
+		}
+	}
 	if staffSym.Rest != nil {
 		newSym.Rest = &symbols.Rest{
 			Length: lengthFromSuffix(staffSym.Rest),

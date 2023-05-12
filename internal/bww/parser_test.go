@@ -141,6 +141,20 @@ var _ = Describe("BWW Parser", func() {
 		})
 	})
 
+	When("having fermatas for melody notes", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/fermatas.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/fermatas.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/fermatas.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
 	When("having rests", func() {
 		BeforeEach(func() {
 			bwwData := dataFromFile("./testfiles/rests.bww")
