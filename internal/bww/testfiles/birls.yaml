@@ -1,0 +1,36 @@
+- title: Tune Title
+  tempo: 0
+  measures:
+    - symbols:
+        - note:
+            pitch: LowA
+            length: Quarter
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: Birl
+        - note:
+            pitch: HighA
+            length: Quarter
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: ABirl
+        - note:
+            pitch: E
+            length: Quarter
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: GraceBirl
+        - note:
+            pitch: HighG
+            length: Quarter
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: GraceBirl

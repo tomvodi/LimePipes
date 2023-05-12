@@ -20,6 +20,8 @@ const (
 	GGrip
 	Taorluath
 	Bubbly
+	GraceBirl
+	ABirl
 	Birl
 	ThrowD
 	HeavyThrowD

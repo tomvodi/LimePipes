@@ -272,6 +272,16 @@ func appendStaffSymbolToMeasureSymbols(
 	if staffSym.HeavyThrowD != nil {
 		return handleEmbellishment(symbols.HeavyThrowD)
 	}
+	if staffSym.Birl != nil {
+		return handleEmbellishment(symbols.Birl)
+	}
+	if staffSym.ABirl != nil {
+		return handleEmbellishment(symbols.ABirl)
+	}
+	if staffSym.GBirl != nil ||
+		staffSym.ThumbBirl != nil {
+		return handleEmbellishment(symbols.GraceBirl)
+	}
 	if staffSym.Fermata != nil {
 		if lastSym != nil && lastSym.Note != nil && lastSym.Note.HasPitchAndLength() {
 			lastSym.Note.Fermata = true

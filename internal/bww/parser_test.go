@@ -3,6 +3,7 @@ package bww
 import (
 	"banduslib/internal/common/music_model"
 	"banduslib/internal/interfaces"
+	"banduslib/internal/utils"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"gopkg.in/yaml.v3"
@@ -38,6 +39,7 @@ func importFromYaml(filePath string) []*music_model.Tune {
 }
 
 var _ = Describe("BWW Parser", func() {
+	utils.SetupConsoleLogger()
 	var err error
 	var parser interfaces.BwwParser
 	var musicTunesBww []*music_model.Tune
@@ -243,6 +245,20 @@ var _ = Describe("BWW Parser", func() {
 			musicTunesBww, err = parser.ParseBwwData(bwwData)
 			musicTunesExpect = importFromYaml("./testfiles/throwds.yaml")
 			//exportToYaml(musicTunesBww, "./testfiles/throwds.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
+	When("having birls", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/birls.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/birls.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/birls.yaml")
 		})
 
 		It("should have parsed file correctly", func() {

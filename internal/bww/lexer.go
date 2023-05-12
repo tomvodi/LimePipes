@@ -201,8 +201,20 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Pattern: `bubly|hbubly`,
 		},
 		{
+			Name:    "G_BIRL",
+			Pattern: `gbr`,
+		},
+		{
+			Name:    "THUMB_BIRL",
+			Pattern: `tbr`,
+		},
+		{
+			Name:    "A_BIRL",
+			Pattern: `abr`,
+		},
+		{
 			Name:    "BIRL",
-			Pattern: `brl|abr|gbr|tbr`,
+			Pattern: `brl`,
 		},
 		{
 			Name:    "THROWD",

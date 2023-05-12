@@ -82,6 +82,9 @@ type StaffSymbols struct {
 	HalfGrip            *string `| @HALF_GRIP`
 	Taorluath           *string `| @TAORLUATH`
 	Bubbly              *string `| @BUBBLY`
+	GBirl               *string `| @G_BIRL`
+	ABirl               *string `| @A_BIRL`
+	ThumbBirl           *string `| @THUMB_BIRL`
 	Birl                *string `| @BIRL`
 	ThrowD              *string `| @THROWD`
 	HeavyThrowD         *string `| @HEAVY_THROWD`
@@ -204,6 +207,15 @@ func (s StaffSymbols) String() string {
 	}
 	if s.Birl != nil {
 		return fmt.Sprintf("Birl(%s)", *s.Birl)
+	}
+	if s.GBirl != nil {
+		return fmt.Sprintf("GBirl(%s)", *s.Birl)
+	}
+	if s.ABirl != nil {
+		return fmt.Sprintf("ABirl(%s)", *s.Birl)
+	}
+	if s.ThumbBirl != nil {
+		return fmt.Sprintf("ThumbBirl(%s)", *s.Birl)
 	}
 	if s.ThrowD != nil {
 		return fmt.Sprintf("ThrowD(%s)", *s.ThrowD)
