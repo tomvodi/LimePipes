@@ -165,12 +165,24 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Pattern: `strlg|strla|strb|strc|strd|stre|strf|strhg`,
 		},
 		{
+			Name:    "LIGHT_G_STRIKE",
+			Pattern: `lgstd`,
+		},
+		{
 			Name:    "G_STRIKE",
-			Pattern: `gstla|gstb|gstc|gstd|lgstd|gste|gstf`,
+			Pattern: `gstla|gstb|gstc|gstd|gste|gstf`,
+		},
+		{
+			Name:    "LIGHT_THUMB_STRIKE",
+			Pattern: `ltstd`,
 		},
 		{
 			Name:    "THUMB_STRIKE",
 			Pattern: `tstla|tstb|tstc|tstd|ltstd|tste|tstf|tsthg`,
+		},
+		{
+			Name:    "LIGHT_HALF_STRIKE",
+			Pattern: `lhstd`,
 		},
 		{
 			Name:    "HALF_STRIKE",

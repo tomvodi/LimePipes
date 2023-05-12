@@ -1,6 +1,7 @@
 package bww
 
 import (
+	"banduslib/internal/common"
 	"banduslib/internal/common/music_model"
 	"banduslib/internal/common/music_model/symbols"
 	"fmt"
@@ -243,22 +244,22 @@ func appendStaffSymbolToMeasureSymbols(
 		return handleEmbellishment(symbols.Doubling)
 	}
 	if staffSym.HalfDoubling != nil {
-		return handleEmbellishment(symbols.HalfDoubling)
+		return handleEmbellishmentVariant(symbols.Doubling, symbols.Half, symbols.NoWeight)
 	}
 	if staffSym.ThumbDoubling != nil {
-		return handleEmbellishment(symbols.ThumbDoubling)
+		return handleEmbellishmentVariant(symbols.Doubling, symbols.Thumb, symbols.NoWeight)
 	}
 	if staffSym.Grip != nil {
 		return handleEmbellishment(symbols.Grip)
 	}
 	if staffSym.GGrip != nil {
-		return handleEmbellishment(symbols.GGrip)
+		return handleEmbellishmentVariant(symbols.Grip, symbols.G, symbols.NoWeight)
 	}
 	if staffSym.ThumbGrip != nil {
-		return handleEmbellishment(symbols.ThumbGrip)
+		return handleEmbellishmentVariant(symbols.Grip, symbols.Thumb, symbols.NoWeight)
 	}
 	if staffSym.HalfGrip != nil {
-		return handleEmbellishment(symbols.HalfGrip)
+		return handleEmbellishmentVariant(symbols.Grip, symbols.Half, symbols.NoWeight)
 	}
 	if staffSym.Taorluath != nil {
 		return handleEmbellishment(symbols.Taorluath)
@@ -267,16 +268,37 @@ func appendStaffSymbolToMeasureSymbols(
 		return handleEmbellishment(symbols.Bubbly)
 	}
 	if staffSym.ThrowD != nil {
-		return handleEmbellishment(symbols.ThrowD)
+		return handleEmbellishmentVariant(symbols.ThrowD, symbols.NoVariant, symbols.Light)
 	}
 	if staffSym.HeavyThrowD != nil {
-		return handleEmbellishment(symbols.HeavyThrowD)
+		return handleEmbellishment(symbols.ThrowD)
 	}
 	if staffSym.Birl != nil {
 		return handleEmbellishment(symbols.Birl)
 	}
 	if staffSym.ABirl != nil {
 		return handleEmbellishment(symbols.ABirl)
+	}
+	if staffSym.Strike != nil {
+		return handleEmbellishment(symbols.Strike)
+	}
+	if staffSym.GStrike != nil {
+		return handleEmbellishmentVariant(symbols.Strike, symbols.G, symbols.NoWeight)
+	}
+	if staffSym.LightGStrike != nil {
+		return handleEmbellishmentVariant(symbols.Strike, symbols.G, symbols.Light)
+	}
+	if staffSym.HalfStrike != nil {
+		return handleEmbellishmentVariant(symbols.Strike, symbols.Half, symbols.NoWeight)
+	}
+	if staffSym.LightHalfStrike != nil {
+		return handleEmbellishmentVariant(symbols.Strike, symbols.Half, symbols.Light)
+	}
+	if staffSym.ThumbStrike != nil {
+		return handleEmbellishmentVariant(symbols.Strike, symbols.Thumb, symbols.NoWeight)
+	}
+	if staffSym.LightThumbStrike != nil {
+		return handleEmbellishmentVariant(symbols.Strike, symbols.Thumb, symbols.Light)
 	}
 	if staffSym.GBirl != nil ||
 		staffSym.ThumbBirl != nil {
@@ -304,6 +326,22 @@ func handleEmbellishment(
 		Note: &symbols.Note{
 			Embellishment: &symbols.Embellishment{
 				Type: emb,
+			},
+		},
+	}, nil
+}
+
+func handleEmbellishmentVariant(
+	emb symbols.EmbellishmentType,
+	variant symbols.EmbellishmentVariant,
+	weight symbols.EmbellishmentWeight,
+) (*music_model.Symbol, error) {
+	return &music_model.Symbol{
+		Note: &symbols.Note{
+			Embellishment: &symbols.Embellishment{
+				Type:    emb,
+				Variant: variant,
+				Weight:  weight,
 			},
 		},
 	}, nil
@@ -367,82 +405,82 @@ func embellishmentForSingleGrace(grace *string) *symbols.Embellishment {
 	}
 
 	if *grace == "ag" {
-		emb.Pitch = symbols.LowA
+		emb.Pitch = common.LowA
 	}
 	if *grace == "bg" {
-		emb.Pitch = symbols.B
+		emb.Pitch = common.B
 	}
 	if *grace == "cg" {
-		emb.Pitch = symbols.C
+		emb.Pitch = common.C
 	}
 	if *grace == "dg" {
-		emb.Pitch = symbols.D
+		emb.Pitch = common.D
 	}
 	if *grace == "eg" {
-		emb.Pitch = symbols.E
+		emb.Pitch = common.E
 	}
 	if *grace == "fg" {
-		emb.Pitch = symbols.F
+		emb.Pitch = common.F
 	}
 	if *grace == "gg" {
-		emb.Pitch = symbols.HighG
+		emb.Pitch = common.HighG
 	}
 	if *grace == "tg" {
-		emb.Pitch = symbols.HighA
+		emb.Pitch = common.HighA
 	}
 	return emb
 }
 
-func pitchFromStaffNotePrefix(note *string) symbols.Pitch {
+func pitchFromStaffNotePrefix(note *string) common.Pitch {
 	if strings.HasPrefix(*note, "LG") {
-		return symbols.LowG
+		return common.LowG
 	}
 	if strings.HasPrefix(*note, "LA") {
-		return symbols.LowA
+		return common.LowA
 	}
 	if strings.HasPrefix(*note, "B") {
-		return symbols.B
+		return common.B
 	}
 	if strings.HasPrefix(*note, "C") {
-		return symbols.C
+		return common.C
 	}
 	if strings.HasPrefix(*note, "D") {
-		return symbols.D
+		return common.D
 	}
 	if strings.HasPrefix(*note, "E") {
-		return symbols.E
+		return common.E
 	}
 	if strings.HasPrefix(*note, "F") {
-		return symbols.F
+		return common.F
 	}
 	if strings.HasPrefix(*note, "HG") {
-		return symbols.HighG
+		return common.HighG
 	}
 	if strings.HasPrefix(*note, "HA") {
-		return symbols.HighA
+		return common.HighA
 	}
 
-	return symbols.NoPitch
+	return common.NoPitch
 }
-func lengthFromSuffix(note *string) symbols.Length {
+func lengthFromSuffix(note *string) common.Length {
 	if strings.HasSuffix(*note, "16") {
-		return symbols.Sixteenth
+		return common.Sixteenth
 	}
 	if strings.HasSuffix(*note, "32") {
-		return symbols.Thirtysecond
+		return common.Thirtysecond
 	}
 	if strings.HasSuffix(*note, "1") {
-		return symbols.Whole
+		return common.Whole
 	}
 	if strings.HasSuffix(*note, "2") {
-		return symbols.Half
+		return common.Half
 	}
 	if strings.HasSuffix(*note, "4") {
-		return symbols.Quarter
+		return common.Quarter
 	}
 	if strings.HasSuffix(*note, "8") {
-		return symbols.Eighth
+		return common.Eighth
 	}
 
-	return symbols.NoLength
+	return common.NoLength
 }

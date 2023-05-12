@@ -73,8 +73,11 @@ type StaffSymbols struct {
 	HalfDoubling        *string `| @HALF_DOUBLING`
 	ThumbDoubling       *string `| @THUMB_DOUBLING`
 	Strike              *string `| @STRIKE`
+	LightGStrike        *string `| @LIGHT_G_STRIKE`
 	GStrike             *string `| @G_STRIKE`
+	LightThumbStrike    *string `| @LIGHT_THUMB_STRIKE`
 	ThumbStrike         *string `| @THUMB_STRIKE`
+	LightHalfStrike     *string `| @LIGHT_HALF_STRIKE`
 	HalfStrike          *string `| @HALF_STRIKE`
 	Grip                *string `| @GRIP`
 	GGrip               *string `| @G_GRIP`

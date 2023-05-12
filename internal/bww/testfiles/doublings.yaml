@@ -52,70 +52,84 @@
             pitch: LowA
             length: Quarter
             embellishment:
-                type: ThumbDoubling
+                type: Doubling
+                variant: Thumb
         - note:
             pitch: LowA
             length: Quarter
             embellishment:
-                type: ThumbDoubling
+                type: Doubling
+                variant: Thumb
         - note:
             pitch: LowA
             length: Quarter
             embellishment:
-                type: ThumbDoubling
+                type: Doubling
+                variant: Thumb
         - note:
             pitch: LowA
             length: Quarter
             embellishment:
-                type: ThumbDoubling
+                type: Doubling
+                variant: Thumb
         - note:
             pitch: LowA
             length: Quarter
             embellishment:
-                type: ThumbDoubling
+                type: Doubling
+                variant: Thumb
         - note:
             pitch: LowA
             length: Quarter
             embellishment:
-                type: ThumbDoubling
+                type: Doubling
+                variant: Thumb
         - note:
             pitch: LowA
             length: Quarter
             embellishment:
-                type: ThumbDoubling
+                type: Doubling
+                variant: Thumb
     - symbols:
         - note:
             pitch: LowA
             length: Quarter
             embellishment:
-                type: HalfDoubling
+                type: Doubling
+                variant: Half
         - note:
             pitch: LowA
             length: Quarter
             embellishment:
-                type: HalfDoubling
+                type: Doubling
+                variant: Half
         - note:
             pitch: LowA
             length: Quarter
             embellishment:
-                type: HalfDoubling
+                type: Doubling
+                variant: Half
         - note:
             pitch: LowA
             length: Quarter
             embellishment:
-                type: HalfDoubling
+                type: Doubling
+                variant: Half
         - note:
             pitch: LowA
             length: Quarter
             embellishment:
-                type: HalfDoubling
+                type: Doubling
+                variant: Half
         - note:
             pitch: LowA
             length: Quarter
             embellishment:
-                type: HalfDoubling
+                type: Doubling
+                variant: Half
         - note:
             pitch: LowA
             length: Quarter
             embellishment:
-                type: HalfDoubling
+                type: Doubling
+                variant: Half

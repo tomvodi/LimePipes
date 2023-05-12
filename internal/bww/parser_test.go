@@ -267,6 +267,20 @@ var _ = Describe("BWW Parser", func() {
 		})
 	})
 
+	When("having strikes", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/strikes.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/strikes.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/strikes.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
 	When("parsing the file with all bww symbols in it", func() {
 		BeforeEach(func() {
 			data := dataFromFile("./testfiles/all_symbols.bww")

@@ -1,5 +1,9 @@
 package symbols
 
+import (
+	"banduslib/internal/common"
+)
+
 type Rest struct {
-	Length Length `yaml:"length,omitempty"`
+	Length common.Length `yaml:"length,omitempty"`
 }

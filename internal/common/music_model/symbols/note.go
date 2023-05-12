@@ -1,35 +1,10 @@
 package symbols
 
-//go:generate go run github.com/dmarkham/enumer -json -yaml -type=Pitch
-//go:generate go run github.com/dmarkham/enumer -json -yaml -type=Length
+import (
+	"banduslib/internal/common"
+)
+
 //go:generate go run github.com/dmarkham/enumer -json -yaml -type=Accidental
-
-type Pitch uint
-
-const (
-	NoPitch Pitch = iota
-	LowG
-	LowA
-	B
-	C
-	D
-	E
-	F
-	HighG
-	HighA
-)
-
-type Length uint
-
-const (
-	NoLength Length = iota
-	Whole
-	Half
-	Quarter
-	Eighth
-	Sixteenth
-	Thirtysecond
-)
 
 type Accidental uint
 
@@ -41,8 +16,8 @@ const (
 )
 
 type Note struct {
-	Pitch         Pitch          `yaml:"pitch,omitempty"`
-	Length        Length         `yaml:"length,omitempty"`
+	Pitch         common.Pitch   `yaml:"pitch,omitempty"`
+	Length        common.Length  `yaml:"length,omitempty"`
 	Dots          uint8          `yaml:"dots,omitempty"`
 	Accidental    Accidental     `yaml:"accidental,omitempty"`
 	Fermata       bool           `yaml:"fermata,omitempty"`
@@ -50,7 +25,7 @@ type Note struct {
 }
 
 func (n *Note) IsValid() bool {
-	if n.Pitch == NoPitch && n.Length == NoLength {
+	if n.Pitch == common.NoPitch && n.Length == common.NoLength {
 		return false
 	}
 	return true
@@ -73,11 +48,11 @@ func (n *Note) IsIncomplete() bool {
 }
 
 func (n *Note) HasPitchAndLength() bool {
-	return n.Pitch != NoPitch && n.Length != NoLength
+	return n.Pitch != common.NoPitch && n.Length != common.NoLength
 }
 
 func (n *Note) IsOnlyAccidental() bool {
-	if n.Pitch == NoPitch && n.Length == NoLength {
+	if n.Pitch == common.NoPitch && n.Length == common.NoLength {
 		if n.Accidental != NoAccidental {
 			return true
 		}

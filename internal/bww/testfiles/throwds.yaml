@@ -10,6 +10,7 @@
             length: Quarter
             embellishment:
                 type: ThrowD
+                weight: Light
         - note:
             pitch: LowG
             length: Quarter
@@ -18,6 +19,7 @@
             length: Quarter
             embellishment:
                 type: ThrowD
+                weight: Light
         - note:
             pitch: C
             length: Quarter
@@ -25,7 +27,7 @@
             pitch: D
             length: Quarter
             embellishment:
-                type: HeavyThrowD
+                type: ThrowD
         - note:
             pitch: LowG
             length: Quarter
@@ -33,4 +35,4 @@
             pitch: D
             length: Quarter
             embellishment:
-                type: HeavyThrowD
+                type: ThrowD
