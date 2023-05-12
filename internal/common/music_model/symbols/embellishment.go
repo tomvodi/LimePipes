@@ -23,8 +23,6 @@ const (
 	Birl
 	ThrowD
 	HeavyThrowD
-	HalfThrowD
-	HeavyHalfThrowD
 	Pele
 	ThumbPele
 	HalfPele

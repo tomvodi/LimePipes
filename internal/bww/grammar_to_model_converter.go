@@ -266,6 +266,12 @@ func appendStaffSymbolToMeasureSymbols(
 	if staffSym.Bubbly != nil {
 		return handleEmbellishment(symbols.Bubbly)
 	}
+	if staffSym.ThrowD != nil {
+		return handleEmbellishment(symbols.ThrowD)
+	}
+	if staffSym.HeavyThrowD != nil {
+		return handleEmbellishment(symbols.HeavyThrowD)
+	}
 	if staffSym.Fermata != nil {
 		if lastSym != nil && lastSym.Note != nil && lastSym.Note.HasPitchAndLength() {
 			lastSym.Note.Fermata = true

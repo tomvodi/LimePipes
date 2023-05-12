@@ -85,8 +85,6 @@ type StaffSymbols struct {
 	Birl                *string `| @BIRL`
 	ThrowD              *string `| @THROWD`
 	HeavyThrowD         *string `| @HEAVY_THROWD`
-	HalfThrowD          *string `| @HALF_THROWD`
-	HeavyHalfThrowD     *string `| @HEAVY_HALF_THROWD`
 	Pele                *string `| @PELE`
 	ThumbPele           *string `| @THUMB_PELE`
 	HalfPele            *string `| @HALF_PELE`
@@ -212,12 +210,6 @@ func (s StaffSymbols) String() string {
 	}
 	if s.HeavyThrowD != nil {
 		return fmt.Sprintf("HeavyThrowD(%s)", *s.HeavyThrowD)
-	}
-	if s.HalfThrowD != nil {
-		return fmt.Sprintf("HalfThrowD(%s)", *s.HalfThrowD)
-	}
-	if s.HeavyHalfThrowD != nil {
-		return fmt.Sprintf("HeavyHalfThrowD(%s)", *s.HeavyHalfThrowD)
 	}
 	if s.Pele != nil {
 		return fmt.Sprintf("Pele(%s)", *s.Pele)

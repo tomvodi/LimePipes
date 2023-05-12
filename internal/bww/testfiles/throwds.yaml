@@ -1,0 +1,36 @@
+- title: Tune Title
+  tempo: 0
+  measures:
+    - symbols:
+        - note:
+            pitch: C
+            length: Quarter
+        - note:
+            pitch: D
+            length: Quarter
+            embellishment:
+                type: ThrowD
+        - note:
+            pitch: LowG
+            length: Quarter
+        - note:
+            pitch: D
+            length: Quarter
+            embellishment:
+                type: ThrowD
+        - note:
+            pitch: C
+            length: Quarter
+        - note:
+            pitch: D
+            length: Quarter
+            embellishment:
+                type: HeavyThrowD
+        - note:
+            pitch: LowG
+            length: Quarter
+        - note:
+            pitch: D
+            length: Quarter
+            embellishment:
+                type: HeavyThrowD

@@ -206,19 +206,11 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 		},
 		{
 			Name:    "THROWD",
-			Pattern: `thrd`,
+			Pattern: `hthrd|thrd`,
 		},
 		{
 			Name:    "HEAVY_THROWD",
-			Pattern: `hvthrd`,
-		},
-		{
-			Name:    "HALF_THROWD",
-			Pattern: `hthrd`,
-		},
-		{
-			Name:    "HEAVY_HALF_THROWD",
-			Pattern: `hhvthrd`,
+			Pattern: `hhvthrd|hvthrd`,
 		},
 		{
 			Name:    "PELE",
