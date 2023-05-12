@@ -1,0 +1,142 @@
+- title: Tune Title
+  tempo: 0
+  measures:
+    - symbols:
+        - note:
+            pitch: C
+            length: Quarter
+            embellishment:
+                type: Grip
+        - note:
+            pitch: C
+            length: Quarter
+            embellishment:
+                type: Grip
+        - note:
+            pitch: C
+            length: Quarter
+            embellishment:
+                type: Grip
+    - symbols:
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: GGrip
+        - note:
+            pitch: B
+            length: Quarter
+            embellishment:
+                type: GGrip
+        - note:
+            pitch: C
+            length: Quarter
+            embellishment:
+                type: GGrip
+        - note:
+            pitch: D
+            length: Quarter
+            embellishment:
+                type: GGrip
+        - note:
+            pitch: D
+            length: Quarter
+            embellishment:
+                type: GGrip
+        - note:
+            pitch: E
+            length: Quarter
+            embellishment:
+                type: GGrip
+        - note:
+            pitch: F
+            length: Quarter
+            embellishment:
+                type: GGrip
+    - symbols:
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: ThumbGrip
+        - note:
+            pitch: B
+            length: Quarter
+            embellishment:
+                type: ThumbGrip
+        - note:
+            pitch: C
+            length: Quarter
+            embellishment:
+                type: ThumbGrip
+        - note:
+            pitch: D
+            length: Quarter
+            embellishment:
+                type: ThumbGrip
+        - note:
+            pitch: D
+            length: Quarter
+            embellishment:
+                type: ThumbGrip
+        - note:
+            pitch: E
+            length: Quarter
+            embellishment:
+                type: ThumbGrip
+        - note:
+            pitch: F
+            length: Quarter
+            embellishment:
+                type: ThumbGrip
+        - note:
+            pitch: HighG
+            length: Quarter
+            embellishment:
+                type: ThumbGrip
+    - symbols:
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: HalfGrip
+        - note:
+            pitch: B
+            length: Quarter
+            embellishment:
+                type: HalfGrip
+        - note:
+            pitch: C
+            length: Quarter
+            embellishment:
+                type: HalfGrip
+        - note:
+            pitch: D
+            length: Quarter
+            embellishment:
+                type: HalfGrip
+        - note:
+            pitch: D
+            length: Quarter
+            embellishment:
+                type: HalfGrip
+        - note:
+            pitch: E
+            length: Quarter
+            embellishment:
+                type: HalfGrip
+        - note:
+            pitch: F
+            length: Quarter
+            embellishment:
+                type: HalfGrip
+        - note:
+            pitch: HighG
+            length: Quarter
+            embellishment:
+                type: HalfGrip
+        - note:
+            pitch: HighA
+            length: Quarter
+            embellishment:
+                type: HalfGrip

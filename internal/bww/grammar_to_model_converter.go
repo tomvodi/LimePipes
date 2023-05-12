@@ -199,6 +199,18 @@ func appendStaffSymbolToMeasureSymbols(
 	if staffSym.ThumbDoubling != nil {
 		return handleEmbellishment(symbols.ThumbDoubling)
 	}
+	if staffSym.Grip != nil {
+		return handleEmbellishment(symbols.Grip)
+	}
+	if staffSym.GGrip != nil {
+		return handleEmbellishment(symbols.GGrip)
+	}
+	if staffSym.ThumbGrip != nil {
+		return handleEmbellishment(symbols.ThumbGrip)
+	}
+	if staffSym.HalfGrip != nil {
+		return handleEmbellishment(symbols.HalfGrip)
+	}
 	if staffSym.Rest != nil {
 		newSym.Rest = &symbols.Rest{
 			Length: lengthFromSuffix(staffSym.Rest),

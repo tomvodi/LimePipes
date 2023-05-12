@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-const _EmbellishmentTypeName = "NoEmbellishmentSingleGraceDoublingHalfDoublingThumbDoublingStrikeGStrikeThumbStrikeHalfStrikeGripGGripThumbGripHalfGripTaorluathBublyBirlThrowDHeavyThrowDHalfThrowDHeavyHalfThrowDPeleThumbPeleHalfPeleDoubleStrikeGDoubleStrikeThumbDoubleStrikeHalfDoubleStrikeTripleStrikeGTripleStrikeThumbTripleStrikeHalfTripleStrikeDDoubleGraceEDoubleGraceFDoubleGraceGDoubleGraceThumbDoubleGrace"
+const _EmbellishmentTypeName = "NoEmbellishmentSingleGraceDoublingHalfDoublingThumbDoublingStrikeGStrikeThumbStrikeHalfStrikeGripHalfGripThumbGripGGripTaorluathBublyBirlThrowDHeavyThrowDHalfThrowDHeavyHalfThrowDPeleThumbPeleHalfPeleDoubleStrikeGDoubleStrikeThumbDoubleStrikeHalfDoubleStrikeTripleStrikeGTripleStrikeThumbTripleStrikeHalfTripleStrikeDDoubleGraceEDoubleGraceFDoubleGraceGDoubleGraceThumbDoubleGrace"
 
-var _EmbellishmentTypeIndex = [...]uint16{0, 15, 26, 34, 46, 59, 65, 72, 83, 93, 97, 102, 111, 119, 128, 133, 137, 143, 154, 164, 179, 183, 192, 200, 212, 225, 242, 258, 270, 283, 300, 316, 328, 340, 352, 364, 380}
+var _EmbellishmentTypeIndex = [...]uint16{0, 15, 26, 34, 46, 59, 65, 72, 83, 93, 97, 105, 114, 119, 128, 133, 137, 143, 154, 164, 179, 183, 192, 200, 212, 225, 242, 258, 270, 283, 300, 316, 328, 340, 352, 364, 380}
 
-const _EmbellishmentTypeLowerName = "noembellishmentsinglegracedoublinghalfdoublingthumbdoublingstrikegstrikethumbstrikehalfstrikegripggripthumbgriphalfgriptaorluathbublybirlthrowdheavythrowdhalfthrowdheavyhalfthrowdpelethumbpelehalfpeledoublestrikegdoublestrikethumbdoublestrikehalfdoublestriketriplestrikegtriplestrikethumbtriplestrikehalftriplestrikeddoublegraceedoublegracefdoublegracegdoublegracethumbdoublegrace"
+const _EmbellishmentTypeLowerName = "noembellishmentsinglegracedoublinghalfdoublingthumbdoublingstrikegstrikethumbstrikehalfstrikegriphalfgripthumbgripggriptaorluathbublybirlthrowdheavythrowdhalfthrowdheavyhalfthrowdpelethumbpelehalfpeledoublestrikegdoublestrikethumbdoublestrikehalfdoublestriketriplestrikegtriplestrikethumbtriplestrikehalftriplestrikeddoublegraceedoublegracefdoublegracegdoublegracethumbdoublegrace"
 
 func (i EmbellishmentType) String() string {
 	if i >= EmbellishmentType(len(_EmbellishmentTypeIndex)-1) {
@@ -35,9 +35,9 @@ func _EmbellishmentTypeNoOp() {
 	_ = x[ThumbStrike-(7)]
 	_ = x[HalfStrike-(8)]
 	_ = x[Grip-(9)]
-	_ = x[GGrip-(10)]
+	_ = x[HalfGrip-(10)]
 	_ = x[ThumbGrip-(11)]
-	_ = x[HalfGrip-(12)]
+	_ = x[GGrip-(12)]
 	_ = x[Taorluath-(13)]
 	_ = x[Bubly-(14)]
 	_ = x[Birl-(15)]
@@ -63,7 +63,7 @@ func _EmbellishmentTypeNoOp() {
 	_ = x[ThumbDoubleGrace-(35)]
 }
 
-var _EmbellishmentTypeValues = []EmbellishmentType{NoEmbellishment, SingleGrace, Doubling, HalfDoubling, ThumbDoubling, Strike, GStrike, ThumbStrike, HalfStrike, Grip, GGrip, ThumbGrip, HalfGrip, Taorluath, Bubly, Birl, ThrowD, HeavyThrowD, HalfThrowD, HeavyHalfThrowD, Pele, ThumbPele, HalfPele, DoubleStrike, GDoubleStrike, ThumbDoubleStrike, HalfDoubleStrike, TripleStrike, GTripleStrike, ThumbTripleStrike, HalfTripleStrike, DDoubleGrace, EDoubleGrace, FDoubleGrace, GDoubleGrace, ThumbDoubleGrace}
+var _EmbellishmentTypeValues = []EmbellishmentType{NoEmbellishment, SingleGrace, Doubling, HalfDoubling, ThumbDoubling, Strike, GStrike, ThumbStrike, HalfStrike, Grip, HalfGrip, ThumbGrip, GGrip, Taorluath, Bubly, Birl, ThrowD, HeavyThrowD, HalfThrowD, HeavyHalfThrowD, Pele, ThumbPele, HalfPele, DoubleStrike, GDoubleStrike, ThumbDoubleStrike, HalfDoubleStrike, TripleStrike, GTripleStrike, ThumbTripleStrike, HalfTripleStrike, DDoubleGrace, EDoubleGrace, FDoubleGrace, GDoubleGrace, ThumbDoubleGrace}
 
 var _EmbellishmentTypeNameToValueMap = map[string]EmbellishmentType{
 	_EmbellishmentTypeName[0:15]:         NoEmbellishment,
@@ -86,12 +86,12 @@ var _EmbellishmentTypeNameToValueMap = map[string]EmbellishmentType{
 	_EmbellishmentTypeLowerName[83:93]:   HalfStrike,
 	_EmbellishmentTypeName[93:97]:        Grip,
 	_EmbellishmentTypeLowerName[93:97]:   Grip,
-	_EmbellishmentTypeName[97:102]:       GGrip,
-	_EmbellishmentTypeLowerName[97:102]:  GGrip,
-	_EmbellishmentTypeName[102:111]:      ThumbGrip,
-	_EmbellishmentTypeLowerName[102:111]: ThumbGrip,
-	_EmbellishmentTypeName[111:119]:      HalfGrip,
-	_EmbellishmentTypeLowerName[111:119]: HalfGrip,
+	_EmbellishmentTypeName[97:105]:       HalfGrip,
+	_EmbellishmentTypeLowerName[97:105]:  HalfGrip,
+	_EmbellishmentTypeName[105:114]:      ThumbGrip,
+	_EmbellishmentTypeLowerName[105:114]: ThumbGrip,
+	_EmbellishmentTypeName[114:119]:      GGrip,
+	_EmbellishmentTypeLowerName[114:119]: GGrip,
 	_EmbellishmentTypeName[119:128]:      Taorluath,
 	_EmbellishmentTypeLowerName[119:128]: Taorluath,
 	_EmbellishmentTypeName[128:133]:      Bubly,
@@ -151,9 +151,9 @@ var _EmbellishmentTypeNames = []string{
 	_EmbellishmentTypeName[72:83],
 	_EmbellishmentTypeName[83:93],
 	_EmbellishmentTypeName[93:97],
-	_EmbellishmentTypeName[97:102],
-	_EmbellishmentTypeName[102:111],
-	_EmbellishmentTypeName[111:119],
+	_EmbellishmentTypeName[97:105],
+	_EmbellishmentTypeName[105:114],
+	_EmbellishmentTypeName[114:119],
 	_EmbellishmentTypeName[119:128],
 	_EmbellishmentTypeName[128:133],
 	_EmbellishmentTypeName[133:137],

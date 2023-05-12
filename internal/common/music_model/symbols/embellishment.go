@@ -15,9 +15,9 @@ const (
 	ThumbStrike
 	HalfStrike
 	Grip
-	GGrip
-	ThumbGrip
 	HalfGrip
+	ThumbGrip
+	GGrip
 	Taorluath
 	Bubly
 	Birl
