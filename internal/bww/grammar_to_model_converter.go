@@ -231,6 +231,22 @@ func appendStaffSymbolToMeasureSymbols(
 	if staffSym.SingleDots != nil || staffSym.DoubleDots != nil {
 		handleDots(staffSym, lastSym)
 	}
+	if staffSym.TieStart != nil {
+		newSym.Note = &symbols.Note{
+			Tie: symbols.Start,
+		}
+		return newSym, nil
+	}
+	if staffSym.TieEnd != nil {
+		// TODO: check if tie start note has same pitch and if a single ^te could
+		// be an old tie format for two E notes
+		if lastSym != nil && lastSym.Note != nil {
+			lastSym.Note.Tie = symbols.End
+		}
+	}
+	if staffSym.TieOld != nil {
+		return nil, fmt.Errorf("old tie format not supported %s", *staffSym.TieOld)
+	}
 	if staffSym.Flat != nil {
 		return handleAccidential(symbols.Flat), nil
 	}

@@ -5,6 +5,7 @@ import (
 )
 
 //go:generate go run github.com/dmarkham/enumer -json -yaml -type=Accidental
+//go:generate go run github.com/dmarkham/enumer -json -yaml -type=Tie
 
 type Accidental uint
 
@@ -15,12 +16,21 @@ const (
 	Natural
 )
 
+type Tie uint
+
+const (
+	NoTie Tie = iota
+	Start
+	End
+)
+
 type Note struct {
 	Pitch         common.Pitch   `yaml:"pitch,omitempty"`
 	Length        common.Length  `yaml:"length,omitempty"`
 	Dots          uint8          `yaml:"dots,omitempty"`
 	Accidental    Accidental     `yaml:"accidental,omitempty"`
 	Fermata       bool           `yaml:"fermata,omitempty"`
+	Tie           Tie            `yaml:"tie,omitempty"`
 	Embellishment *Embellishment `yaml:"embellishment,omitempty"`
 }
 
@@ -41,6 +51,9 @@ func (n *Note) IsIncomplete() bool {
 			return true
 		}
 		if n.Accidental != NoAccidental {
+			return true
+		}
+		if n.Tie != NoTie {
 			return true
 		}
 	}
