@@ -1,0 +1,188 @@
+- title: Tune Title
+  tempo: 0
+  measures:
+    - symbols:
+        - note:
+            pitch: LowG
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: D
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: D
+        - note:
+            pitch: B
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: D
+        - note:
+            pitch: C
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: D
+    - symbols:
+        - note:
+            pitch: LowG
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: E
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: E
+        - note:
+            pitch: B
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: E
+        - note:
+            pitch: C
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: E
+        - note:
+            pitch: D
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: E
+    - symbols:
+        - note:
+            pitch: LowG
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: F
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: F
+        - note:
+            pitch: B
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: F
+        - note:
+            pitch: C
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: F
+        - note:
+            pitch: D
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: F
+        - note:
+            pitch: E
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: F
+    - symbols:
+        - note:
+            pitch: LowG
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: HighG
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: HighG
+        - note:
+            pitch: B
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: HighG
+        - note:
+            pitch: C
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: HighG
+        - note:
+            pitch: D
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: HighG
+        - note:
+            pitch: E
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: HighG
+        - note:
+            pitch: F
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: HighG
+    - symbols:
+        - note:
+            pitch: LowG
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: HighA
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: HighA
+        - note:
+            pitch: B
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: HighA
+        - note:
+            pitch: C
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: HighA
+        - note:
+            pitch: D
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: HighA
+        - note:
+            pitch: E
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: HighA
+        - note:
+            pitch: F
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: HighA
+        - note:
+            pitch: HighG
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: HighA

@@ -336,6 +336,21 @@ func appendStaffSymbolToMeasureSymbols(
 	if staffSym.HalfTripleStrike != nil {
 		return handleEmbellishmentVariant(symbols.TripleStrike, symbols.Half, symbols.NoWeight)
 	}
+	if staffSym.DDoubleGrace != nil {
+		return handleDoubleGrace(common.D)
+	}
+	if staffSym.EDoubleGrace != nil {
+		return handleDoubleGrace(common.E)
+	}
+	if staffSym.FDoubleGrace != nil {
+		return handleDoubleGrace(common.F)
+	}
+	if staffSym.GDoubleGrace != nil {
+		return handleDoubleGrace(common.HighG)
+	}
+	if staffSym.ThumbDoubleGrace != nil {
+		return handleDoubleGrace(common.HighA)
+	}
 	if staffSym.HalfStrike != nil {
 		return handleEmbellishmentVariant(symbols.Strike, symbols.Half, symbols.NoWeight)
 	}
@@ -395,6 +410,12 @@ func handleEmbellishment(
 			},
 		},
 	}, nil
+}
+
+func handleDoubleGrace(pitch common.Pitch) (*music_model.Symbol, error) {
+	doubleG, err := handleEmbellishment(symbols.DoubleGrace)
+	doubleG.Note.Embellishment.Pitch = pitch
+	return doubleG, err
 }
 
 func handleEmbellishmentVariant(

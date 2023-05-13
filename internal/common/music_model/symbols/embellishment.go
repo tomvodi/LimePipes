@@ -28,11 +28,7 @@ const (
 	GTripleStrike
 	ThumbTripleStrike
 	HalfTripleStrike
-	DDoubleGrace
-	EDoubleGrace
-	FDoubleGrace
-	GDoubleGrace
-	ThumbDoubleGrace
+	DoubleGrace
 )
 
 type EmbellishmentVariant uint

@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-const _EmbellishmentTypeName = "NoEmbellishmentSingleGraceDoublingStrikeGripTaorluathBubblyGraceBirlABirlBirlThrowDPeleDoubleStrikeTripleStrikeGTripleStrikeThumbTripleStrikeHalfTripleStrikeDDoubleGraceEDoubleGraceFDoubleGraceGDoubleGraceThumbDoubleGrace"
+const _EmbellishmentTypeName = "NoEmbellishmentSingleGraceDoublingStrikeGripTaorluathBubblyGraceBirlABirlBirlThrowDPeleDoubleStrikeTripleStrikeGTripleStrikeThumbTripleStrikeHalfTripleStrikeDoubleGrace"
 
-var _EmbellishmentTypeIndex = [...]uint8{0, 15, 26, 34, 40, 44, 53, 59, 68, 73, 77, 83, 87, 99, 111, 124, 141, 157, 169, 181, 193, 205, 221}
+var _EmbellishmentTypeIndex = [...]uint8{0, 15, 26, 34, 40, 44, 53, 59, 68, 73, 77, 83, 87, 99, 111, 124, 141, 157, 168}
 
-const _EmbellishmentTypeLowerName = "noembellishmentsinglegracedoublingstrikegriptaorluathbubblygracebirlabirlbirlthrowdpeledoublestriketriplestrikegtriplestrikethumbtriplestrikehalftriplestrikeddoublegraceedoublegracefdoublegracegdoublegracethumbdoublegrace"
+const _EmbellishmentTypeLowerName = "noembellishmentsinglegracedoublingstrikegriptaorluathbubblygracebirlabirlbirlthrowdpeledoublestriketriplestrikegtriplestrikethumbtriplestrikehalftriplestrikedoublegrace"
 
 func (i EmbellishmentType) String() string {
 	if i >= EmbellishmentType(len(_EmbellishmentTypeIndex)-1) {
@@ -42,14 +42,10 @@ func _EmbellishmentTypeNoOp() {
 	_ = x[GTripleStrike-(14)]
 	_ = x[ThumbTripleStrike-(15)]
 	_ = x[HalfTripleStrike-(16)]
-	_ = x[DDoubleGrace-(17)]
-	_ = x[EDoubleGrace-(18)]
-	_ = x[FDoubleGrace-(19)]
-	_ = x[GDoubleGrace-(20)]
-	_ = x[ThumbDoubleGrace-(21)]
+	_ = x[DoubleGrace-(17)]
 }
 
-var _EmbellishmentTypeValues = []EmbellishmentType{NoEmbellishment, SingleGrace, Doubling, Strike, Grip, Taorluath, Bubbly, GraceBirl, ABirl, Birl, ThrowD, Pele, DoubleStrike, TripleStrike, GTripleStrike, ThumbTripleStrike, HalfTripleStrike, DDoubleGrace, EDoubleGrace, FDoubleGrace, GDoubleGrace, ThumbDoubleGrace}
+var _EmbellishmentTypeValues = []EmbellishmentType{NoEmbellishment, SingleGrace, Doubling, Strike, Grip, Taorluath, Bubbly, GraceBirl, ABirl, Birl, ThrowD, Pele, DoubleStrike, TripleStrike, GTripleStrike, ThumbTripleStrike, HalfTripleStrike, DoubleGrace}
 
 var _EmbellishmentTypeNameToValueMap = map[string]EmbellishmentType{
 	_EmbellishmentTypeName[0:15]:         NoEmbellishment,
@@ -86,16 +82,8 @@ var _EmbellishmentTypeNameToValueMap = map[string]EmbellishmentType{
 	_EmbellishmentTypeLowerName[124:141]: ThumbTripleStrike,
 	_EmbellishmentTypeName[141:157]:      HalfTripleStrike,
 	_EmbellishmentTypeLowerName[141:157]: HalfTripleStrike,
-	_EmbellishmentTypeName[157:169]:      DDoubleGrace,
-	_EmbellishmentTypeLowerName[157:169]: DDoubleGrace,
-	_EmbellishmentTypeName[169:181]:      EDoubleGrace,
-	_EmbellishmentTypeLowerName[169:181]: EDoubleGrace,
-	_EmbellishmentTypeName[181:193]:      FDoubleGrace,
-	_EmbellishmentTypeLowerName[181:193]: FDoubleGrace,
-	_EmbellishmentTypeName[193:205]:      GDoubleGrace,
-	_EmbellishmentTypeLowerName[193:205]: GDoubleGrace,
-	_EmbellishmentTypeName[205:221]:      ThumbDoubleGrace,
-	_EmbellishmentTypeLowerName[205:221]: ThumbDoubleGrace,
+	_EmbellishmentTypeName[157:168]:      DoubleGrace,
+	_EmbellishmentTypeLowerName[157:168]: DoubleGrace,
 }
 
 var _EmbellishmentTypeNames = []string{
@@ -116,11 +104,7 @@ var _EmbellishmentTypeNames = []string{
 	_EmbellishmentTypeName[111:124],
 	_EmbellishmentTypeName[124:141],
 	_EmbellishmentTypeName[141:157],
-	_EmbellishmentTypeName[157:169],
-	_EmbellishmentTypeName[169:181],
-	_EmbellishmentTypeName[181:193],
-	_EmbellishmentTypeName[193:205],
-	_EmbellishmentTypeName[205:221],
+	_EmbellishmentTypeName[157:168],
 }
 
 // EmbellishmentTypeString retrieves an enum value from the enum constants string name.
