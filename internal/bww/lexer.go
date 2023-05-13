@@ -261,36 +261,68 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Pattern: `hpella|hpelb|hpelc|hpeld|hpele|hpelf|hpelhg`,
 		},
 		{
+			Name:    "LIGHT_DOUBLE_STRIKE",
+			Pattern: `lst2d`,
+		},
+		{
 			Name:    "DOUBLE_STRIKE",
-			Pattern: `st2la|st2b|st2c|st2d|lst2d|st2e|st2f|st2hg|st2ha`,
+			Pattern: `st2la|st2b|st2c|st2d|st2e|st2f|st2hg|st2ha`,
+		},
+		{
+			Name:    "LIGHT_G_DOUBLE_STRIKE",
+			Pattern: `lgst2d`,
 		},
 		{
 			Name:    "G_DOUBLE_STRIKE",
-			Pattern: `gst2la|gst2b|gst2c|gst2d|lgst2d|gst2e|gst2f`,
+			Pattern: `gst2la|gst2b|gst2c|gst2d|gst2e|gst2f`,
+		},
+		{
+			Name:    "LIGHT_THUMB_DOUBLE_STRIKE",
+			Pattern: `ltst2d`,
 		},
 		{
 			Name:    "THUMB_DOUBLE_STRIKE",
-			Pattern: `tst2la|tst2b|tst2c|tst2d|ltst2d|tst2e|tst2f|tst2hg`,
+			Pattern: `tst2la|tst2b|tst2c|tst2d|tst2e|tst2f|tst2hg`,
+		},
+		{
+			Name:    "LIGHT_HALF_DOUBLE_STRIKE",
+			Pattern: `lhst2d`,
 		},
 		{
 			Name:    "HALF_DOUBLE_STRIKE",
-			Pattern: `hst2la|hst2b|hst2c|hst2d|lhst2d|hst2e|hst2f|hst2hg|hst2ha`,
+			Pattern: `hst2la|hst2b|hst2c|hst2d|hst2e|hst2f|hst2hg|hst2ha`,
+		},
+		{
+			Name:    "LIGHT_TRIPLE_STRIKE",
+			Pattern: `lst3d`,
 		},
 		{
 			Name:    "TRIPLE_STRIKE",
-			Pattern: `st3la|st3b|st3c|st3d|lst3d|st3e|st3f|st3hg|st3ha`,
+			Pattern: `st3la|st3b|st3c|st3d|st3e|st3f|st3hg|st3ha`,
+		},
+		{
+			Name:    "LIGHT_G_TRIPLE_STRIKE",
+			Pattern: `lgst3d`,
 		},
 		{
 			Name:    "G_TRIPLE_STRIKE",
-			Pattern: `gst3la|gst3b|gst3c|gst3d|lgst3d|gst3e|gst3f`,
+			Pattern: `gst3la|gst3b|gst3c|gst3d|gst3e|gst3f`,
+		},
+		{
+			Name:    "LIGHT_THUMB_TRIPLE_STRIKE",
+			Pattern: `ltst3d`,
 		},
 		{
 			Name:    "THUMB_TRIPLE_STRIKE",
-			Pattern: `tst3la|tst3b|tst3c|tst3d|ltst3d|tst3e|tst3f|tst3hg`,
+			Pattern: `tst3la|tst3b|tst3c|tst3d|tst3e|tst3f|tst3hg`,
+		},
+		{
+			Name:    "LIGHT_HALF_TRIPLE_STRIKE",
+			Pattern: `lhst3d`,
 		},
 		{
 			Name:    "HALF_TRIPLE_STRIKE",
-			Pattern: `hst3la|hst3b|hst3c|hst3d|lhst3d|hst3e|hst3f|hst3hg|hst3ha`,
+			Pattern: `hst3la|hst3b|hst3c|hst3d|hst3e|hst3f|hst3hg|hst3ha`,
 		},
 		{
 			Name:    "D_DOUBLE_GRACE",

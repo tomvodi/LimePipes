@@ -288,6 +288,54 @@ func appendStaffSymbolToMeasureSymbols(
 	if staffSym.LightGStrike != nil {
 		return handleEmbellishmentVariant(symbols.Strike, symbols.G, symbols.Light)
 	}
+	if staffSym.LightDoubleStrike != nil {
+		return handleEmbellishmentVariant(symbols.DoubleStrike, symbols.NoVariant, symbols.Light)
+	}
+	if staffSym.DoubleStrike != nil {
+		return handleEmbellishmentVariant(symbols.DoubleStrike, symbols.NoVariant, symbols.NoWeight)
+	}
+	if staffSym.LightGDoubleStrike != nil {
+		return handleEmbellishmentVariant(symbols.DoubleStrike, symbols.G, symbols.Light)
+	}
+	if staffSym.GDoubleStrike != nil {
+		return handleEmbellishmentVariant(symbols.DoubleStrike, symbols.G, symbols.NoWeight)
+	}
+	if staffSym.LightThumbDoubleStrike != nil {
+		return handleEmbellishmentVariant(symbols.DoubleStrike, symbols.Thumb, symbols.Light)
+	}
+	if staffSym.ThumbDoubleStrike != nil {
+		return handleEmbellishmentVariant(symbols.DoubleStrike, symbols.Thumb, symbols.NoWeight)
+	}
+	if staffSym.LightHalfDoubleStrike != nil {
+		return handleEmbellishmentVariant(symbols.DoubleStrike, symbols.Half, symbols.Light)
+	}
+	if staffSym.HalfDoubleStrike != nil {
+		return handleEmbellishmentVariant(symbols.DoubleStrike, symbols.Half, symbols.NoWeight)
+	}
+	if staffSym.LightTripleStrike != nil {
+		return handleEmbellishmentVariant(symbols.TripleStrike, symbols.NoVariant, symbols.Light)
+	}
+	if staffSym.TripleStrike != nil {
+		return handleEmbellishmentVariant(symbols.TripleStrike, symbols.NoVariant, symbols.NoWeight)
+	}
+	if staffSym.LightGTripleStrike != nil {
+		return handleEmbellishmentVariant(symbols.TripleStrike, symbols.G, symbols.Light)
+	}
+	if staffSym.GTripleStrike != nil {
+		return handleEmbellishmentVariant(symbols.TripleStrike, symbols.G, symbols.NoWeight)
+	}
+	if staffSym.LightThumbTripleStrike != nil {
+		return handleEmbellishmentVariant(symbols.TripleStrike, symbols.Thumb, symbols.Light)
+	}
+	if staffSym.ThumbTripleStrike != nil {
+		return handleEmbellishmentVariant(symbols.TripleStrike, symbols.Thumb, symbols.NoWeight)
+	}
+	if staffSym.LightHalfTripleStrike != nil {
+		return handleEmbellishmentVariant(symbols.TripleStrike, symbols.Half, symbols.Light)
+	}
+	if staffSym.HalfTripleStrike != nil {
+		return handleEmbellishmentVariant(symbols.TripleStrike, symbols.Half, symbols.NoWeight)
+	}
 	if staffSym.HalfStrike != nil {
 		return handleEmbellishmentVariant(symbols.Strike, symbols.Half, symbols.NoWeight)
 	}

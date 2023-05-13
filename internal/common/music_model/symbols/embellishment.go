@@ -24,9 +24,6 @@ const (
 	ThrowD
 	Pele
 	DoubleStrike
-	GDoubleStrike
-	ThumbDoubleStrike
-	HalfDoubleStrike
 	TripleStrike
 	GTripleStrike
 	ThumbTripleStrike

@@ -1,0 +1,299 @@
+- title: Tune Title
+  tempo: 0
+  measures:
+    - symbols:
+        - note:
+            pitch: LowA
+            length: Quarter
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+        - note:
+            pitch: B
+            length: Quarter
+        - note:
+            pitch: B
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+        - note:
+            pitch: C
+            length: Quarter
+        - note:
+            pitch: C
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+        - note:
+            pitch: D
+            length: Quarter
+        - note:
+            pitch: D
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                weight: Light
+        - note:
+            pitch: D
+            length: Quarter
+        - note:
+            pitch: D
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+        - note:
+            pitch: E
+            length: Quarter
+        - note:
+            pitch: E
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+        - note:
+            pitch: F
+            length: Quarter
+        - note:
+            pitch: F
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+        - note:
+            pitch: HighG
+            length: Quarter
+        - note:
+            pitch: HighG
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+        - note:
+            pitch: HighA
+            length: Quarter
+        - note:
+            pitch: HighA
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+    - symbols:
+        - note:
+            pitch: LowA
+            length: Quarter
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: G
+        - note:
+            pitch: B
+            length: Quarter
+        - note:
+            pitch: B
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: G
+        - note:
+            pitch: C
+            length: Quarter
+        - note:
+            pitch: C
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: G
+        - note:
+            pitch: D
+            length: Quarter
+        - note:
+            pitch: D
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: G
+                weight: Light
+        - note:
+            pitch: D
+            length: Quarter
+        - note:
+            pitch: D
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: G
+        - note:
+            pitch: E
+            length: Quarter
+        - note:
+            pitch: E
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: G
+        - note:
+            pitch: F
+            length: Quarter
+        - note:
+            pitch: F
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: G
+    - symbols:
+        - note:
+            pitch: LowA
+            length: Quarter
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: Thumb
+        - note:
+            pitch: B
+            length: Quarter
+        - note:
+            pitch: B
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: Thumb
+        - note:
+            pitch: C
+            length: Quarter
+        - note:
+            pitch: C
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: Thumb
+        - note:
+            pitch: D
+            length: Quarter
+        - note:
+            pitch: D
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: Thumb
+                weight: Light
+        - note:
+            pitch: D
+            length: Quarter
+        - note:
+            pitch: D
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: Thumb
+        - note:
+            pitch: E
+            length: Quarter
+        - note:
+            pitch: E
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: Thumb
+        - note:
+            pitch: F
+            length: Quarter
+        - note:
+            pitch: F
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: Thumb
+        - note:
+            pitch: HighG
+            length: Quarter
+        - note:
+            pitch: HighG
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: Thumb
+    - symbols:
+        - note:
+            pitch: LowA
+            length: Quarter
+        - note:
+            pitch: LowA
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: Half
+        - note:
+            pitch: B
+            length: Quarter
+        - note:
+            pitch: B
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: Half
+        - note:
+            pitch: C
+            length: Quarter
+        - note:
+            pitch: C
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: Half
+        - note:
+            pitch: D
+            length: Quarter
+        - note:
+            pitch: D
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: Half
+                weight: Light
+        - note:
+            pitch: D
+            length: Quarter
+        - note:
+            pitch: D
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: Half
+        - note:
+            pitch: E
+            length: Quarter
+        - note:
+            pitch: E
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: Half
+        - note:
+            pitch: F
+            length: Quarter
+        - note:
+            pitch: F
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: Half
+        - note:
+            pitch: HighG
+            length: Quarter
+        - note:
+            pitch: HighG
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: Half
+        - note:
+            pitch: HighA
+            length: Quarter
+        - note:
+            pitch: HighA
+            length: Quarter
+            embellishment:
+                type: TripleStrike
+                variant: Half
