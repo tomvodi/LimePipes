@@ -351,6 +351,20 @@ var _ = Describe("BWW Parser", func() {
 		})
 	})
 
+	When("having irregular groups", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/irregular_groups.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/irregular_groups.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/irregular_groups.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
 	When("parsing the file with all bww symbols in it", func() {
 		BeforeEach(func() {
 			data := dataFromFile("./testfiles/all_symbols.bww")

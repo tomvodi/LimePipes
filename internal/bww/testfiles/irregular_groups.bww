@@ -1,0 +1,16 @@
+Bagpipe Reader:1.0
+
+"Tune Title",(T,L,0,0,Times New Roman,15,700,0,1,2,0,0,32768)
+
+
+& ^2s LA_8 B_8 ^2e
+! ^3s LA_8 B_8 C_8 ^3e
+! ^43s LA_8 B_8 C_8 D_8 ^43e
+! ^46s LA_8 B_8 C_8 D_8 ^46e
+! ^53s LA_8 B_8 C_8 D_8 E_8 ^53e
+! ^54s LA_8 B_8 C_8 D_8 E_8 ^54e
+! ^64s LA_8 B_8 C_8 D_8 E_8 F_8 ^64e
+! ^74s LA_8 B_8 C_8 D_8 E_8 F_8 HG_8 ^74e
+! ^76s LA_8 B_8 C_8 D_8 E_8 F_8 HG_8 ^76e !t
+
+

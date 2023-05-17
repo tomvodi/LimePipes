@@ -4,6 +4,7 @@ import (
 	"banduslib/internal/common"
 	"banduslib/internal/common/music_model"
 	"banduslib/internal/common/music_model/symbols"
+	"banduslib/internal/common/music_model/symbols/tuplet"
 	"fmt"
 	"github.com/rs/zerolog/log"
 	"reflect"
@@ -394,6 +395,14 @@ func appendStaffSymbolToMeasureSymbols(
 	if staffSym.HalfPele != nil {
 		return handleEmbellishmentVariant(symbols.Pele, symbols.Half, symbols.NoWeight)
 	}
+	if staffSym.IrregularGroupStart != nil {
+		ttype := tupletTypeFromSymbol(staffSym.IrregularGroupStart)
+		return handleIrregularGroup(tuplet.Start, ttype)
+	}
+	if staffSym.IrregularGroupEnd != nil {
+		ttype := tupletTypeFromSymbol(staffSym.IrregularGroupEnd)
+		return handleIrregularGroup(tuplet.End, ttype)
+	}
 	if staffSym.LightHalfPele != nil {
 		return handleEmbellishmentVariant(symbols.Pele, symbols.Half, symbols.Light)
 	}
@@ -448,6 +457,49 @@ func handleEmbellishmentVariant(
 			},
 		},
 	}, nil
+}
+
+func handleIrregularGroup(
+	boundary tuplet.TupletBoundary,
+	ttype tuplet.TupletType,
+) (*music_model.Symbol, error) {
+	tpl := tuplet.NewTuplet(boundary, ttype)
+	return &music_model.Symbol{
+		Tuplet: tpl,
+	}, nil
+}
+
+func tupletTypeFromSymbol(sym *string) tuplet.TupletType {
+	if strings.HasPrefix(*sym, "^2") {
+		return tuplet.Type23
+	}
+	if strings.HasPrefix(*sym, "^3") {
+		return tuplet.Type32
+	}
+	if strings.HasPrefix(*sym, "^43") {
+		return tuplet.Type43
+	}
+	if strings.HasPrefix(*sym, "^46") {
+		return tuplet.Type46
+	}
+	if strings.HasPrefix(*sym, "^53") {
+		return tuplet.Type53
+	}
+	if strings.HasPrefix(*sym, "^54") {
+		return tuplet.Type54
+	}
+	if strings.HasPrefix(*sym, "^64") {
+		return tuplet.Type64
+	}
+	if strings.HasPrefix(*sym, "^74") {
+		return tuplet.Type74
+	}
+	if strings.HasPrefix(*sym, "^76") {
+		return tuplet.Type76
+	}
+
+	log.Error().Msgf("tuplet symbold %s not handled", *sym)
+	return tuplet.NoType
 }
 
 func handleDots(staffSym *StaffSymbols, lastSym *music_model.Symbol) {
