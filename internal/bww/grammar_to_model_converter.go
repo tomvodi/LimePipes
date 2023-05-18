@@ -4,6 +4,7 @@ import (
 	"banduslib/internal/common"
 	"banduslib/internal/common/music_model"
 	"banduslib/internal/common/music_model/symbols"
+	"banduslib/internal/common/music_model/symbols/time_line"
 	"banduslib/internal/common/music_model/symbols/tuplet"
 	"fmt"
 	"github.com/rs/zerolog/log"
@@ -487,6 +488,17 @@ func appendStaffSymbolToMeasureSymbols(
 		}
 		return newSym, nil
 	}
+	if staffSym.TimelineStart != nil {
+		return handleTimeLine(*staffSym.TimelineStart)
+	}
+	if staffSym.TimelineEnd != nil {
+		return &music_model.Symbol{
+			TimeLine: &time_line.TimeLine{
+				BoundaryType: time_line.End,
+				Type:         time_line.NoType,
+			},
+		}, nil
+	}
 
 	return nil, nil // fmt.Errorf("staff symbol %v not handled", staffSym)
 }
@@ -622,6 +634,53 @@ func handleAccidential(acc symbols.Accidental) *music_model.Symbol {
 	return &music_model.Symbol{
 		Note: &symbols.Note{
 			Accidental: acc,
+		},
+	}
+}
+
+func handleTimeLine(sym string) (*music_model.Symbol, error) {
+	if sym == "'1" {
+		return newTimeLineStartSymbol(time_line.First), nil
+	}
+	if sym == "'2" {
+		return newTimeLineStartSymbol(time_line.Second), nil
+	}
+	if sym == "'22" {
+		return newTimeLineStartSymbol(time_line.SecondOf2), nil
+	}
+	if sym == "'23" {
+		return newTimeLineStartSymbol(time_line.SecondOf3), nil
+	}
+	if sym == "'24" {
+		return newTimeLineStartSymbol(time_line.SecondOf4), nil
+	}
+	if sym == "'224" {
+		return newTimeLineStartSymbol(time_line.SecondOf2And4), nil
+	}
+	if sym == "'25" {
+		return newTimeLineStartSymbol(time_line.SecondOf5), nil
+	}
+	if sym == "'26" {
+		return newTimeLineStartSymbol(time_line.SecondOf6), nil
+	}
+	if sym == "'27" {
+		return newTimeLineStartSymbol(time_line.SecondOf7), nil
+	}
+	if sym == "'28" {
+		return newTimeLineStartSymbol(time_line.SecondOf8), nil
+	}
+	if sym == "'intro" {
+		return newTimeLineStartSymbol(time_line.Intro), nil
+	}
+
+	return nil, fmt.Errorf("time line symbol %s not handled", sym)
+}
+
+func newTimeLineStartSymbol(ttype time_line.TimeLineType) *music_model.Symbol {
+	return &music_model.Symbol{
+		TimeLine: &time_line.TimeLine{
+			BoundaryType: time_line.Start,
+			Type:         ttype,
 		},
 	}
 }
