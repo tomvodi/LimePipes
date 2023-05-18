@@ -42,8 +42,8 @@ TuneTempo,50
 & LGl_32 LAl_32 Bl_32 Cl_32 Dl_32 El_32 Fl_32 HGl_32 HAl_32 !t
 & LGr_32 LAr_32 Br_32 Cr_32 Dr_32 Er_32 Fr_32 HGr_32 HAr_32 !t
 & REST_1  REST_2  REST_4  REST_8  REST_16  REST_32 !t
-& 'lg 'la 'b 'c 'd 'e 'f 'hg 'ha !t
-& ''lg ''la ''b ''c ''d ''e ''f ''hg ''ha !t
+& LG_4 'lg LA_4 'la B_4 'b C_4 'c D_4 'd E_4 'e F_4 'f HG_4 'hg HA_4 'ha !t
+& LG_4 ''lg LA_4 ''la B_4 ''b C_4 ''c D_4 ''d E_4 ''e F_4 ''f HG_4 ''hg HA_4 ''ha !t
 & fermatlg fermatla fermatb fermatc fermatd fermate fermatf fermathg fermatha !t
 & ag bg cg dg eg fg gg tg !t
 & dblg dbla dbb dbc dbd dbe dbf dbhg dbha !t
