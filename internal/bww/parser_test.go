@@ -365,6 +365,20 @@ var _ = Describe("BWW Parser", func() {
 		})
 	})
 
+	When("having triplets", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/triplets.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/triplets.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/triplets.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
 	When("parsing the file with all bww symbols in it", func() {
 		BeforeEach(func() {
 			data := dataFromFile("./testfiles/all_symbols.bww")

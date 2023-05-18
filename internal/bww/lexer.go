@@ -370,7 +370,7 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 		},
 		{
 			Name:    "TRIPLETS",
-			Pattern: `\^3lg|\^3la|\^3b|\^3c|\^3d|\^3e|\^3f|\^3hg|\^3ha`,
+			Pattern: `\^3lg|\^3la|\^3b|\^3c|\^3d|\^3f|\^3hg|\^3ha`,
 		},
 		{
 			Name:    "TIMELINE_START",

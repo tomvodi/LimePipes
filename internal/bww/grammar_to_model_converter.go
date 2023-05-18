@@ -97,12 +97,21 @@ func getMeasuresFromStave(stave *Staff) ([]*music_model.Measure, error) {
 			continue
 		}
 
+		// triplets in old format appear only after last melody note,
+		// so it is handled here
+		if staffSym.Triplets != nil {
+			err := handleTriplet(currMeasure, *staffSym.Triplets)
+			if err != nil {
+				return nil, err
+			}
+		}
+
 		var lastSym *music_model.Symbol
 		measSymLen := len(currMeasure.Symbols)
 		if len(currMeasure.Symbols) > 0 {
 			lastSym = currMeasure.Symbols[measSymLen-1]
 		}
-		newSym, err := appendStaffSymbolToMeasureSymbols(staffSym, lastSym)
+		newSym, err := appendStaffSymbolToMeasureSymbols(staffSym, lastSym, currMeasure)
 		if err != nil {
 			return nil, err
 		}
@@ -113,6 +122,56 @@ func getMeasuresFromStave(stave *Staff) ([]*music_model.Measure, error) {
 
 	measures = cleanupAndAppendMeasure(measures, currMeasure)
 	return measures, nil
+}
+
+func handleTriplet(measure *music_model.Measure, sym string) error {
+
+	if len(measure.Symbols) == 0 {
+		return fmt.Errorf("triplet symbol %s does not follow any note", sym)
+	}
+	if len(measure.Symbols) < 3 {
+		return fmt.Errorf("triplet symbol %s must follow at least 3 notes", sym)
+	}
+
+	var last3SymsAreNotes = true
+	lastIndex := len(measure.Symbols) - 1
+	for i := lastIndex; i > lastIndex-3; i-- {
+		currSym := measure.Symbols[i]
+		if currSym.Note == nil {
+			last3SymsAreNotes = false
+			break
+		}
+		if !currSym.Note.IsValid() {
+			last3SymsAreNotes = false
+			break
+		}
+	}
+	if !last3SymsAreNotes {
+		return fmt.Errorf("triplet symbol %s must follow at least 3 notes", sym)
+	}
+
+	tripletStartIdx := lastIndex - 2
+	hasSymbolsBeforeTriplet := tripletStartIdx > 0
+	tupletHasAlreadyAStartSymbol := false
+	if hasSymbolsBeforeTriplet {
+		symBeforeTriplet := measure.Symbols[tripletStartIdx-1]
+		if symBeforeTriplet.Tuplet != nil &&
+			symBeforeTriplet.Tuplet.BoundaryType == tuplet.Start {
+			tupletHasAlreadyAStartSymbol = true
+		}
+	}
+	if !tupletHasAlreadyAStartSymbol {
+		tripletStartSym := newIrregularGroup(tuplet.Start, tuplet.Type32)
+		measure.Symbols = append(
+			measure.Symbols[:tripletStartIdx+1],
+			measure.Symbols[tripletStartIdx:]...,
+		)
+		measure.Symbols[tripletStartIdx] = tripletStartSym
+	}
+
+	measure.Symbols = append(measure.Symbols, newIrregularGroup(tuplet.End, tuplet.Type32))
+
+	return nil
 }
 
 func cleanupAndAppendMeasure(
@@ -207,6 +266,7 @@ func removeSymbol(symbols []*music_model.Symbol, idx int) []*music_model.Symbol 
 func appendStaffSymbolToMeasureSymbols(
 	staffSym *StaffSymbols,
 	lastSym *music_model.Symbol,
+	currentMeasure *music_model.Measure,
 ) (*music_model.Symbol, error) {
 	newSym := &music_model.Symbol{}
 
@@ -401,7 +461,13 @@ func appendStaffSymbolToMeasureSymbols(
 	}
 	if staffSym.IrregularGroupEnd != nil {
 		ttype := tupletTypeFromSymbol(staffSym.IrregularGroupEnd)
-		return handleIrregularGroup(tuplet.End, ttype)
+		// handling old style ties on E (^3e) but ignoring an error
+		if ttype == tuplet.Type32 {
+			_ = handleTriplet(currentMeasure, "^3e")
+			return nil, nil
+		} else {
+			return handleIrregularGroup(tuplet.End, ttype)
+		}
 	}
 	if staffSym.LightHalfPele != nil {
 		return handleEmbellishmentVariant(symbols.Pele, symbols.Half, symbols.Light)
@@ -463,10 +529,16 @@ func handleIrregularGroup(
 	boundary tuplet.TupletBoundary,
 	ttype tuplet.TupletType,
 ) (*music_model.Symbol, error) {
+	return newIrregularGroup(boundary, ttype), nil
+}
+
+func newIrregularGroup(boundary tuplet.TupletBoundary,
+	ttype tuplet.TupletType,
+) *music_model.Symbol {
 	tpl := tuplet.NewTuplet(boundary, ttype)
 	return &music_model.Symbol{
 		Tuplet: tpl,
-	}, nil
+	}
 }
 
 func tupletTypeFromSymbol(sym *string) tuplet.TupletType {
