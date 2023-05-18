@@ -358,7 +358,7 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 		},
 		{
 			Name:    "TIE_OLD",
-			Pattern: `\^tlg|\^tla|\^tb|\^tc|\^td|\^te|\^tf|\^thg|\^tha`,
+			Pattern: `\^tlg|\^tla|\^tb|\^tc|\^td|\^tf|\^thg|\^tha`,
 		},
 		{
 			Name:    "IRREGULAR_GROUP_START",

@@ -12,3 +12,19 @@ type Symbol struct {
 	Tuplet   *tuplet.Tuplet      `yaml:"tuplet,omitempty"`
 	TimeLine *time_line.TimeLine `yaml:"timeLine,omitempty"`
 }
+
+func (s *Symbol) IsNote() bool {
+	return s.Note != nil
+}
+
+func (s *Symbol) IsEmbellishment() bool {
+	return s.Note != nil && s.Note.Embellishment != nil
+}
+
+func (s *Symbol) IsValidNote() bool {
+	if s.Note != nil {
+		return s.Note.IsValid()
+	}
+
+	return false
+}

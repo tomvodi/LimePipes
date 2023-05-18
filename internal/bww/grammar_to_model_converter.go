@@ -13,6 +13,12 @@ import (
 	"strings"
 )
 
+type staffContext struct {
+	PendingOldTie         common.Pitch
+	PendingNewTie         bool
+	PreviousStaveMeasures []*music_model.Measure
+}
+
 func convertGrammarToModel(grammar *BwwDocument) ([]*music_model.Tune, error) {
 	var tunes []*music_model.Tune
 
@@ -66,11 +72,15 @@ func fillTuneWithParameter(tune *music_model.Tune, params []*TuneParameter) erro
 
 func fillTunePartsFromStaves(tune *music_model.Tune, staves []*Staff) error {
 	var measures []*music_model.Measure
+	staffCtx := &staffContext{
+		PendingOldTie: common.NoPitch,
+	}
 	for _, stave := range staves {
-		staveMeasures, err := getMeasuresFromStave(stave)
+		staveMeasures, err := getMeasuresFromStave(stave, staffCtx)
 		if err != nil {
 			return err
 		}
+		staffCtx.PreviousStaveMeasures = staveMeasures
 
 		measures = append(measures, staveMeasures...)
 	}
@@ -79,7 +89,7 @@ func fillTunePartsFromStaves(tune *music_model.Tune, staves []*Staff) error {
 	return nil
 }
 
-func getMeasuresFromStave(stave *Staff) ([]*music_model.Measure, error) {
+func getMeasuresFromStave(stave *Staff, ctx *staffContext) ([]*music_model.Measure, error) {
 	var measures []*music_model.Measure
 	currMeasure := &music_model.Measure{}
 	for _, staffSym := range stave.Symbols {
@@ -112,17 +122,46 @@ func getMeasuresFromStave(stave *Staff) ([]*music_model.Measure, error) {
 		if len(currMeasure.Symbols) > 0 {
 			lastSym = currMeasure.Symbols[measSymLen-1]
 		}
-		newSym, err := appendStaffSymbolToMeasureSymbols(staffSym, lastSym, currMeasure)
+
+		if staffSym.TieOld != nil {
+			err := appendTieStartToPreviousNote(*staffSym.TieOld, lastSym, measures, ctx)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		newSym, err := appendStaffSymbolToMeasureSymbols(staffSym, lastSym, currMeasure, measures, ctx)
 		if err != nil {
 			return nil, err
 		}
 		if newSym != nil {
+			if ctx.PendingOldTie != common.NoPitch {
+				if newSym.Note == nil || !newSym.Note.IsValid() {
+					log.Error().Msgf("old tie on pitch %s was started in previous measure but there is "+
+						"no note at the beginning of new measure", ctx.PendingOldTie.String())
+				} else {
+					newSym.Note.Tie = symbols.End
+				}
+
+				ctx.PendingOldTie = common.NoPitch
+			}
 			currMeasure.Symbols = append(currMeasure.Symbols, newSym)
 		}
 	}
 
 	measures = cleanupAndAppendMeasure(measures, currMeasure)
 	return measures, nil
+}
+
+func getLastSymbolFromMeasures(measures []*music_model.Measure) *music_model.Symbol {
+	if len(measures) > 0 {
+		lastMeasure := measures[len(measures)-1]
+		if len(lastMeasure.Symbols) > 0 {
+			return lastMeasure.Symbols[len(lastMeasure.Symbols)-1]
+		}
+	}
+
+	return nil
 }
 
 func handleTriplet(measure *music_model.Measure, sym string) error {
@@ -171,6 +210,43 @@ func handleTriplet(measure *music_model.Measure, sym string) error {
 	}
 
 	measure.Symbols = append(measure.Symbols, newIrregularGroup(tuplet.End, tuplet.Type32))
+
+	return nil
+}
+
+func appendTieStartToPreviousNote(
+	staffSym string,
+	lastSym *music_model.Symbol,
+	measures []*music_model.Measure,
+	ctx *staffContext,
+) error {
+	if lastSym == nil {
+		lastSym = getLastSymbolFromMeasures(measures)
+		if lastSym == nil && len(ctx.PreviousStaveMeasures) > 0 {
+			lastSym = getLastSymbolFromMeasures(ctx.PreviousStaveMeasures)
+		}
+		if lastSym == nil {
+			return fmt.Errorf("tie in old format (%s) must follow something", staffSym)
+		}
+
+		if lastSym.IsValidNote() {
+			lastSym.Note.Tie = symbols.Start
+		} else {
+			return fmt.Errorf("tie in old format (%s) must follow a note", staffSym)
+		}
+	}
+	if lastSym.Note == nil {
+		return fmt.Errorf("tie in old format (%s) must follow a sym", staffSym)
+	}
+	if !lastSym.Note.IsValid() {
+		return fmt.Errorf(
+			"tie in old format (%s) must follow a note with pitch and length",
+			staffSym,
+		)
+	}
+	lastSym.Note.Tie = symbols.Start
+	tiePitch := pitchFromSuffix(staffSym)
+	ctx.PendingOldTie = tiePitch
 
 	return nil
 }
@@ -268,6 +344,8 @@ func appendStaffSymbolToMeasureSymbols(
 	staffSym *StaffSymbols,
 	lastSym *music_model.Symbol,
 	currentMeasure *music_model.Measure,
+	currentStaffMeasures []*music_model.Measure,
+	ctx *staffContext,
 ) (*music_model.Symbol, error) {
 	newSym := &music_model.Symbol{}
 
@@ -297,17 +375,26 @@ func appendStaffSymbolToMeasureSymbols(
 		newSym.Note = &symbols.Note{
 			Tie: symbols.Start,
 		}
+		ctx.PendingNewTie = true
 		return newSym, nil
 	}
 	if staffSym.TieEnd != nil {
-		// TODO: check if tie start note has same pitch and if a single ^te could
-		// be an old tie format for two E notes
-		if lastSym != nil && lastSym.Note != nil {
-			lastSym.Note.Tie = symbols.End
+		// TODO: check if tie start note has same pitch
+
+		// check if the recognized symbol may be an old style tie on E.
+		// if so, add tie start to previous note
+		oldTieEndE := "^te"
+		if *staffSym.TieEnd == oldTieEndE && !ctx.PendingNewTie {
+			err := appendTieStartToPreviousNote(oldTieEndE, lastSym, currentStaffMeasures, ctx)
+			if err != nil {
+				return nil, err
+			}
 		}
-	}
-	if staffSym.TieOld != nil {
-		return nil, fmt.Errorf("old tie format not supported %s", *staffSym.TieOld)
+
+		if lastSym != nil && lastSym.Note != nil && ctx.PendingNewTie {
+			lastSym.Note.Tie = symbols.End
+			ctx.PendingNewTie = false
+		}
 	}
 	if staffSym.Flat != nil {
 		return handleAccidential(symbols.Flat), nil
@@ -769,4 +856,35 @@ func lengthFromSuffix(note *string) common.Length {
 	}
 
 	return common.NoLength
+}
+
+func pitchFromSuffix(sym string) common.Pitch {
+	if strings.HasSuffix(sym, "lg") {
+		return common.LowG
+	}
+	if strings.HasSuffix(sym, "la") {
+		return common.LowA
+	}
+	if strings.HasSuffix(sym, "b") {
+		return common.B
+	}
+	if strings.HasSuffix(sym, "c") {
+		return common.C
+	}
+	if strings.HasSuffix(sym, "d") {
+		return common.D
+	}
+	if strings.HasSuffix(sym, "e") {
+		return common.E
+	}
+	if strings.HasSuffix(sym, "f") {
+		return common.F
+	}
+	if strings.HasSuffix(sym, "hg") {
+		return common.HighG
+	}
+	if strings.HasSuffix(sym, "ha") {
+		return common.HighA
+	}
+	return common.NoPitch
 }

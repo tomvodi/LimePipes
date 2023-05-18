@@ -351,6 +351,20 @@ var _ = Describe("BWW Parser", func() {
 		})
 	})
 
+	When("having ties in old format", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/ties_old.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/ties_old.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/ties_old.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
 	When("having irregular groups", func() {
 		BeforeEach(func() {
 			bwwData := dataFromFile("./testfiles/irregular_groups.bww")
