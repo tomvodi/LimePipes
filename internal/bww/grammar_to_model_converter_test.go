@@ -4,6 +4,7 @@ import (
 	"banduslib/internal/common"
 	"banduslib/internal/common/music_model"
 	"banduslib/internal/common/music_model/symbols"
+	"banduslib/internal/common/music_model/symbols/embellishment"
 	"banduslib/internal/common/music_model/symbols/tuplet"
 	"banduslib/internal/utils"
 	. "github.com/onsi/gomega"
@@ -51,7 +52,7 @@ func Test_handleTriplet(t *testing.T) {
 					Symbols: []*music_model.Symbol{
 						{Note: &symbols.Note{Pitch: common.LowA, Length: common.Eighth}},
 						{Note: &symbols.Note{
-							Embellishment: &symbols.Embellishment{Type: symbols.Doubling},
+							Embellishment: &embellishment.Embellishment{Type: embellishment.Doubling},
 						}},
 						{Note: &symbols.Note{Pitch: common.LowA, Length: common.Eighth}},
 					},

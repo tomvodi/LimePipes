@@ -4,6 +4,9 @@ import (
 	"banduslib/internal/common"
 	"banduslib/internal/common/music_model"
 	"banduslib/internal/common/music_model/symbols"
+	"banduslib/internal/common/music_model/symbols/accidental"
+	emb "banduslib/internal/common/music_model/symbols/embellishment"
+	"banduslib/internal/common/music_model/symbols/tie"
 	"banduslib/internal/common/music_model/symbols/time_line"
 	"banduslib/internal/common/music_model/symbols/tuplet"
 	"fmt"
@@ -140,7 +143,7 @@ func getMeasuresFromStave(stave *Staff, ctx *staffContext) ([]*music_model.Measu
 					log.Error().Msgf("old tie on pitch %s was started in previous measure but there is "+
 						"no note at the beginning of new measure", ctx.PendingOldTie.String())
 				} else {
-					newSym.Note.Tie = symbols.End
+					newSym.Note.Tie = tie.End
 				}
 
 				ctx.PendingOldTie = common.NoPitch
@@ -230,7 +233,7 @@ func appendTieStartToPreviousNote(
 		}
 
 		if lastSym.IsValidNote() {
-			lastSym.Note.Tie = symbols.Start
+			lastSym.Note.Tie = tie.Start
 		} else {
 			return fmt.Errorf("tie in old format (%s) must follow a note", staffSym)
 		}
@@ -244,7 +247,7 @@ func appendTieStartToPreviousNote(
 			staffSym,
 		)
 	}
-	lastSym.Note.Tie = symbols.Start
+	lastSym.Note.Tie = tie.Start
 	tiePitch := pitchFromSuffix(staffSym)
 	ctx.PendingOldTie = tiePitch
 
@@ -352,7 +355,7 @@ func appendStaffSymbolToMeasureSymbols(
 	if staffSym.WholeNote != nil || staffSym.HalfNote != nil ||
 		staffSym.QuarterNote != nil || staffSym.EighthNote != nil ||
 		staffSym.SixteenthNote != nil || staffSym.ThirtysecondNote != nil {
-		// add melody note to last note if it is an embellishment
+		// add melody note to last note if it is an emb
 		if lastSym != nil && lastSym.Note != nil && lastSym.Note.IsIncomplete() {
 			handleNote(staffSym, lastSym.Note)
 			return nil, nil
@@ -373,7 +376,7 @@ func appendStaffSymbolToMeasureSymbols(
 	}
 	if staffSym.TieStart != nil {
 		newSym.Note = &symbols.Note{
-			Tie: symbols.Start,
+			Tie: tie.Start,
 		}
 		ctx.PendingNewTie = true
 		return newSym, nil
@@ -392,114 +395,114 @@ func appendStaffSymbolToMeasureSymbols(
 		}
 
 		if lastSym != nil && lastSym.Note != nil && ctx.PendingNewTie {
-			lastSym.Note.Tie = symbols.End
+			lastSym.Note.Tie = tie.End
 			ctx.PendingNewTie = false
 		}
 	}
 	if staffSym.Flat != nil {
-		return handleAccidential(symbols.Flat), nil
+		return handleAccidential(accidental.Flat), nil
 	}
 	if staffSym.Natural != nil {
-		return handleAccidential(symbols.Natural), nil
+		return handleAccidential(accidental.Natural), nil
 	}
 	if staffSym.Sharp != nil {
-		return handleAccidential(symbols.Sharp), nil
+		return handleAccidential(accidental.Sharp), nil
 	}
 	if staffSym.Doubling != nil {
-		return handleEmbellishment(symbols.Doubling)
+		return handleEmbellishment(emb.Doubling)
 	}
 	if staffSym.HalfDoubling != nil {
-		return handleEmbellishmentVariant(symbols.Doubling, symbols.Half, symbols.NoWeight)
+		return handleEmbellishmentVariant(emb.Doubling, emb.Half, emb.NoWeight)
 	}
 	if staffSym.ThumbDoubling != nil {
-		return handleEmbellishmentVariant(symbols.Doubling, symbols.Thumb, symbols.NoWeight)
+		return handleEmbellishmentVariant(emb.Doubling, emb.Thumb, emb.NoWeight)
 	}
 	if staffSym.Grip != nil {
-		return handleEmbellishment(symbols.Grip)
+		return handleEmbellishment(emb.Grip)
 	}
 	if staffSym.GGrip != nil {
-		return handleEmbellishmentVariant(symbols.Grip, symbols.G, symbols.NoWeight)
+		return handleEmbellishmentVariant(emb.Grip, emb.G, emb.NoWeight)
 	}
 	if staffSym.ThumbGrip != nil {
-		return handleEmbellishmentVariant(symbols.Grip, symbols.Thumb, symbols.NoWeight)
+		return handleEmbellishmentVariant(emb.Grip, emb.Thumb, emb.NoWeight)
 	}
 	if staffSym.HalfGrip != nil {
-		return handleEmbellishmentVariant(symbols.Grip, symbols.Half, symbols.NoWeight)
+		return handleEmbellishmentVariant(emb.Grip, emb.Half, emb.NoWeight)
 	}
 	if staffSym.Taorluath != nil {
-		return handleEmbellishment(symbols.Taorluath)
+		return handleEmbellishment(emb.Taorluath)
 	}
 	if staffSym.Bubbly != nil {
-		return handleEmbellishment(symbols.Bubbly)
+		return handleEmbellishment(emb.Bubbly)
 	}
 	if staffSym.ThrowD != nil {
-		return handleEmbellishmentVariant(symbols.ThrowD, symbols.NoVariant, symbols.Light)
+		return handleEmbellishmentVariant(emb.ThrowD, emb.NoVariant, emb.Light)
 	}
 	if staffSym.HeavyThrowD != nil {
-		return handleEmbellishment(symbols.ThrowD)
+		return handleEmbellishment(emb.ThrowD)
 	}
 	if staffSym.Birl != nil {
-		return handleEmbellishment(symbols.Birl)
+		return handleEmbellishment(emb.Birl)
 	}
 	if staffSym.ABirl != nil {
-		return handleEmbellishment(symbols.ABirl)
+		return handleEmbellishment(emb.ABirl)
 	}
 	if staffSym.Strike != nil {
-		return handleEmbellishment(symbols.Strike)
+		return handleEmbellishment(emb.Strike)
 	}
 	if staffSym.GStrike != nil {
-		return handleEmbellishmentVariant(symbols.Strike, symbols.G, symbols.NoWeight)
+		return handleEmbellishmentVariant(emb.Strike, emb.G, emb.NoWeight)
 	}
 	if staffSym.LightGStrike != nil {
-		return handleEmbellishmentVariant(symbols.Strike, symbols.G, symbols.Light)
+		return handleEmbellishmentVariant(emb.Strike, emb.G, emb.Light)
 	}
 	if staffSym.LightDoubleStrike != nil {
-		return handleEmbellishmentVariant(symbols.DoubleStrike, symbols.NoVariant, symbols.Light)
+		return handleEmbellishmentVariant(emb.DoubleStrike, emb.NoVariant, emb.Light)
 	}
 	if staffSym.DoubleStrike != nil {
-		return handleEmbellishmentVariant(symbols.DoubleStrike, symbols.NoVariant, symbols.NoWeight)
+		return handleEmbellishmentVariant(emb.DoubleStrike, emb.NoVariant, emb.NoWeight)
 	}
 	if staffSym.LightGDoubleStrike != nil {
-		return handleEmbellishmentVariant(symbols.DoubleStrike, symbols.G, symbols.Light)
+		return handleEmbellishmentVariant(emb.DoubleStrike, emb.G, emb.Light)
 	}
 	if staffSym.GDoubleStrike != nil {
-		return handleEmbellishmentVariant(symbols.DoubleStrike, symbols.G, symbols.NoWeight)
+		return handleEmbellishmentVariant(emb.DoubleStrike, emb.G, emb.NoWeight)
 	}
 	if staffSym.LightThumbDoubleStrike != nil {
-		return handleEmbellishmentVariant(symbols.DoubleStrike, symbols.Thumb, symbols.Light)
+		return handleEmbellishmentVariant(emb.DoubleStrike, emb.Thumb, emb.Light)
 	}
 	if staffSym.ThumbDoubleStrike != nil {
-		return handleEmbellishmentVariant(symbols.DoubleStrike, symbols.Thumb, symbols.NoWeight)
+		return handleEmbellishmentVariant(emb.DoubleStrike, emb.Thumb, emb.NoWeight)
 	}
 	if staffSym.LightHalfDoubleStrike != nil {
-		return handleEmbellishmentVariant(symbols.DoubleStrike, symbols.Half, symbols.Light)
+		return handleEmbellishmentVariant(emb.DoubleStrike, emb.Half, emb.Light)
 	}
 	if staffSym.HalfDoubleStrike != nil {
-		return handleEmbellishmentVariant(symbols.DoubleStrike, symbols.Half, symbols.NoWeight)
+		return handleEmbellishmentVariant(emb.DoubleStrike, emb.Half, emb.NoWeight)
 	}
 	if staffSym.LightTripleStrike != nil {
-		return handleEmbellishmentVariant(symbols.TripleStrike, symbols.NoVariant, symbols.Light)
+		return handleEmbellishmentVariant(emb.TripleStrike, emb.NoVariant, emb.Light)
 	}
 	if staffSym.TripleStrike != nil {
-		return handleEmbellishmentVariant(symbols.TripleStrike, symbols.NoVariant, symbols.NoWeight)
+		return handleEmbellishmentVariant(emb.TripleStrike, emb.NoVariant, emb.NoWeight)
 	}
 	if staffSym.LightGTripleStrike != nil {
-		return handleEmbellishmentVariant(symbols.TripleStrike, symbols.G, symbols.Light)
+		return handleEmbellishmentVariant(emb.TripleStrike, emb.G, emb.Light)
 	}
 	if staffSym.GTripleStrike != nil {
-		return handleEmbellishmentVariant(symbols.TripleStrike, symbols.G, symbols.NoWeight)
+		return handleEmbellishmentVariant(emb.TripleStrike, emb.G, emb.NoWeight)
 	}
 	if staffSym.LightThumbTripleStrike != nil {
-		return handleEmbellishmentVariant(symbols.TripleStrike, symbols.Thumb, symbols.Light)
+		return handleEmbellishmentVariant(emb.TripleStrike, emb.Thumb, emb.Light)
 	}
 	if staffSym.ThumbTripleStrike != nil {
-		return handleEmbellishmentVariant(symbols.TripleStrike, symbols.Thumb, symbols.NoWeight)
+		return handleEmbellishmentVariant(emb.TripleStrike, emb.Thumb, emb.NoWeight)
 	}
 	if staffSym.LightHalfTripleStrike != nil {
-		return handleEmbellishmentVariant(symbols.TripleStrike, symbols.Half, symbols.Light)
+		return handleEmbellishmentVariant(emb.TripleStrike, emb.Half, emb.Light)
 	}
 	if staffSym.HalfTripleStrike != nil {
-		return handleEmbellishmentVariant(symbols.TripleStrike, symbols.Half, symbols.NoWeight)
+		return handleEmbellishmentVariant(emb.TripleStrike, emb.Half, emb.NoWeight)
 	}
 	if staffSym.DDoubleGrace != nil {
 		return handleDoubleGrace(common.D)
@@ -517,31 +520,31 @@ func appendStaffSymbolToMeasureSymbols(
 		return handleDoubleGrace(common.HighA)
 	}
 	if staffSym.HalfStrike != nil {
-		return handleEmbellishmentVariant(symbols.Strike, symbols.Half, symbols.NoWeight)
+		return handleEmbellishmentVariant(emb.Strike, emb.Half, emb.NoWeight)
 	}
 	if staffSym.LightHalfStrike != nil {
-		return handleEmbellishmentVariant(symbols.Strike, symbols.Half, symbols.Light)
+		return handleEmbellishmentVariant(emb.Strike, emb.Half, emb.Light)
 	}
 	if staffSym.ThumbStrike != nil {
-		return handleEmbellishmentVariant(symbols.Strike, symbols.Thumb, symbols.NoWeight)
+		return handleEmbellishmentVariant(emb.Strike, emb.Thumb, emb.NoWeight)
 	}
 	if staffSym.LightThumbStrike != nil {
-		return handleEmbellishmentVariant(symbols.Strike, symbols.Thumb, symbols.Light)
+		return handleEmbellishmentVariant(emb.Strike, emb.Thumb, emb.Light)
 	}
 	if staffSym.Pele != nil {
-		return handleEmbellishment(symbols.Pele)
+		return handleEmbellishment(emb.Pele)
 	}
 	if staffSym.LightPele != nil {
-		return handleEmbellishmentVariant(symbols.Pele, symbols.NoVariant, symbols.Light)
+		return handleEmbellishmentVariant(emb.Pele, emb.NoVariant, emb.Light)
 	}
 	if staffSym.ThumbPele != nil {
-		return handleEmbellishmentVariant(symbols.Pele, symbols.Thumb, symbols.NoWeight)
+		return handleEmbellishmentVariant(emb.Pele, emb.Thumb, emb.NoWeight)
 	}
 	if staffSym.LightThumbPele != nil {
-		return handleEmbellishmentVariant(symbols.Pele, symbols.Thumb, symbols.Light)
+		return handleEmbellishmentVariant(emb.Pele, emb.Thumb, emb.Light)
 	}
 	if staffSym.HalfPele != nil {
-		return handleEmbellishmentVariant(symbols.Pele, symbols.Half, symbols.NoWeight)
+		return handleEmbellishmentVariant(emb.Pele, emb.Half, emb.NoWeight)
 	}
 	if staffSym.IrregularGroupStart != nil {
 		ttype := tupletTypeFromSymbol(staffSym.IrregularGroupStart)
@@ -558,11 +561,11 @@ func appendStaffSymbolToMeasureSymbols(
 		}
 	}
 	if staffSym.LightHalfPele != nil {
-		return handleEmbellishmentVariant(symbols.Pele, symbols.Half, symbols.Light)
+		return handleEmbellishmentVariant(emb.Pele, emb.Half, emb.Light)
 	}
 	if staffSym.GBirl != nil ||
 		staffSym.ThumbBirl != nil {
-		return handleEmbellishment(symbols.GraceBirl)
+		return handleEmbellishment(emb.GraceBirl)
 	}
 	if staffSym.Fermata != nil {
 		if lastSym != nil && lastSym.Note != nil && lastSym.Note.HasPitchAndLength() {
@@ -591,32 +594,32 @@ func appendStaffSymbolToMeasureSymbols(
 }
 
 func handleEmbellishment(
-	emb symbols.EmbellishmentType,
+	embType emb.EmbellishmentType,
 ) (*music_model.Symbol, error) {
 	return &music_model.Symbol{
 		Note: &symbols.Note{
-			Embellishment: &symbols.Embellishment{
-				Type: emb,
+			Embellishment: &emb.Embellishment{
+				Type: embType,
 			},
 		},
 	}, nil
 }
 
 func handleDoubleGrace(pitch common.Pitch) (*music_model.Symbol, error) {
-	doubleG, err := handleEmbellishment(symbols.DoubleGrace)
+	doubleG, err := handleEmbellishment(emb.DoubleGrace)
 	doubleG.Note.Embellishment.Pitch = pitch
 	return doubleG, err
 }
 
 func handleEmbellishmentVariant(
-	emb symbols.EmbellishmentType,
-	variant symbols.EmbellishmentVariant,
-	weight symbols.EmbellishmentWeight,
+	embType emb.EmbellishmentType,
+	variant emb.EmbellishmentVariant,
+	weight emb.EmbellishmentWeight,
 ) (*music_model.Symbol, error) {
 	return &music_model.Symbol{
 		Note: &symbols.Note{
-			Embellishment: &symbols.Embellishment{
-				Type:    emb,
+			Embellishment: &emb.Embellishment{
+				Type:    embType,
 				Variant: variant,
 				Weight:  weight,
 			},
@@ -717,7 +720,7 @@ func handleNote(staffSym *StaffSymbols, note *symbols.Note) {
 	note.Pitch = pitchFromStaffNotePrefix(token)
 }
 
-func handleAccidential(acc symbols.Accidental) *music_model.Symbol {
+func handleAccidential(acc accidental.Accidental) *music_model.Symbol {
 	return &music_model.Symbol{
 		Note: &symbols.Note{
 			Accidental: acc,
@@ -772,9 +775,9 @@ func newTimeLineStartSymbol(ttype time_line.TimeLineType) *music_model.Symbol {
 	}
 }
 
-func embellishmentForSingleGrace(grace *string) *symbols.Embellishment {
-	emb := &symbols.Embellishment{
-		Type: symbols.SingleGrace,
+func embellishmentForSingleGrace(grace *string) *emb.Embellishment {
+	emb := &emb.Embellishment{
+		Type: emb.SingleGrace,
 	}
 
 	if *grace == "ag" {

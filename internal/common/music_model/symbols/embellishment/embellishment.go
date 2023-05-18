@@ -1,4 +1,4 @@
-package symbols
+package embellishment
 
 import (
 	"banduslib/internal/common"

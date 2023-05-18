@@ -2,36 +2,19 @@ package symbols
 
 import (
 	"banduslib/internal/common"
-)
-
-//go:generate go run github.com/dmarkham/enumer -json -yaml -type=Accidental
-//go:generate go run github.com/dmarkham/enumer -json -yaml -type=Tie
-
-type Accidental uint
-
-const (
-	NoAccidental Accidental = iota
-	Sharp
-	Flat
-	Natural
-)
-
-type Tie uint
-
-const (
-	NoTie Tie = iota
-	Start
-	End
+	"banduslib/internal/common/music_model/symbols/accidental"
+	"banduslib/internal/common/music_model/symbols/embellishment"
+	"banduslib/internal/common/music_model/symbols/tie"
 )
 
 type Note struct {
-	Pitch         common.Pitch   `yaml:"pitch,omitempty"`
-	Length        common.Length  `yaml:"length,omitempty"`
-	Dots          uint8          `yaml:"dots,omitempty"`
-	Accidental    Accidental     `yaml:"accidental,omitempty"`
-	Fermata       bool           `yaml:"fermata,omitempty"`
-	Tie           Tie            `yaml:"tie,omitempty"`
-	Embellishment *Embellishment `yaml:"embellishment,omitempty"`
+	Pitch         common.Pitch                 `yaml:"pitch,omitempty"`
+	Length        common.Length                `yaml:"length,omitempty"`
+	Dots          uint8                        `yaml:"dots,omitempty"`
+	Accidental    accidental.Accidental        `yaml:"accidental,omitempty"`
+	Fermata       bool                         `yaml:"fermata,omitempty"`
+	Tie           tie.Tie                      `yaml:"tie,omitempty"`
+	Embellishment *embellishment.Embellishment `yaml:"embellishment,omitempty"`
 }
 
 func (n *Note) IsValid() bool {
@@ -50,10 +33,10 @@ func (n *Note) IsIncomplete() bool {
 		if n.Embellishment != nil {
 			return true
 		}
-		if n.Accidental != NoAccidental {
+		if n.Accidental != accidental.NoAccidental {
 			return true
 		}
-		if n.Tie != NoTie {
+		if n.Tie != tie.NoTie {
 			return true
 		}
 	}
@@ -66,7 +49,7 @@ func (n *Note) HasPitchAndLength() bool {
 
 func (n *Note) IsOnlyAccidental() bool {
 	if n.Pitch == common.NoPitch && n.Length == common.NoLength {
-		if n.Accidental != NoAccidental {
+		if n.Accidental != accidental.NoAccidental {
 			return true
 		}
 	}
