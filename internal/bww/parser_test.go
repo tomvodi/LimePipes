@@ -74,7 +74,7 @@ var _ = Describe("BWW Parser", func() {
 			Expect(musicTunesBww[0].Title).To(Equal("Tune Title"))
 			Expect(musicTunesBww[0].Composer).To(Equal("Composer"))
 			Expect(musicTunesBww[0].Type).To(Equal("Tune Type"))
-			Expect(musicTunesBww[0].Footer).To(Equal("Tune Footer"))
+			Expect(musicTunesBww[0].Footer).To(Equal([]string{"Tune Footer"}))
 		})
 	})
 
@@ -109,6 +109,7 @@ var _ = Describe("BWW Parser", func() {
 			bwwData := dataFromFile("./testfiles/embellishment_without_following_note.bww")
 			musicTunesBww, err = parser.ParseBwwData(bwwData)
 			musicTunesExpect = importFromYaml("./testfiles/embellishment_without_following_note.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/embellishment_without_following_note.yaml")
 		})
 
 		It("should have parsed file correctly", func() {
@@ -407,6 +408,47 @@ var _ = Describe("BWW Parser", func() {
 		})
 	})
 
+	When("having a file with a tune containing inline text and comments", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/tune_with_inline_comments.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/tune_with_inline_comments.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/tune_with_inline_comments.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
+	When("having a file with two tunes", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/two_tunes.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/two_tunes.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/two_tunes.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
+	When("having a file with a tune with comments, the comment should not be propagated to first measure", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/single_tune_comment_does_not_appear_in_first_measure.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/single_tune_comment_does_not_appear_in_first_measure.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/single_tune_comment_does_not_appear_in_first_measure.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
 	When("parsing the file with all bww symbols in it", func() {
 		BeforeEach(func() {
 			data := dataFromFile("./testfiles/all_symbols.bww")

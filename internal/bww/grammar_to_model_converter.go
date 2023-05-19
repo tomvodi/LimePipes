@@ -19,24 +19,38 @@ import (
 type staffContext struct {
 	PendingOldTie         common.Pitch
 	PendingNewTie         bool
+	NextMeasureComments   []string
+	NextMeasureInLineText []string
 	PreviousStaveMeasures []*music_model.Measure
 }
 
 func convertGrammarToModel(grammar *BwwDocument) ([]*music_model.Tune, error) {
 	var tunes []*music_model.Tune
 
+	var newTune *music_model.Tune
+	staffCtx := &staffContext{
+		PendingOldTie: common.NoPitch,
+	}
 	for _, tune := range grammar.Tunes {
-		newTune := &music_model.Tune{}
-		if err := fillTuneWithParameter(newTune, tune.Header.TuneParameter); err != nil {
-			return nil, err
+		if tune.Header.HasTitle() {
+			if newTune != nil {
+				tunes = append(tunes, newTune)
+			}
+			newTune = &music_model.Tune{}
+			if err := fillTuneWithParameter(newTune, tune.Header.TuneParameter); err != nil {
+				return nil, err
+			}
+		} else {
+			staffCtx.NextMeasureComments = tune.Header.GetComments()
+			staffCtx.NextMeasureInLineText = tune.Header.GetInlineTexts()
 		}
 
 		// TODO when tempo only of first tune, set to other tunes as well?
-		if err := fillTunePartsFromStaves(newTune, tune.Body.Staffs); err != nil {
+		if err := fillTunePartsFromStaves(newTune, tune.Body.Staffs, staffCtx); err != nil {
 			return nil, err
 		}
-		tunes = append(tunes, newTune)
 	}
+	tunes = append(tunes, newTune)
 
 	return tunes, nil
 }
@@ -55,29 +69,38 @@ func fillTuneWithParameter(tune *music_model.Tune, params []*TuneParameter) erro
 		if param.Description != nil {
 			firstParam := param.Description.ParamList[0]
 			text := param.Description.Text
-			if firstParam == "T" {
+			if firstParam == TitleParameter {
 				tune.Title = text
 			}
-			if firstParam == "Y" {
+			if firstParam == TypeParameter {
 				tune.Type = text
 			}
-			if firstParam == "M" {
+			if firstParam == ComposerParameter {
 				tune.Composer = text
 			}
-			if firstParam == "F" {
-				tune.Footer = text
+			if firstParam == FooterParameter {
+				tune.Footer = append(tune.Footer, text)
 			}
+			if firstParam == InlineParameter {
+				tune.InLineText = append(tune.InLineText, text)
+			}
+		}
+
+		if param.Comment != "" {
+			tune.Comments = append(tune.Comments, param.Comment)
 		}
 	}
 
 	return nil
 }
 
-func fillTunePartsFromStaves(tune *music_model.Tune, staves []*Staff) error {
+func fillTunePartsFromStaves(
+	tune *music_model.Tune,
+	staves []*Staff,
+	staffCtx *staffContext,
+) error {
 	var measures []*music_model.Measure
-	staffCtx := &staffContext{
-		PendingOldTie: common.NoPitch,
-	}
+
 	for _, stave := range staves {
 		staveMeasures, err := getMeasuresFromStave(stave, staffCtx)
 		if err != nil {
@@ -95,6 +118,11 @@ func fillTunePartsFromStaves(tune *music_model.Tune, staves []*Staff) error {
 func getMeasuresFromStave(stave *Staff, ctx *staffContext) ([]*music_model.Measure, error) {
 	var measures []*music_model.Measure
 	currMeasure := &music_model.Measure{}
+	currMeasure.InLineText = ctx.NextMeasureInLineText
+	currMeasure.Comments = ctx.NextMeasureComments
+	ctx.NextMeasureInLineText = nil
+	ctx.NextMeasureComments = nil
+
 	for _, staffSym := range stave.Symbols {
 		// if staffSym bar or part start => new measure
 		// currMeasure to return measures

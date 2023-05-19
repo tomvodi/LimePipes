@@ -1,0 +1,16 @@
+- title: Tune Title
+  comments:
+    - just a comment
+    - and another comment
+  inLineText:
+    - tune inline text
+  tempo: 0
+  measures:
+    - symbols:
+        - note:
+            pitch: D
+            length: Quarter
+      comments:
+        - stave comment
+      inLineText:
+        - stave inline text

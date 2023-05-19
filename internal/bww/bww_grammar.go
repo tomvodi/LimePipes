@@ -2,6 +2,12 @@ package bww
 
 import "fmt"
 
+const TitleParameter = "T"
+const TypeParameter = "Y"
+const ComposerParameter = "M"
+const FooterParameter = "F"
+const InlineParameter = "I"
+
 type BwwDocument struct {
 	Tunes []*Tune `@@*`
 }
@@ -16,11 +22,43 @@ type TuneHeader struct {
 	TuneParameter []*TuneParameter `@@+`
 }
 
+func (t *TuneHeader) HasTitle() bool {
+	for _, param := range t.TuneParameter {
+		desc := param.Description
+		if desc != nil && desc.FirstParameter() == TitleParameter {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (t *TuneHeader) GetComments() []string {
+	var comments []string
+	for _, param := range t.TuneParameter {
+		if param.Comment != "" {
+			comments = append(comments, param.Comment)
+		}
+	}
+	return comments
+}
+
+func (t *TuneHeader) GetInlineTexts() []string {
+	var inlineTexts []string
+	for _, param := range t.TuneParameter {
+		desc := param.Description
+		if desc != nil && desc.FirstParameter() == InlineParameter {
+			inlineTexts = append(inlineTexts, desc.Text)
+		}
+	}
+	return inlineTexts
+}
+
 type TuneParameter struct {
 	Config      *TuneConfig      `@@`
 	Tempo       *TuneTempo       `| @@`
 	Description *TuneDescription `| @@`
-	Comment     string           `| STRING`
+	Comment     string           `| @STRING`
 }
 
 // TuneConfig like page layout or MIDI note mappings
@@ -39,6 +77,14 @@ type TuneTempo struct {
 type TuneDescription struct {
 	Text      string   `@STRING PARAM_SEP`
 	ParamList []string `PARAM_START @PARAM (PARAM_SEP @PARAM)* PARAM_END`
+}
+
+func (t *TuneDescription) FirstParameter() string {
+	if len(t.ParamList) > 0 {
+		return t.ParamList[0]
+	}
+
+	return ""
 }
 
 type TuneBody struct {

@@ -1,4 +1,6 @@
 - title: Tune Title
+  comments:
+    - e ties in old format (^te) are effectively the end symbol of ties in new format and handled there
   tempo: 0
   measures:
     - symbols:

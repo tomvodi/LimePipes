@@ -1,0 +1,12 @@
+Bagpipe Reader:1.0
+
+"Tune 1 Title",(T,L,0,0,Times New Roman,15,700,0,1,2,0,0,32768)
+
+& LA_4 !t
+
+"stave inline text",(I,R,0,0,Courier New,12,400,255,0,49,0,0,0)
+&  D_4 !I
+
+"Tune 2 Title",(T,L,0,0,Times New Roman,15,700,0,1,2,0,0,32768)
+
+& B_4 C_4 D_4 E_4 !t

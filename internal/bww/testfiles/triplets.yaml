@@ -1,4 +1,6 @@
 - title: Tune Title
+  comments:
+    - e triplets (^3e) are effectively the end symbol of the 3:2 irregular group and handled there
   tempo: 0
   measures:
     - symbols:
