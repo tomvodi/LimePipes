@@ -386,7 +386,7 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 		},
 		{
 			Name:    "TIMELINE_END",
-			Pattern: `_'`,
+			Pattern: `_'|bis_'`,
 		},
 		{
 			Name:    "WHITESPACE",
