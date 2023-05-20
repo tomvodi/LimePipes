@@ -136,7 +136,8 @@ func getMeasuresFromStave(stave *Staff, ctx *staffContext) ([]*music_model.Measu
 		// if staffSym bar or part start => new measure
 		// currMeasure to return measures
 		if staffSym.Barline != nil ||
-			staffSym.PartStart != nil {
+			staffSym.PartStart != nil ||
+			staffSym.NextStaffStart != nil {
 			measures = cleanupAndAppendMeasure(measures, currMeasure)
 			currMeasure = &music_model.Measure{}
 

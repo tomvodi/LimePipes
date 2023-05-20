@@ -1,6 +1,8 @@
 package bww
 
-import "fmt"
+import (
+	"fmt"
+)
 
 const TitleParameter = "T"
 const TypeParameter = "Y"
@@ -94,12 +96,14 @@ type TuneBody struct {
 type Staff struct {
 	Start   string          `@STAFF_START`
 	Symbols []*StaffSymbols `@@*`
-	End     string          `@STAFF_END`
+	End     string          `@(STAFF_END | EOF)`
 }
 
 type StaffSymbols struct {
 	PartStart              *string `@PART_START`
 	Barline                *string `| @BARLINE`
+	Space                  *string `| @SPACE`
+	NextStaffStart         *string `| @NEXT_STAFF_START`
 	TimeSig                *string `| @TIME_SIG`
 	Sharp                  *string `| @SHARP`
 	Natural                *string `| @NATURAL`

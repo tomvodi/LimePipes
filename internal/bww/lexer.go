@@ -6,7 +6,7 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 	"Root": {
 		{
 			Name:    "BagpipeReader",
-			Pattern: `Bagpipe Reader|Bagpipe Music Writer Gold`,
+			Pattern: `Bagpipe Reader|Bagpipe Music Writer Gold|Bagpipe Musicworks Gold`,
 			Action:  lexer.Push("BagpipeReader"),
 		},
 		{
@@ -89,8 +89,16 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Pattern: `I!''|I!`,
 		},
 		{
+			Name:    "NEXT_STAFF_START",
+			Pattern: `&`,
+		},
+		{
 			Name:    "BARLINE",
 			Pattern: `!\s`,
+		},
+		{
+			Name:    "SPACE",
+			Pattern: `space`,
 		},
 		{
 			Name:    "SHARP",

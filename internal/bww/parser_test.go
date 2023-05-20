@@ -408,6 +408,20 @@ var _ = Describe("BWW Parser", func() {
 		})
 	})
 
+	When("having space symbols", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/space.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/space.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/space.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
 	When("having a file with a tune containing inline text and comments", func() {
 		BeforeEach(func() {
 			bwwData := dataFromFile("./testfiles/tune_with_inline_comments.bww")
@@ -456,6 +470,34 @@ var _ = Describe("BWW Parser", func() {
 			musicTunesBww, err = parser.ParseBwwData(bwwData)
 			musicTunesExpect = importFromYaml("./testfiles/first_tune_no_title.yaml")
 			//exportToYaml(musicTunesBww, "./testfiles/first_tune_no_title.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
+	When("having a tune with no proper staff ending before next staff starts", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/tune_with_no_staff_ending_before_next_staff.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/tune_with_no_staff_ending_before_next_staff.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/tune_with_no_staff_ending_before_next_staff.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
+	When("having a tune staff that ends with EOF", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/tune_staff_ends_with_eof.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/tune_staff_ends_with_eof.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/tune_staff_ends_with_eof.yaml")
 		})
 
 		It("should have parsed file correctly", func() {
