@@ -389,6 +389,10 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Pattern: `_'|bis_'`,
 		},
 		{
+			Name:    "STRING",
+			Pattern: `"[^"]*"`,
+		},
+		{
 			Name:    "WHITESPACE",
 			Pattern: `\s+`,
 		},

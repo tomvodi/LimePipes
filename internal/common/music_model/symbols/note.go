@@ -15,6 +15,7 @@ type Note struct {
 	Fermata       bool                         `yaml:"fermata,omitempty"`
 	Tie           tie.Tie                      `yaml:"tie,omitempty"`
 	Embellishment *embellishment.Embellishment `yaml:"embellishment,omitempty"`
+	Comment       string                       `yaml:"comment,omitempty"`
 }
 
 func (n *Note) IsValid() bool {

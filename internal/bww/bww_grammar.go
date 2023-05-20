@@ -176,6 +176,7 @@ type StaffSymbols struct {
 	Triplets               *string `| @TRIPLETS`
 	TimelineStart          *string `| @TIMELINE_START`
 	TimelineEnd            *string `| @TIMELINE_END`
+	Comment                *string `| @STRING`
 }
 
 func (s StaffSymbols) String() string {

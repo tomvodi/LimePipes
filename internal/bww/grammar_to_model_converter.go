@@ -627,6 +627,17 @@ func appendStaffSymbolToMeasureSymbols(
 			},
 		}, nil
 	}
+	if staffSym.Comment != nil {
+		if lastSym != nil {
+			if lastSym.IsNote() {
+				lastSym.Note.Comment = *staffSym.Comment
+			}
+		} else {
+			if currentMeasure != nil {
+				currentMeasure.Comments = append(currentMeasure.Comments, *staffSym.Comment)
+			}
+		}
+	}
 
 	return nil, nil // fmt.Errorf("staff symbol %v not handled", staffSym)
 }
