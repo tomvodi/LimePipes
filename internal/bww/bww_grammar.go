@@ -67,7 +67,7 @@ type TuneParameter struct {
 // these lines start with a defined word e.g. MIDINoteMappings,(...)
 type TuneConfig struct {
 	Name      string   `@PARAM_DEF PARAM_SEP`
-	ParamList []string `PARAM_START @PARAM (PARAM_SEP @PARAM)* PARAM_END`
+	ParamList []string `PARAM_START @PARAM? (PARAM_SEP @PARAM?)* PARAM_END`
 }
 
 type TuneTempo struct {
@@ -78,7 +78,7 @@ type TuneTempo struct {
 // they all start with a string "title",(...)
 type TuneDescription struct {
 	Text      string   `@STRING PARAM_SEP`
-	ParamList []string `PARAM_START @PARAM (PARAM_SEP @PARAM)* PARAM_END`
+	ParamList []string `PARAM_START @PARAM? (PARAM_SEP @PARAM?)* PARAM_END`
 }
 
 func (t *TuneDescription) FirstParameter() string {

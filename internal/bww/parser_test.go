@@ -506,6 +506,20 @@ var _ = Describe("BWW Parser", func() {
 		})
 	})
 
+	When("having tune title and config with missing parameter in list", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/tune_with_missing_parameter_in_list.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/tune_with_missing_parameter_in_list.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/tune_with_missing_parameter_in_list.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
 	When("parsing the file with all bww symbols in it", func() {
 		BeforeEach(func() {
 			data := dataFromFile("./testfiles/all_symbols.bww")
