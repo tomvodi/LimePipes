@@ -1,0 +1,12 @@
+- title: no title
+  comments:
+    - just a comment
+    - and another comment
+  inLineText:
+    - tune inline text
+  tempo: 0
+  measures:
+    - symbols:
+        - note:
+            pitch: LowA
+            length: Quarter

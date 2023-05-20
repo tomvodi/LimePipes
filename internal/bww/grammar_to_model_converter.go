@@ -31,7 +31,7 @@ func convertGrammarToModel(grammar *BwwDocument) ([]*music_model.Tune, error) {
 	staffCtx := &staffContext{
 		PendingOldTie: common.NoPitch,
 	}
-	for _, tune := range grammar.Tunes {
+	for i, tune := range grammar.Tunes {
 		if tune.Header.HasTitle() {
 			if newTune != nil {
 				tunes = append(tunes, newTune)
@@ -41,8 +41,17 @@ func convertGrammarToModel(grammar *BwwDocument) ([]*music_model.Tune, error) {
 				return nil, err
 			}
 		} else {
-			staffCtx.NextMeasureComments = tune.Header.GetComments()
-			staffCtx.NextMeasureInLineText = tune.Header.GetInlineTexts()
+			if i == 0 && newTune == nil {
+				log.Warn().Msgf("first tune doesn't have a title. Setting it to 'no title'")
+				newTune = &music_model.Tune{}
+				if err := fillTuneWithParameter(newTune, tune.Header.TuneParameter); err != nil {
+					return nil, err
+				}
+				newTune.Title = "no title"
+			} else {
+				staffCtx.NextMeasureComments = tune.Header.GetComments()
+				staffCtx.NextMeasureInLineText = tune.Header.GetInlineTexts()
+			}
 		}
 
 		// TODO when tempo only of first tune, set to other tunes as well?

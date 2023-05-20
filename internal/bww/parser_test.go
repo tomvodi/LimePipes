@@ -449,6 +449,21 @@ var _ = Describe("BWW Parser", func() {
 			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
 		})
 	})
+
+	When("having a file with the first tune without a title", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/first_tune_no_title.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/first_tune_no_title.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/first_tune_no_title.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
 	When("parsing the file with all bww symbols in it", func() {
 		BeforeEach(func() {
 			data := dataFromFile("./testfiles/all_symbols.bww")
