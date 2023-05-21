@@ -94,9 +94,10 @@ type TuneBody struct {
 }
 
 type Staff struct {
-	Start   string          `@STAFF_START`
-	Symbols []*StaffSymbols `@@*`
-	End     string          `@(STAFF_END | EOF)`
+	Start       string          `@STAFF_START`
+	Symbols     []*StaffSymbols `@@*`
+	End         string          `@(STAFF_END | EOF)`
+	TimelineEnd *string         `@TIMELINE_END?`
 }
 
 type StaffSymbols struct {

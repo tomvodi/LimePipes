@@ -1,0 +1,12 @@
+- title: Tune Title
+  tempo: 0
+  measures:
+    - symbols:
+        - timeLine:
+            boundaryType: Start
+            type: First
+        - note:
+            pitch: D
+            length: Quarter
+        - timeLine:
+            boundaryType: End

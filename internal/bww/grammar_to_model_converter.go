@@ -190,6 +190,12 @@ func getMeasuresFromStave(stave *Staff, ctx *staffContext) ([]*music_model.Measu
 		}
 	}
 
+	// append time line end to measure symbols if it was outside of stave
+	if stave.TimelineEnd != nil {
+		tl := newTimeLineEnd()
+		currMeasure.Symbols = append(currMeasure.Symbols, tl)
+	}
+
 	measures = cleanupAndAppendMeasure(measures, currMeasure)
 	return measures, nil
 }
@@ -620,12 +626,7 @@ func appendStaffSymbolToMeasureSymbols(
 		return handleTimeLine(*staffSym.TimelineStart)
 	}
 	if staffSym.TimelineEnd != nil {
-		return &music_model.Symbol{
-			TimeLine: &time_line.TimeLine{
-				BoundaryType: time_line.End,
-				Type:         time_line.NoType,
-			},
-		}, nil
+		return newTimeLineEnd(), nil
 	}
 	if staffSym.Comment != nil {
 		handleInsideStaffComment(lastSym, currentMeasure, *staffSym.Comment)
@@ -950,4 +951,13 @@ func pitchFromSuffix(sym string) common.Pitch {
 		return common.HighA
 	}
 	return common.NoPitch
+}
+
+func newTimeLineEnd() *music_model.Symbol {
+	return &music_model.Symbol{
+		TimeLine: &time_line.TimeLine{
+			BoundaryType: time_line.End,
+			Type:         time_line.NoType,
+		},
+	}
 }

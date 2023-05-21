@@ -20,6 +20,10 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Action:  lexer.Push("ParamList"),
 		},
 		{
+			Name:    "TIMELINE_END",
+			Pattern: `_'|bis_'`,
+		},
+		{
 			Name:    "PARAM_DEF",
 			Pattern: `MIDINoteMappings|FrequencyMappings|InstrumentMappings|GracenoteDurations|FontSizes|TuneFormat`,
 		},
