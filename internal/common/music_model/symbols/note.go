@@ -4,6 +4,7 @@ import (
 	"banduslib/internal/common"
 	"banduslib/internal/common/music_model/symbols/accidental"
 	"banduslib/internal/common/music_model/symbols/embellishment"
+	"banduslib/internal/common/music_model/symbols/movement"
 	"banduslib/internal/common/music_model/symbols/tie"
 )
 
@@ -15,6 +16,7 @@ type Note struct {
 	Fermata       bool                         `yaml:"fermata,omitempty"`
 	Tie           tie.Tie                      `yaml:"tie,omitempty"`
 	Embellishment *embellishment.Embellishment `yaml:"embellishment,omitempty"`
+	Movement      *movement.Movement           `yaml:"movement,omitempty"` // Piobairached movements
 	Comment       string                       `yaml:"comment,omitempty"`
 }
 
@@ -32,6 +34,9 @@ func (n *Note) IsValid() bool {
 func (n *Note) IsIncomplete() bool {
 	if !n.HasPitchAndLength() {
 		if n.Embellishment != nil {
+			return true
+		}
+		if n.Movement != nil {
 			return true
 		}
 		if n.Accidental != accidental.NoAccidental {

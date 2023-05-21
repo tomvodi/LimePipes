@@ -337,6 +337,14 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Pattern: `hst3la|hst3b|hst3c|hst3d|hst3e|hst3f|hst3hg|hst3ha`,
 		},
 		{
+			Name:    "CADENCE",
+			Pattern: `cadged|cadge|caded|cade|cadaed|cadae|cadgf|cadaf`,
+		},
+		{
+			Name:    "FERMAT_CADENCE",
+			Pattern: `fcadged|fcadge|fcaded|fcade|fcadaed|fcadae|fcadgf|fcadaf`,
+		},
+		{
 			Name:    "D_DOUBLE_GRACE",
 			Pattern: `dlg|dla|db|dc`,
 		},

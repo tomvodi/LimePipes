@@ -562,6 +562,20 @@ var _ = Describe("BWW Parser", func() {
 		})
 	})
 
+	When("having file with all cadences in it", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/cadences.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/cadences.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/cadences.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
 	When("parsing the file with all bww symbols in it", func() {
 		BeforeEach(func() {
 			data := dataFromFile("./testfiles/all_symbols.bww")
@@ -573,4 +587,17 @@ var _ = Describe("BWW Parser", func() {
 			Expect(musicTunesBww).To(HaveLen(2))
 		})
 	})
+
+	When("parsing the file with all piobaireached symbols in it", func() {
+		BeforeEach(func() {
+			data := dataFromFile("./testfiles/all_piobaireached_symbols.bww")
+			musicTunesBww, err = parser.ParseBwwData(data)
+		})
+
+		It("should succeed", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).To(HaveLen(1))
+		})
+	})
+
 })

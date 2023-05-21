@@ -6,6 +6,7 @@ import (
 	"banduslib/internal/common/music_model/symbols"
 	"banduslib/internal/common/music_model/symbols/accidental"
 	emb "banduslib/internal/common/music_model/symbols/embellishment"
+	"banduslib/internal/common/music_model/symbols/movement"
 	"banduslib/internal/common/music_model/symbols/tie"
 	"banduslib/internal/common/music_model/symbols/time_line"
 	"banduslib/internal/common/music_model/symbols/tuplet"
@@ -634,8 +635,57 @@ func appendStaffSymbolToMeasureSymbols(
 	if staffSym.Description != nil {
 		handleInsideStaffComment(lastSym, currentMeasure, staffSym.Description.Text)
 	}
+	if staffSym.Cadence != nil {
+		return handleCadence(staffSym.Cadence, false)
+	}
+	if staffSym.FermatCadence != nil {
+		return handleCadence(staffSym.FermatCadence, true)
+	}
 
 	return nil, nil // fmt.Errorf("staff symbol %v not handled", staffSym)
+}
+
+func handleCadence(
+	cad *string,
+	fermata bool,
+) (*music_model.Symbol, error) {
+	return &music_model.Symbol{
+		Note: &symbols.Note{
+			Movement: &movement.Movement{
+				Type:    movement.Cadence,
+				Fermata: fermata,
+				Pitches: pitchesFromCadenceSym(*cad, fermata),
+			},
+		},
+	}, nil
+}
+
+func pitchesFromCadenceSym(sym string, fermata bool) []common.Pitch {
+	if fermata {
+		sym = strings.Replace(sym, "fcad", "", 1)
+	} else {
+		sym = strings.Replace(sym, "cad", "", 1)
+	}
+
+	pitches := make([]common.Pitch, len(sym))
+	for i, ch := range sym {
+		switch ch {
+		case 'g':
+			pitches[i] = common.HighG
+		case 'e':
+			pitches[i] = common.E
+		case 'd':
+			pitches[i] = common.D
+		case 'a':
+			pitches[i] = common.HighA
+		case 'f':
+			pitches[i] = common.F
+		default:
+			log.Error().Msgf("char %c is not handled for cadence symbol", ch)
+			pitches[i] = common.NoPitch
+		}
+	}
+	return pitches
 }
 
 func handleInsideStaffComment(

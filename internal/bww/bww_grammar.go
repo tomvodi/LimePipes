@@ -177,6 +177,8 @@ type StaffSymbols struct {
 	Triplets               *string          `| @TRIPLETS`
 	TimelineStart          *string          `| @TIMELINE_START`
 	TimelineEnd            *string          `| @TIMELINE_END`
+	Cadence                *string          `| @CADENCE`
+	FermatCadence          *string          `| @FERMAT_CADENCE`
 	Description            *TuneDescription `| @@`
 	Comment                *string          `| @STRING`
 }

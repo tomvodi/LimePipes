@@ -183,3 +183,66 @@ func Test_handleTriplet(t *testing.T) {
 		})
 	}
 }
+func Test_pitchesFromFermataSym(t *testing.T) {
+	utils.SetupConsoleLogger()
+	g := NewGomegaWithT(t)
+	type fields struct {
+		sym     string
+		fermata bool
+		want    []common.Pitch
+	}
+	tests := []struct {
+		name    string
+		prepare func(f *fields)
+	}{
+		{
+			name: "cadence ged",
+			prepare: func(f *fields) {
+				f.sym = "cadged"
+				f.fermata = false
+				f.want = []common.Pitch{
+					common.HighG,
+					common.E,
+					common.D,
+				}
+			},
+		},
+		{
+			name: "fermata cadence ged",
+			prepare: func(f *fields) {
+				f.sym = "fcadged"
+				f.fermata = true
+				f.want = []common.Pitch{
+					common.HighG,
+					common.E,
+					common.D,
+				}
+			},
+		},
+		{
+			name: "fermata cadence af",
+			prepare: func(f *fields) {
+				f.sym = "fcadaf"
+				f.fermata = true
+				f.want = []common.Pitch{
+					common.HighA,
+					common.F,
+				}
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			f := &fields{}
+
+			if tt.prepare != nil {
+				tt.prepare(f)
+			}
+
+			got := pitchesFromCadenceSym(f.sym, f.fermata)
+			g.Expect(got).To(Equal(f.want))
+
+		})
+	}
+}

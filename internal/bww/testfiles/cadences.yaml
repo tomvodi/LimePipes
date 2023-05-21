@@ -1,0 +1,161 @@
+- title: Tune Title
+  tempo: 0
+  measures:
+    - symbols:
+        - note:
+            pitch: C
+            length: Quarter
+            movement:
+                type: Cadence
+                pitches:
+                    - HighG
+                    - E
+                    - D
+        - note:
+            pitch: LowA
+            length: Quarter
+            movement:
+                type: Cadence
+                pitches:
+                    - HighG
+                    - E
+    - symbols:
+        - note:
+            pitch: HighA
+            length: Quarter
+        - note:
+            pitch: B
+            length: Quarter
+            movement:
+                type: Cadence
+                pitches:
+                    - E
+                    - D
+        - note:
+            pitch: HighA
+            length: Quarter
+        - note:
+            pitch: D
+            length: Quarter
+            movement:
+                type: Cadence
+                pitches:
+                    - E
+    - symbols:
+        - note:
+            pitch: B
+            length: Quarter
+            movement:
+                type: Cadence
+                pitches:
+                    - HighA
+                    - E
+                    - D
+        - note:
+            pitch: LowA
+            length: Quarter
+            movement:
+                type: Cadence
+                pitches:
+                    - HighA
+                    - E
+    - symbols:
+        - note:
+            pitch: C
+            length: Quarter
+            movement:
+                type: Cadence
+                pitches:
+                    - HighG
+                    - E
+                    - D
+                fermata: true
+        - note:
+            pitch: LowA
+            length: Quarter
+            movement:
+                type: Cadence
+                pitches:
+                    - HighG
+                    - E
+                fermata: true
+    - symbols:
+        - note:
+            pitch: HighA
+            length: Quarter
+        - note:
+            pitch: B
+            length: Quarter
+            movement:
+                type: Cadence
+                pitches:
+                    - E
+                    - D
+                fermata: true
+        - note:
+            pitch: HighA
+            length: Quarter
+        - note:
+            pitch: D
+            length: Quarter
+            movement:
+                type: Cadence
+                pitches:
+                    - E
+                fermata: true
+    - symbols:
+        - note:
+            pitch: B
+            length: Quarter
+            movement:
+                type: Cadence
+                pitches:
+                    - HighA
+                    - E
+                    - D
+                fermata: true
+        - note:
+            pitch: LowA
+            length: Quarter
+            movement:
+                type: Cadence
+                pitches:
+                    - HighA
+                    - E
+                fermata: true
+    - symbols:
+        - note:
+            pitch: F
+            length: Quarter
+            movement:
+                type: Cadence
+                pitches:
+                    - HighG
+                    - F
+        - note:
+            pitch: F
+            length: Quarter
+            movement:
+                type: Cadence
+                pitches:
+                    - HighA
+                    - F
+    - symbols:
+        - note:
+            pitch: F
+            length: Quarter
+            movement:
+                type: Cadence
+                pitches:
+                    - HighG
+                    - F
+                fermata: true
+        - note:
+            pitch: F
+            length: Quarter
+            movement:
+                type: Cadence
+                pitches:
+                    - HighA
+                    - F
+                fermata: true
