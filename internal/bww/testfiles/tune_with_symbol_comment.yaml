@@ -8,3 +8,8 @@
             comment: comment symbol
       comments:
         - comment measure
+    - symbols:
+        - note:
+            pitch: B
+            length: Quarter
+            comment: comment with inline style

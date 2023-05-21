@@ -628,18 +628,29 @@ func appendStaffSymbolToMeasureSymbols(
 		}, nil
 	}
 	if staffSym.Comment != nil {
-		if lastSym != nil {
-			if lastSym.IsNote() {
-				lastSym.Note.Comment = *staffSym.Comment
-			}
-		} else {
-			if currentMeasure != nil {
-				currentMeasure.Comments = append(currentMeasure.Comments, *staffSym.Comment)
-			}
-		}
+		handleInsideStaffComment(lastSym, currentMeasure, *staffSym.Comment)
+	}
+	if staffSym.Description != nil {
+		handleInsideStaffComment(lastSym, currentMeasure, staffSym.Description.Text)
 	}
 
 	return nil, nil // fmt.Errorf("staff symbol %v not handled", staffSym)
+}
+
+func handleInsideStaffComment(
+	lastSym *music_model.Symbol,
+	currentMeasure *music_model.Measure,
+	text string,
+) {
+	if lastSym != nil {
+		if lastSym.IsNote() {
+			lastSym.Note.Comment = text
+		}
+	} else {
+		if currentMeasure != nil {
+			currentMeasure.Comments = append(currentMeasure.Comments, text)
+		}
+	}
 }
 
 func handleEmbellishment(
