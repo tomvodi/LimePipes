@@ -29,6 +29,10 @@ const (
 	Adeda
 	EchoBeat
 	Darodo
+	Hiharin
+	Rodin
+	Chelalho
+	Din
 )
 
 type Variant uint

@@ -477,6 +477,22 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Pattern: `phdarodo|pdarodo16|pdarodo|hdarodo|darodo16|darodo`,
 		},
 		{
+			Name:    "HIHARIN",
+			Pattern: `hiharin|phiharin`,
+		},
+		{
+			Name:    "RODIN",
+			Pattern: `rodin`,
+		},
+		{
+			Name:    "CHELALHO",
+			Pattern: `chelalho`,
+		},
+		{
+			Name:    "DIN",
+			Pattern: `din`,
+		},
+		{
 			Name:    "D_DOUBLE_GRACE",
 			Pattern: `dlg|dla|db|dc`,
 		},

@@ -212,6 +212,10 @@ type StaffSymbols struct {
 	ThumbAdeda             *string          `| @THUMB_ADEDA`
 	EchoBeats              *string          `| @ECHO_BEATS`
 	Darodo                 *string          `| @DARODO`
+	Hiharin                *string          `| @HIHARIN`
+	Rodin                  *string          `| @RODIN`
+	Chelalho               *string          `| @CHELALHO`
+	Din                    *string          `| @DIN`
 	Description            *TuneDescription `| @@`
 	Comment                *string          `| @STRING`
 }

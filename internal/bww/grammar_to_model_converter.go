@@ -750,6 +750,18 @@ func appendStaffSymbolToMeasureSymbols(
 	if staffSym.Darodo != nil {
 		return handleMovement(movement.Darodo, staffSym.Darodo, false, true)
 	}
+	if staffSym.Hiharin != nil {
+		return handleMovement(movement.Hiharin, staffSym.Hiharin, false, false)
+	}
+	if staffSym.Rodin != nil {
+		return handleMovement(movement.Rodin, staffSym.Rodin, false, false)
+	}
+	if staffSym.Chelalho != nil {
+		return handleMovement(movement.Chelalho, staffSym.Chelalho, false, false)
+	}
+	if staffSym.Din != nil {
+		return handleMovement(movement.Din, staffSym.Din, false, false)
+	}
 	return nil, nil // fmt.Errorf("staff symbol %v not handled", staffSym)
 }
 

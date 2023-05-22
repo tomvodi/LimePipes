@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-const _TypeName = "NoMovementCadenceEmbariEndariChedariHedariDiliTraEdreDareCheCheReGripDedaEnbainOtroOdroAdedaEchoBeatDarodo"
+const _TypeName = "NoMovementCadenceEmbariEndariChedariHedariDiliTraEdreDareCheCheReGripDedaEnbainOtroOdroAdedaEchoBeatDarodoHiharinRodinChelalhoDin"
 
-var _TypeIndex = [...]uint8{0, 10, 17, 23, 29, 36, 42, 46, 49, 53, 57, 65, 69, 73, 79, 83, 87, 92, 100, 106}
+var _TypeIndex = [...]uint8{0, 10, 17, 23, 29, 36, 42, 46, 49, 53, 57, 65, 69, 73, 79, 83, 87, 92, 100, 106, 113, 118, 126, 129}
 
-const _TypeLowerName = "nomovementcadenceembariendarichedarihedaridilitraedredarechecheregripdedaenbainotroodroadedaechobeatdarodo"
+const _TypeLowerName = "nomovementcadenceembariendarichedarihedaridilitraedredarechecheregripdedaenbainotroodroadedaechobeatdarodohiharinrodinchelalhodin"
 
 func (i Type) String() string {
 	if i >= Type(len(_TypeIndex)-1) {
@@ -44,9 +44,13 @@ func _TypeNoOp() {
 	_ = x[Adeda-(16)]
 	_ = x[EchoBeat-(17)]
 	_ = x[Darodo-(18)]
+	_ = x[Hiharin-(19)]
+	_ = x[Rodin-(20)]
+	_ = x[Chelalho-(21)]
+	_ = x[Din-(22)]
 }
 
-var _TypeValues = []Type{NoMovement, Cadence, Embari, Endari, Chedari, Hedari, Dili, Tra, Edre, Dare, CheCheRe, Grip, Deda, Enbain, Otro, Odro, Adeda, EchoBeat, Darodo}
+var _TypeValues = []Type{NoMovement, Cadence, Embari, Endari, Chedari, Hedari, Dili, Tra, Edre, Dare, CheCheRe, Grip, Deda, Enbain, Otro, Odro, Adeda, EchoBeat, Darodo, Hiharin, Rodin, Chelalho, Din}
 
 var _TypeNameToValueMap = map[string]Type{
 	_TypeName[0:10]:         NoMovement,
@@ -87,6 +91,14 @@ var _TypeNameToValueMap = map[string]Type{
 	_TypeLowerName[92:100]:  EchoBeat,
 	_TypeName[100:106]:      Darodo,
 	_TypeLowerName[100:106]: Darodo,
+	_TypeName[106:113]:      Hiharin,
+	_TypeLowerName[106:113]: Hiharin,
+	_TypeName[113:118]:      Rodin,
+	_TypeLowerName[113:118]: Rodin,
+	_TypeName[118:126]:      Chelalho,
+	_TypeLowerName[118:126]: Chelalho,
+	_TypeName[126:129]:      Din,
+	_TypeLowerName[126:129]: Din,
 }
 
 var _TypeNames = []string{
@@ -109,6 +121,10 @@ var _TypeNames = []string{
 	_TypeName[87:92],
 	_TypeName[92:100],
 	_TypeName[100:106],
+	_TypeName[106:113],
+	_TypeName[113:118],
+	_TypeName[118:126],
+	_TypeName[126:129],
 }
 
 // TypeString retrieves an enum value from the enum constants string name.
