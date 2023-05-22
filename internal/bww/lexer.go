@@ -493,6 +493,14 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Pattern: `din`,
 		},
 		{
+			Name:    "LEMLUATH",
+			Pattern: `hlemlg|hlemla|lemb|lem`,
+		},
+		{
+			Name:    "LEMLUATH_ABBREV",
+			Pattern: `phlla|plb|pl`,
+		},
+		{
 			Name:    "D_DOUBLE_GRACE",
 			Pattern: `dlg|dla|db|dc`,
 		},

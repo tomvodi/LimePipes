@@ -762,6 +762,26 @@ func appendStaffSymbolToMeasureSymbols(
 	if staffSym.Din != nil {
 		return handleMovement(movement.Din, staffSym.Din, false, false)
 	}
+	if staffSym.Lemluath != nil {
+		mv, _ := handleMovement(movement.Lemluath, staffSym.Lemluath, false, true)
+		pitch := pitchFromSuffix(*staffSym.Lemluath)
+		mv.Note.Movement.PitchHint = pitch
+		return mv, nil
+	}
+	if staffSym.LemluathAbbrev != nil {
+		if lastSym == nil || lastSym.Note == nil {
+			return nil, fmt.Errorf("lemluath abbreviation %s must follow melody note", *staffSym.LemluathAbbrev)
+		}
+		if !lastSym.Note.IsValid() {
+			return nil, fmt.Errorf("lemluath abbreviation %s must follow a valid melody note", *staffSym.LemluathAbbrev)
+		}
+		sym, _ := handleMovement(movement.Lemluath, staffSym.LemluathAbbrev, false, true)
+		move := sym.Note.Movement
+		pitch := pitchFromSuffix(*staffSym.LemluathAbbrev)
+		move.PitchHint = pitch
+		lastSym.Note.Movement = move
+		return nil, nil
+	}
 	return nil, nil // fmt.Errorf("staff symbol %v not handled", staffSym)
 }
 

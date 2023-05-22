@@ -70,3 +70,11 @@ TuneTempo,90
 
 & E_4 hiharin LA_4 C_4 rodin  LA_4 E_4 chelalho D_4 B_4 din LA_4 !t
 & E_4 phiharin LA_4 !t
+
+
+"Lemluaths",(T,L,0,0,Times New Roman,15,700,0,1,2,0,0,32768)
+
+"Abbreviations are placed AFTER melody note"
+
+& LA_4 lem E_4 HG_4 lem E_4 HA_4 lem E_4 D_4 lemb E_4 LG_4 hlemla E_4 LG_4 hlemlg E_4 !t
+& LA_4  pl HG_4 pl HA_4 pl D_4 plb LG_4 phlla !t

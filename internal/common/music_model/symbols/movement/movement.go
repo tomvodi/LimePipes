@@ -33,6 +33,7 @@ const (
 	Rodin
 	Chelalho
 	Din
+	Lemluath
 )
 
 type Variant uint

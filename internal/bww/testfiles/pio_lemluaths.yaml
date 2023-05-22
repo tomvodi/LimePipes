@@ -1,0 +1,93 @@
+- title: Lemluaths
+  comments:
+    - Abbreviations are placed AFTER melody note
+  tempo: 0
+  measures:
+    - symbols:
+        - note:
+            pitch: LowA
+            length: Quarter
+        - note:
+            pitch: E
+            length: Quarter
+            movement:
+                type: Lemluath
+        - note:
+            pitch: HighG
+            length: Quarter
+        - note:
+            pitch: E
+            length: Quarter
+            movement:
+                type: Lemluath
+        - note:
+            pitch: HighA
+            length: Quarter
+        - note:
+            pitch: E
+            length: Quarter
+            movement:
+                type: Lemluath
+        - note:
+            pitch: D
+            length: Quarter
+        - note:
+            pitch: E
+            length: Quarter
+            movement:
+                type: Lemluath
+                pitchHint: B
+        - note:
+            pitch: LowG
+            length: Quarter
+        - note:
+            pitch: E
+            length: Quarter
+            movement:
+                type: Lemluath
+                variant: Half
+                pitchHint: LowA
+        - note:
+            pitch: LowG
+            length: Quarter
+        - note:
+            pitch: E
+            length: Quarter
+            movement:
+                type: Lemluath
+                variant: Half
+                pitchHint: LowG
+    - symbols:
+        - note:
+            pitch: LowA
+            length: Quarter
+            movement:
+                type: Lemluath
+                abbreviate: true
+        - note:
+            pitch: HighG
+            length: Quarter
+            movement:
+                type: Lemluath
+                abbreviate: true
+        - note:
+            pitch: HighA
+            length: Quarter
+            movement:
+                type: Lemluath
+                abbreviate: true
+        - note:
+            pitch: D
+            length: Quarter
+            movement:
+                type: Lemluath
+                pitchHint: B
+                abbreviate: true
+        - note:
+            pitch: LowG
+            length: Quarter
+            movement:
+                type: Lemluath
+                variant: Half
+                pitchHint: LowA
+                abbreviate: true

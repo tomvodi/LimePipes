@@ -216,6 +216,8 @@ type StaffSymbols struct {
 	Rodin                  *string          `| @RODIN`
 	Chelalho               *string          `| @CHELALHO`
 	Din                    *string          `| @DIN`
+	Lemluath               *string          `| @LEMLUATH`
+	LemluathAbbrev         *string          `| @LEMLUATH_ABBREV`
 	Description            *TuneDescription `| @@`
 	Comment                *string          `| @STRING`
 }
