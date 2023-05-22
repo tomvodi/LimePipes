@@ -179,6 +179,23 @@ type StaffSymbols struct {
 	TimelineEnd            *string          `| @TIMELINE_END`
 	Cadence                *string          `| @CADENCE`
 	FermatCadence          *string          `| @FERMAT_CADENCE`
+	Embari                 *string          `| @EMBARI`
+	Endari                 *string          `| @ENDARI`
+	Chedari                *string          `| @CHEDARI`
+	Hedari                 *string          `| @HEDARI`
+	Dili                   *string          `| @DILI`
+	Tra                    *string          `| @TRA`
+	Edre                   *string          `| @EDRE`
+	GEdre                  *string          `| @G_EDRE`
+	ThumbEdre              *string          `| @THUMB_EDRE`
+	HalfEdre               *string          `| @HALF_EDRE`
+	Dare                   *string          `| @DARE`
+	GDare                  *string          `| @G_DARE`
+	ThumbDare              *string          `| @THUMB_DARE`
+	HalfDare               *string          `| @HALF_DARE`
+	CheCheRe               *string          `| @CHECHERE`
+	ThumbCheCheRe          *string          `| @THUMB_CHECHERE`
+	HalfCheCheRe           *string          `| @HALF_CHECHERE`
 	Description            *TuneDescription `| @@`
 	Comment                *string          `| @STRING`
 }

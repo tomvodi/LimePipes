@@ -641,8 +641,103 @@ func appendStaffSymbolToMeasureSymbols(
 	if staffSym.FermatCadence != nil {
 		return handleCadence(staffSym.FermatCadence, true)
 	}
+	if staffSym.Embari != nil {
+		return handleMovement(movement.Embari, staffSym.Embari, true, true)
+	}
+	if staffSym.Endari != nil {
+		return handleMovement(movement.Endari, staffSym.Endari, true, true)
+	}
+	if staffSym.Chedari != nil {
+		return handleMovement(movement.Chedari, staffSym.Chedari, true, true)
+	}
+	if staffSym.Hedari != nil {
+		return handleMovement(movement.Hedari, staffSym.Hedari, true, false)
+	}
+	if staffSym.Dili != nil {
+		return handleMovement(movement.Dili, staffSym.Dili, true, true)
+	}
+	if staffSym.Tra != nil {
+		return handleMovement(movement.Tra, staffSym.Tra, false, true)
+	}
+	if staffSym.Edre != nil {
+		mv, _ := handleMovement(movement.Edre, staffSym.Edre, true, true)
+		pitch := pitchFromSuffix(*staffSym.Edre)
+		if pitch != common.E {
+			mv.Note.Movement.PitchHint = pitch
+		}
+		return mv, nil
+	}
+	if staffSym.HalfEdre != nil {
+		mv, _ := handleMovement(movement.Edre, staffSym.HalfEdre, true, true)
+		mv.Note.Movement.Variant = movement.Half
+		return mv, nil
+	}
+	if staffSym.GEdre != nil {
+		return handleMovement(movement.Edre, staffSym.GEdre, true, true)
+	}
+	if staffSym.ThumbEdre != nil {
+		return handleMovement(movement.Edre, staffSym.ThumbEdre, true, true)
+	}
+	if staffSym.Dare != nil {
+		return handleMovement(movement.Dare, staffSym.Dare, true, true)
+	}
+	if staffSym.HalfDare != nil {
+		return handleMovement(movement.Dare, staffSym.HalfDare, true, true)
+	}
+	if staffSym.ThumbDare != nil {
+		return handleMovement(movement.Dare, staffSym.ThumbDare, true, true)
+	}
+	if staffSym.GDare != nil {
+		return handleMovement(movement.Dare, staffSym.GDare, true, true)
+	}
+	if staffSym.CheCheRe != nil {
+		return handleMovement(movement.CheCheRe, staffSym.CheCheRe, true, true)
+	}
+	if staffSym.HalfCheCheRe != nil {
+		return handleMovement(movement.CheCheRe, staffSym.HalfCheCheRe, true, true)
+	}
+	if staffSym.ThumbCheCheRe != nil {
+		return handleMovement(movement.CheCheRe, staffSym.ThumbCheCheRe, true, true)
+	}
 
 	return nil, nil // fmt.Errorf("staff symbol %v not handled", staffSym)
+}
+
+func handleMovement(mtype movement.Type, sym *string, withThumb bool, withHalf bool) (*music_model.Symbol, error) {
+	showAbbr := false
+	if strings.HasPrefix(*sym, "p") {
+		showAbbr = true
+	}
+	mVar := movement.NoVariant
+	if withHalf {
+		if strings.HasPrefix(*sym, "h") || strings.HasPrefix(*sym, "ph") {
+			mVar = movement.Half
+		}
+	}
+
+	if withThumb {
+		if strings.HasPrefix(*sym, "t") {
+			mVar = movement.Thumb
+		}
+	}
+
+	if strings.HasPrefix(*sym, "g") {
+		mVar = movement.G
+	}
+
+	if strings.HasSuffix(*sym, "8") {
+		mVar = movement.LongLowG
+	}
+
+	return &music_model.Symbol{
+		Note: &symbols.Note{
+			Movement: &movement.Movement{
+				Type:       mtype,
+				Abbreviate: showAbbr,
+				Variant:    mVar,
+			},
+		},
+	}, nil
 }
 
 func handleCadence(

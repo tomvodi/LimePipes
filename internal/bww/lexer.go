@@ -345,6 +345,74 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Pattern: `fcadged|fcadge|fcaded|fcade|fcadaed|fcadae|fcadgf|fcadaf`,
 		},
 		{
+			Name:    "EMBARI",
+			Pattern: `embari|pembari`,
+		},
+		{
+			Name:    "ENDARI",
+			Pattern: `endari|pendari`,
+		},
+		{
+			Name:    "CHEDARI",
+			Pattern: `chedari|pchedari`,
+		},
+		{
+			Name:    "HEDARI",
+			Pattern: `hedari|phedari`,
+		},
+		{
+			Name:    "DILI",
+			Pattern: `dili|pdili`,
+		},
+		{
+			Name:    "TRA",
+			Pattern: `tra8|tra|htra|ptra8|ptra|phtra`,
+		},
+		{
+			Name:    "EDRE",
+			Pattern: `edreb|edrec|edred|edre|pedreb|pedrec|pedred|pedre`,
+		},
+		{
+			Name:    "G_EDRE",
+			Pattern: `gedre`,
+		},
+		{
+			Name:    "THUMB_EDRE",
+			Pattern: `tedre`,
+		},
+		{
+			Name:    "HALF_EDRE",
+			Pattern: `dre`,
+		},
+		{
+			Name:    "DARE",
+			Pattern: `chedare|dare|pdare`,
+		},
+		{
+			Name:    "G_DARE",
+			Pattern: `gdare`,
+		},
+		{
+			Name:    "THUMB_DARE",
+			Pattern: `tdare`,
+		},
+		{
+			Name:    "HALF_DARE",
+			Pattern: `hedale`,
+		},
+		{
+			Name:    "CHECHERE",
+			Pattern: `chechere|pchechere`,
+		},
+		{
+			Name:    "THUMB_CHECHERE",
+			Pattern: `tchechere`,
+		},
+		{
+			Name:    "HALF_CHECHERE",
+			Pattern: `hchechere`,
+		},
+		{
 			Name:    "D_DOUBLE_GRACE",
 			Pattern: `dlg|dla|db|dc`,
 		},
