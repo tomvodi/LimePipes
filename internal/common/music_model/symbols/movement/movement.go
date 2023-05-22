@@ -27,6 +27,7 @@ const (
 	Otro
 	Odro
 	Adeda
+	EchoBeat
 )
 
 type Variant uint
@@ -50,6 +51,8 @@ type Movement struct {
 	// so the pitch hint will make sure that no information gets lost in importing bww
 	// files
 	PitchHint common.Pitch `yaml:"pitchHint,omitempty"`
+	// Pitch, if the movement has a distinct pitch like echo notes
+	Pitch common.Pitch `yaml:"pitch,omitempty"`
 	// Abbreviate is true, when the movement should show as its abbreviation symbol and not
 	// as every grace note
 	Abbreviate bool `yaml:"abbreviate,omitempty"`

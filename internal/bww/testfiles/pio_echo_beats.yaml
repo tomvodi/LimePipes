@@ -1,0 +1,86 @@
+- title: Echo Beats
+  tempo: 0
+  measures:
+    - symbols:
+        - note:
+            pitch: B
+            length: Quarter
+        - note:
+            pitch: B
+            length: Quarter
+            movement:
+                type: EchoBeat
+                pitch: LowG
+        - note:
+            pitch: E
+            length: Quarter
+        - note:
+            pitch: E
+            length: Quarter
+            movement:
+                type: EchoBeat
+                pitch: LowA
+        - note:
+            pitch: C
+            length: Quarter
+        - note:
+            pitch: C
+            length: Quarter
+            movement:
+                type: EchoBeat
+                pitch: B
+        - note:
+            pitch: D
+            length: Quarter
+        - note:
+            pitch: D
+            length: Quarter
+            movement:
+                type: EchoBeat
+                pitch: C
+        - note:
+            pitch: E
+            length: Quarter
+        - note:
+            pitch: E
+            length: Quarter
+            movement:
+                type: EchoBeat
+                pitch: D
+    - symbols:
+        - note:
+            pitch: F
+            length: Quarter
+        - note:
+            pitch: F
+            length: Quarter
+            movement:
+                type: EchoBeat
+                pitch: E
+        - note:
+            pitch: HighG
+            length: Quarter
+        - note:
+            pitch: HighG
+            length: Quarter
+            movement:
+                type: EchoBeat
+                pitch: F
+        - note:
+            pitch: HighA
+            length: Quarter
+        - note:
+            pitch: HighA
+            length: Quarter
+            movement:
+                type: EchoBeat
+                pitch: HighG
+        - note:
+            pitch: HighG
+            length: Quarter
+        - note:
+            pitch: HighG
+            length: Quarter
+            movement:
+                type: EchoBeat
+                pitch: HighA

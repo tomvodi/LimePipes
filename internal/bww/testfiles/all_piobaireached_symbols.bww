@@ -53,3 +53,8 @@ TuneTempo,90
 & B_4 genbain LA_4 C_4 gotro B_4 D_4 godro C_4 E_4 gadeda D_4 !t
 & B_4 tenbain LA_4 C_4 totro B_4 D_4 todro C_4 E_4 tadeda D_4 !t
 
+
+"Echo Beats",(T,L,0,0,Times New Roman,15,700,0,1,2,0,0,32768)
+
+& B_4 echolg B_4 E_4 echola E_4 C_4 echob C_4 D_4 echoc D_4 E_4 echod E_4 !t
+& F_4 echoe F_4 HG_4 echof HG_4 HA_4 echohg HA_4 HG_4 echoha HG_4 !t

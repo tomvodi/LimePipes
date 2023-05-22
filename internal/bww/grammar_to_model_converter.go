@@ -741,6 +741,12 @@ func appendStaffSymbolToMeasureSymbols(
 	if staffSym.ThumbAdeda != nil {
 		return handleMovement(movement.Adeda, staffSym.ThumbAdeda, true, true)
 	}
+	if staffSym.EchoBeats != nil {
+		mv, _ := handleMovement(movement.EchoBeat, staffSym.EchoBeats, false, false)
+		pitch := pitchFromSuffix(*staffSym.EchoBeats)
+		mv.Note.Movement.Pitch = pitch
+		return mv, nil
+	}
 
 	return nil, nil // fmt.Errorf("staff symbol %v not handled", staffSym)
 }

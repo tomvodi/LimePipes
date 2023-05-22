@@ -210,6 +210,7 @@ type StaffSymbols struct {
 	Adeda                  *string          `| @ADEDA`
 	GAdeda                 *string          `| @G_ADEDA`
 	ThumbAdeda             *string          `| @THUMB_ADEDA`
+	EchoBeats              *string          `| @ECHO_BEATS`
 	Description            *TuneDescription `| @@`
 	Comment                *string          `| @STRING`
 }

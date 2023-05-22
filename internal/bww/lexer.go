@@ -469,6 +469,10 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Pattern: `tadeda`,
 		},
 		{
+			Name:    "ECHO_BEATS",
+			Pattern: `echolg|echola|echohg|echoha|echob|echoc|echod|echoe|echof`,
+		},
+		{
 			Name:    "D_DOUBLE_GRACE",
 			Pattern: `dlg|dla|db|dc`,
 		},
