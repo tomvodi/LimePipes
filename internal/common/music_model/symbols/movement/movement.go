@@ -28,6 +28,7 @@ const (
 	Odro
 	Adeda
 	EchoBeat
+	Darodo
 )
 
 type Variant uint

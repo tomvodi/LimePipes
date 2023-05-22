@@ -473,6 +473,10 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Pattern: `echolg|echola|echohg|echoha|echob|echoc|echod|echoe|echof`,
 		},
 		{
+			Name:    "DARODO",
+			Pattern: `phdarodo|pdarodo16|pdarodo|hdarodo|darodo16|darodo`,
+		},
+		{
 			Name:    "D_DOUBLE_GRACE",
 			Pattern: `dlg|dla|db|dc`,
 		},

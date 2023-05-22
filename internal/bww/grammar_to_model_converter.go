@@ -747,7 +747,9 @@ func appendStaffSymbolToMeasureSymbols(
 		mv.Note.Movement.Pitch = pitch
 		return mv, nil
 	}
-
+	if staffSym.Darodo != nil {
+		return handleMovement(movement.Darodo, staffSym.Darodo, false, true)
+	}
 	return nil, nil // fmt.Errorf("staff symbol %v not handled", staffSym)
 }
 
@@ -773,7 +775,8 @@ func handleMovement(mtype movement.Type, sym *string, withThumb bool, withHalf b
 		mVar = movement.G
 	}
 
-	if strings.HasSuffix(*sym, "8") {
+	if strings.HasSuffix(*sym, "8") ||
+		strings.HasSuffix(*sym, "16") {
 		mVar = movement.LongLowG
 	}
 
