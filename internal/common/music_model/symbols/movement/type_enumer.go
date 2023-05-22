@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-const _TypeName = "NoMovementCadenceEmbariEndariChedariHedariDiliTraEdreDareCheCheRe"
+const _TypeName = "NoMovementCadenceEmbariEndariChedariHedariDiliTraEdreDareCheCheReGripDedaEnbainOtroOdroAdeda"
 
-var _TypeIndex = [...]uint8{0, 10, 17, 23, 29, 36, 42, 46, 49, 53, 57, 65}
+var _TypeIndex = [...]uint8{0, 10, 17, 23, 29, 36, 42, 46, 49, 53, 57, 65, 69, 73, 79, 83, 87, 92}
 
-const _TypeLowerName = "nomovementcadenceembariendarichedarihedaridilitraedredarechechere"
+const _TypeLowerName = "nomovementcadenceembariendarichedarihedaridilitraedredarechecheregripdedaenbainotroodroadeda"
 
 func (i Type) String() string {
 	if i >= Type(len(_TypeIndex)-1) {
@@ -36,9 +36,15 @@ func _TypeNoOp() {
 	_ = x[Edre-(8)]
 	_ = x[Dare-(9)]
 	_ = x[CheCheRe-(10)]
+	_ = x[Grip-(11)]
+	_ = x[Deda-(12)]
+	_ = x[Enbain-(13)]
+	_ = x[Otro-(14)]
+	_ = x[Odro-(15)]
+	_ = x[Adeda-(16)]
 }
 
-var _TypeValues = []Type{NoMovement, Cadence, Embari, Endari, Chedari, Hedari, Dili, Tra, Edre, Dare, CheCheRe}
+var _TypeValues = []Type{NoMovement, Cadence, Embari, Endari, Chedari, Hedari, Dili, Tra, Edre, Dare, CheCheRe, Grip, Deda, Enbain, Otro, Odro, Adeda}
 
 var _TypeNameToValueMap = map[string]Type{
 	_TypeName[0:10]:       NoMovement,
@@ -63,6 +69,18 @@ var _TypeNameToValueMap = map[string]Type{
 	_TypeLowerName[53:57]: Dare,
 	_TypeName[57:65]:      CheCheRe,
 	_TypeLowerName[57:65]: CheCheRe,
+	_TypeName[65:69]:      Grip,
+	_TypeLowerName[65:69]: Grip,
+	_TypeName[69:73]:      Deda,
+	_TypeLowerName[69:73]: Deda,
+	_TypeName[73:79]:      Enbain,
+	_TypeLowerName[73:79]: Enbain,
+	_TypeName[79:83]:      Otro,
+	_TypeLowerName[79:83]: Otro,
+	_TypeName[83:87]:      Odro,
+	_TypeLowerName[83:87]: Odro,
+	_TypeName[87:92]:      Adeda,
+	_TypeLowerName[87:92]: Adeda,
 }
 
 var _TypeNames = []string{
@@ -77,6 +95,12 @@ var _TypeNames = []string{
 	_TypeName[49:53],
 	_TypeName[53:57],
 	_TypeName[57:65],
+	_TypeName[65:69],
+	_TypeName[69:73],
+	_TypeName[73:79],
+	_TypeName[79:83],
+	_TypeName[83:87],
+	_TypeName[87:92],
 }
 
 // TypeString retrieves an enum value from the enum constants string name.

@@ -1,0 +1,165 @@
+- title: Grips
+  tempo: 0
+  measures:
+    - symbols:
+        - note:
+            pitch: LowA
+            length: Quarter
+        - note:
+            pitch: C
+            length: Quarter
+            movement:
+                type: Grip
+                abbreviate: true
+        - note:
+            pitch: D
+            length: Quarter
+        - note:
+            pitch: D
+            length: Quarter
+            movement:
+                type: Deda
+    - symbols:
+        - note:
+            pitch: B
+            length: Quarter
+        - note:
+            pitch: LowA
+            length: Quarter
+            movement:
+                type: Enbain
+        - note:
+            pitch: C
+            length: Quarter
+        - note:
+            pitch: B
+            length: Quarter
+            movement:
+                type: Otro
+        - note:
+            pitch: D
+            length: Quarter
+        - note:
+            pitch: C
+            length: Quarter
+            movement:
+                type: Odro
+        - note:
+            pitch: E
+            length: Quarter
+        - note:
+            pitch: D
+            length: Quarter
+            movement:
+                type: Adeda
+    - symbols:
+        - note:
+            pitch: B
+            length: Quarter
+        - note:
+            pitch: LowA
+            length: Quarter
+            movement:
+                type: Enbain
+                abbreviate: true
+        - note:
+            pitch: C
+            length: Quarter
+        - note:
+            pitch: B
+            length: Quarter
+            movement:
+                type: Otro
+                abbreviate: true
+        - note:
+            pitch: D
+            length: Quarter
+        - note:
+            pitch: C
+            length: Quarter
+            movement:
+                type: Odro
+                abbreviate: true
+        - note:
+            pitch: E
+            length: Quarter
+        - note:
+            pitch: D
+            length: Quarter
+            movement:
+                type: Adeda
+                abbreviate: true
+    - symbols:
+        - note:
+            pitch: B
+            length: Quarter
+        - note:
+            pitch: LowA
+            length: Quarter
+            movement:
+                type: Enbain
+                variant: G
+        - note:
+            pitch: C
+            length: Quarter
+        - note:
+            pitch: B
+            length: Quarter
+            movement:
+                type: Otro
+                variant: G
+        - note:
+            pitch: D
+            length: Quarter
+        - note:
+            pitch: C
+            length: Quarter
+            movement:
+                type: Odro
+                variant: G
+        - note:
+            pitch: E
+            length: Quarter
+        - note:
+            pitch: D
+            length: Quarter
+            movement:
+                type: Adeda
+                variant: G
+    - symbols:
+        - note:
+            pitch: B
+            length: Quarter
+        - note:
+            pitch: LowA
+            length: Quarter
+            movement:
+                type: Enbain
+                variant: Thumb
+        - note:
+            pitch: C
+            length: Quarter
+        - note:
+            pitch: B
+            length: Quarter
+            movement:
+                type: Otro
+                variant: Thumb
+        - note:
+            pitch: D
+            length: Quarter
+        - note:
+            pitch: C
+            length: Quarter
+            movement:
+                type: Odro
+                variant: Thumb
+        - note:
+            pitch: E
+            length: Quarter
+        - note:
+            pitch: D
+            length: Quarter
+            movement:
+                type: Adeda
+                variant: Thumb

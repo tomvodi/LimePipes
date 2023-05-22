@@ -413,6 +413,62 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Pattern: `hchechere`,
 		},
 		{
+			Name:    "GRIP_ABBREV",
+			Pattern: `pgrp`,
+		},
+		{
+			Name:    "DEDA",
+			Pattern: `deda`,
+		},
+		{
+			Name:    "ENBAIN",
+			Pattern: `enbain|penbain`,
+		},
+		{
+			Name:    "G_ENBAIN",
+			Pattern: `genbain`,
+		},
+		{
+			Name:    "THUMB_ENBAIN",
+			Pattern: `tenbain`,
+		},
+		{
+			Name:    "OTRO",
+			Pattern: `otro|potro`,
+		},
+		{
+			Name:    "G_OTRO",
+			Pattern: `gotro`,
+		},
+		{
+			Name:    "THUMB_OTRO",
+			Pattern: `totro`,
+		},
+		{
+			Name:    "ODRO",
+			Pattern: `odro|podro`,
+		},
+		{
+			Name:    "G_ODRO",
+			Pattern: `godro`,
+		},
+		{
+			Name:    "THUMB_ODRO",
+			Pattern: `todro`,
+		},
+		{
+			Name:    "ADEDA",
+			Pattern: `adeda|padeda`,
+		},
+		{
+			Name:    "G_ADEDA",
+			Pattern: `gadeda`,
+		},
+		{
+			Name:    "THUMB_ADEDA",
+			Pattern: `tadeda`,
+		},
+		{
 			Name:    "D_DOUBLE_GRACE",
 			Pattern: `dlg|dla|db|dc`,
 		},

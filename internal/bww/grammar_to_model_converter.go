@@ -699,6 +699,48 @@ func appendStaffSymbolToMeasureSymbols(
 	if staffSym.ThumbCheCheRe != nil {
 		return handleMovement(movement.CheCheRe, staffSym.ThumbCheCheRe, true, true)
 	}
+	if staffSym.GripAbbrev != nil {
+		return handleMovement(movement.Grip, staffSym.GripAbbrev, true, true)
+	}
+	if staffSym.Deda != nil {
+		return handleMovement(movement.Deda, staffSym.Deda, true, true)
+	}
+	if staffSym.Enbain != nil {
+		return handleMovement(movement.Enbain, staffSym.Enbain, true, true)
+	}
+	if staffSym.GEnbain != nil {
+		return handleMovement(movement.Enbain, staffSym.GEnbain, true, true)
+	}
+	if staffSym.ThumbEnbain != nil {
+		return handleMovement(movement.Enbain, staffSym.ThumbEnbain, true, true)
+	}
+	if staffSym.Otro != nil {
+		return handleMovement(movement.Otro, staffSym.Otro, true, true)
+	}
+	if staffSym.GOtro != nil {
+		return handleMovement(movement.Otro, staffSym.GOtro, true, true)
+	}
+	if staffSym.ThumbOtro != nil {
+		return handleMovement(movement.Otro, staffSym.ThumbOtro, true, true)
+	}
+	if staffSym.Odro != nil {
+		return handleMovement(movement.Odro, staffSym.Odro, true, true)
+	}
+	if staffSym.GOdro != nil {
+		return handleMovement(movement.Odro, staffSym.GOdro, true, true)
+	}
+	if staffSym.ThumbOdro != nil {
+		return handleMovement(movement.Odro, staffSym.ThumbOdro, true, true)
+	}
+	if staffSym.Adeda != nil {
+		return handleMovement(movement.Adeda, staffSym.Adeda, true, true)
+	}
+	if staffSym.GAdeda != nil {
+		return handleMovement(movement.Adeda, staffSym.GAdeda, true, true)
+	}
+	if staffSym.ThumbAdeda != nil {
+		return handleMovement(movement.Adeda, staffSym.ThumbAdeda, true, true)
+	}
 
 	return nil, nil // fmt.Errorf("staff symbol %v not handled", staffSym)
 }

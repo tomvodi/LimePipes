@@ -590,6 +590,20 @@ var _ = Describe("BWW Parser", func() {
 		})
 	})
 
+	When("having file with piobairached grips in it", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/pio_grips.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/pio_grips.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/pio_grips.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
 	When("parsing the file with all bww symbols in it", func() {
 		BeforeEach(func() {
 			data := dataFromFile("./testfiles/all_symbols.bww")
@@ -610,7 +624,7 @@ var _ = Describe("BWW Parser", func() {
 
 		It("should succeed", func() {
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(musicTunesBww).To(HaveLen(1))
+			Expect(musicTunesBww).To(HaveLen(2))
 		})
 	})
 

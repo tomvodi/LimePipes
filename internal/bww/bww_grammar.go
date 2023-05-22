@@ -196,6 +196,20 @@ type StaffSymbols struct {
 	CheCheRe               *string          `| @CHECHERE`
 	ThumbCheCheRe          *string          `| @THUMB_CHECHERE`
 	HalfCheCheRe           *string          `| @HALF_CHECHERE`
+	GripAbbrev             *string          `| @GRIP_ABBREV`
+	Deda                   *string          `| @DEDA`
+	Enbain                 *string          `| @ENBAIN`
+	GEnbain                *string          `| @G_ENBAIN`
+	ThumbEnbain            *string          `| @THUMB_ENBAIN`
+	Otro                   *string          `| @OTRO`
+	GOtro                  *string          `| @G_OTRO`
+	ThumbOtro              *string          `| @THUMB_OTRO`
+	Odro                   *string          `| @ODRO`
+	GOdro                  *string          `| @G_ODRO`
+	ThumbOdro              *string          `| @THUMB_ODRO`
+	Adeda                  *string          `| @ADEDA`
+	GAdeda                 *string          `| @G_ADEDA`
+	ThumbAdeda             *string          `| @THUMB_ADEDA`
 	Description            *TuneDescription `| @@`
 	Comment                *string          `| @STRING`
 }

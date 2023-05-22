@@ -42,3 +42,14 @@ TuneTempo,90
 & F_4 gedre E_4 E_4 gdare F_4 !t
 & HG_4 tedre E_4 HG_4 tdare F_4 E_4 tchechere HG_4 !t
 & E_4 dre E_4 F_4 hedale F_4 HG_4 hchechere HG_4 !t
+
+
+"Grips",(T,L,0,0,Times New Roman,15,700,0,1,2,0,0,32768)
+
+& LA_4 pgrp C_4 D_4 deda D_4 !t
+
+& B_4 enbain LA_4 C_4 otro B_4 D_4 odro C_4 E_4 adeda D_4 !t
+& B_4 penbain LA_4 C_4 potro B_4 D_4 podro C_4 E_4 padeda D_4 !t
+& B_4 genbain LA_4 C_4 gotro B_4 D_4 godro C_4 E_4 gadeda D_4 !t
+& B_4 tenbain LA_4 C_4 totro B_4 D_4 todro C_4 E_4 tadeda D_4 !t
+

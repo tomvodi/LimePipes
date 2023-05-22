@@ -21,6 +21,12 @@ const (
 	Edre
 	Dare
 	CheCheRe
+	Grip
+	Deda
+	Enbain
+	Otro
+	Odro
+	Adeda
 )
 
 type Variant uint
