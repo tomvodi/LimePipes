@@ -91,3 +91,67 @@
                 variant: Half
                 pitchHint: LowA
                 abbreviate: true
+    - symbols:
+        - note:
+            pitch: LowA
+            length: Eighth
+            dots: 1
+        - note:
+            pitch: E
+            length: Sixteenth
+            fermata: true
+            movement:
+                type: Lemluath
+                breabach: true
+        - note:
+            pitch: D
+            length: Quarter
+        - note:
+            pitch: E
+            length: Quarter
+            movement:
+                type: Lemluath
+                pitchHint: B
+                breabach: true
+        - note:
+            pitch: LowG
+            length: Quarter
+        - note:
+            pitch: E
+            length: Quarter
+            movement:
+                type: Lemluath
+                variant: Half
+                pitchHint: LowA
+                breabach: true
+    - symbols:
+        - note:
+            pitch: LowA
+            length: Quarter
+            movement:
+                type: Lemluath
+                abbreviate: true
+                breabach: true
+        - note:
+            pitch: E
+            length: Quarter
+        - note:
+            pitch: D
+            length: Quarter
+            movement:
+                type: Lemluath
+                pitchHint: B
+                abbreviate: true
+                breabach: true
+        - note:
+            pitch: E
+            length: Quarter
+        - note:
+            pitch: LowG
+            length: Quarter
+            movement:
+                type: Lemluath
+                variant: Half
+                pitchHint: LowA
+                abbreviate: true
+                breabach: true

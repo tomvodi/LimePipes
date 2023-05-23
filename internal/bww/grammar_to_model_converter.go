@@ -763,22 +763,26 @@ func appendStaffSymbolToMeasureSymbols(
 		return handleMovement(movement.Din, staffSym.Din, false, false)
 	}
 	if staffSym.Lemluath != nil {
-		mv, _ := handleMovement(movement.Lemluath, staffSym.Lemluath, false, true)
-		pitch := pitchFromSuffix(*staffSym.Lemluath)
+		lemSym, hadBrea := stripBreabach(staffSym.Lemluath)
+		mv, _ := handleMovement(movement.Lemluath, &lemSym, false, true)
+		pitch := pitchFromSuffix(lemSym)
 		mv.Note.Movement.PitchHint = pitch
+		mv.Note.Movement.Breabach = hadBrea
 		return mv, nil
 	}
 	if staffSym.LemluathAbbrev != nil {
+		lemSym, hadBrea := stripBreabach(staffSym.LemluathAbbrev)
 		if lastSym == nil || lastSym.Note == nil {
 			return nil, fmt.Errorf("lemluath abbreviation %s must follow melody note", *staffSym.LemluathAbbrev)
 		}
 		if !lastSym.Note.IsValid() {
 			return nil, fmt.Errorf("lemluath abbreviation %s must follow a valid melody note", *staffSym.LemluathAbbrev)
 		}
-		sym, _ := handleMovement(movement.Lemluath, staffSym.LemluathAbbrev, false, true)
+		sym, _ := handleMovement(movement.Lemluath, &lemSym, false, true)
 		move := sym.Note.Movement
-		pitch := pitchFromSuffix(*staffSym.LemluathAbbrev)
+		pitch := pitchFromSuffix(lemSym)
 		move.PitchHint = pitch
+		move.Breabach = hadBrea
 		lastSym.Note.Movement = move
 		return nil, nil
 	}
@@ -1179,6 +1183,12 @@ func pitchFromSuffix(sym string) common.Pitch {
 		return common.HighA
 	}
 	return common.NoPitch
+}
+
+func stripBreabach(sym *string) (string, bool) {
+	stripped := strings.Replace(*sym, "brea", "", 1)
+	didReplace := len(*sym) != len(stripped)
+	return stripped, didReplace
 }
 
 func newTimeLineEnd() *music_model.Symbol {

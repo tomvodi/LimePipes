@@ -62,4 +62,6 @@ type Movement struct {
 	// Abbreviate is true, when the movement should show as its abbreviation symbol and not
 	// as every grace note
 	Abbreviate bool `yaml:"abbreviate,omitempty"`
+
+	Breabach bool `yaml:"breabach,omitempty"`
 }
