@@ -81,3 +81,16 @@ TuneTempo,90
 
 & LAr_8 'la lembrea El_16 fermate  D_4 lembbrea E_4 LG_4 hlemlabrea E_4  !t
 & LA_4  plbrea E_4  D_4 plbbrea E_4 LG_4 phllabrea !t
+
+
+"Taorluaths",(T,L,0,0,Times New Roman,15,700,0,1,2,0,0,32768)
+
+"Abbreviations are placed AFTER melody note"
+
+& LG_4 htarla LA_4   LG_4 htarlg LA_4   !t
+& HA_4 pt D_4 ptb LG_4 phtla !t
+
+& LAr_8 'la tarbrea El_16 fermate  D_4 tarbbrea E_4 LG_4 htarlabrea E_4  !t
+& LA_4  ptbrea  D_4 ptbbrea LG_4 phtlabrea !t
+
+&   ptmb B_4   ptmc C_4  ptmd D_4 !t

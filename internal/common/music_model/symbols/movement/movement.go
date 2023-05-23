@@ -34,6 +34,7 @@ const (
 	Chelalho
 	Din
 	Lemluath
+	Taorluath
 )
 
 type Variant uint
@@ -64,4 +65,5 @@ type Movement struct {
 	Abbreviate bool `yaml:"abbreviate,omitempty"`
 
 	Breabach bool `yaml:"breabach,omitempty"`
+	AMach    bool `yaml:"AMach,omitempty"`
 }

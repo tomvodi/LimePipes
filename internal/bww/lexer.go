@@ -217,10 +217,6 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Pattern: `grpb|grp|hgrp|grpb`,
 		},
 		{
-			Name:    "TAORLUATH",
-			Pattern: `tarb|tar|htar`,
-		},
-		{
 			Name:    "BUBBLY",
 			Pattern: `bubly|hbubly`,
 		},
@@ -499,6 +495,22 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 		{
 			Name:    "LEMLUATH_ABBREV",
 			Pattern: `plbrea|plbbrea|phllabrea|phlla|plb|pl`,
+		},
+		{
+			Name:    "TAORLUATH_PIO",
+			Pattern: `htarlabrea|tarbbrea|tarbrea|htarlg|htarla`,
+		},
+		{
+			Name:    "TAORLUATH",
+			Pattern: `tarb|tar|htar`,
+		},
+		{
+			Name:    "TAORLUATH_AMACH",
+			Pattern: `ptmb|ptmc|ptmd`,
+		},
+		{
+			Name:    "TAORLUATH_ABBREV",
+			Pattern: `ptbrea|ptbbrea|phtlabrea|phtla|ptb|pt`,
 		},
 		{
 			Name:    "D_DOUBLE_GRACE",

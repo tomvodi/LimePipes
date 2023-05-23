@@ -218,6 +218,9 @@ type StaffSymbols struct {
 	Din                    *string          `| @DIN`
 	Lemluath               *string          `| @LEMLUATH`
 	LemluathAbbrev         *string          `| @LEMLUATH_ABBREV`
+	TaorluathPio           *string          `| @TAORLUATH_PIO`
+	TaorluathAbbrev        *string          `| @TAORLUATH_ABBREV`
+	TaorluathAmach         *string          `| @TAORLUATH_AMACH`
 	Description            *TuneDescription `| @@`
 	Comment                *string          `| @STRING`
 }

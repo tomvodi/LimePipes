@@ -786,7 +786,50 @@ func appendStaffSymbolToMeasureSymbols(
 		lastSym.Note.Movement = move
 		return nil, nil
 	}
+	if staffSym.TaorluathPio != nil {
+		return handleMovementWithPitchHintSuffixAndBreabach(
+			movement.Taorluath, staffSym.TaorluathPio, false, true,
+		)
+	}
+	if staffSym.TaorluathAbbrev != nil {
+		if lastSym == nil || lastSym.Note == nil {
+			return nil, fmt.Errorf("taorluath abbreviation %s must follow melody note", *staffSym.LemluathAbbrev)
+		}
+		if !lastSym.Note.IsValid() {
+			return nil, fmt.Errorf("taorluath abbreviation %s must follow a valid melody note", *staffSym.LemluathAbbrev)
+		}
+		sym, err := handleMovementWithPitchHintSuffixAndBreabach(
+			movement.Taorluath, staffSym.TaorluathAbbrev, false, true,
+		)
+		move := sym.Note.Movement
+		lastSym.Note.Movement = move
+		return nil, err
+	}
+
+	if staffSym.TaorluathAmach != nil {
+		pitch := pitchFromSuffix(*staffSym.TaorluathAmach)
+		mv, _ := handleMovement(movement.Taorluath, staffSym.TaorluathAmach, false, false)
+		mv.Note.Movement.AMach = true
+		mv.Note.Movement.PitchHint = pitch
+		return mv, nil
+	}
+
 	return nil, nil // fmt.Errorf("staff symbol %v not handled", staffSym)
+}
+
+func handleMovementWithPitchHintSuffixAndBreabach(
+	mtype movement.Type,
+	sym *string,
+	withThumb bool,
+	withHalf bool,
+) (*music_model.Symbol, error) {
+	strippedSym, hadBrea := stripBreabach(sym)
+	currSym, _ := handleMovement(mtype, &strippedSym, withThumb, withHalf)
+	pitch := pitchFromSuffix(strippedSym)
+	currSym.Note.Movement.PitchHint = pitch
+	currSym.Note.Movement.Breabach = hadBrea
+
+	return currSym, nil
 }
 
 func handleMovement(mtype movement.Type, sym *string, withThumb bool, withHalf bool) (*music_model.Symbol, error) {
