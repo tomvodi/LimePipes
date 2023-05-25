@@ -35,6 +35,7 @@ const (
 	Din
 	Lemluath
 	Taorluath
+	Crunluath
 )
 
 type Variant uint
@@ -57,7 +58,8 @@ type Movement struct {
 	// Nevertheless, in some cases, a note with another pitch is preceding the movement
 	// so the pitch hint will make sure that no information gets lost in importing bww
 	// files
-	PitchHint common.Pitch `yaml:"pitchHint,omitempty"`
+	PitchHint           common.Pitch `yaml:"pitchHint,omitempty"`
+	AdditionalPitchHint common.Pitch `yaml:"additionalPitchHint,omitempty"`
 	// Pitch, if the movement has a distinct pitch like echo notes
 	Pitch common.Pitch `yaml:"pitch,omitempty"`
 	// Abbreviate is true, when the movement should show as its abbreviation symbol and not

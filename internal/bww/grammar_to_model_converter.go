@@ -793,10 +793,10 @@ func appendStaffSymbolToMeasureSymbols(
 	}
 	if staffSym.TaorluathAbbrev != nil {
 		if lastSym == nil || lastSym.Note == nil {
-			return nil, fmt.Errorf("taorluath abbreviation %s must follow melody note", *staffSym.LemluathAbbrev)
+			return nil, fmt.Errorf("taorluath abbreviation %s must follow melody note", *staffSym.TaorluathAbbrev)
 		}
 		if !lastSym.Note.IsValid() {
-			return nil, fmt.Errorf("taorluath abbreviation %s must follow a valid melody note", *staffSym.LemluathAbbrev)
+			return nil, fmt.Errorf("taorluath abbreviation %s must follow a valid melody note", *staffSym.TaorluathAbbrev)
 		}
 		sym, err := handleMovementWithPitchHintSuffixAndBreabach(
 			movement.Taorluath, staffSym.TaorluathAbbrev, false, true,
@@ -805,10 +805,39 @@ func appendStaffSymbolToMeasureSymbols(
 		lastSym.Note.Movement = move
 		return nil, err
 	}
-
 	if staffSym.TaorluathAmach != nil {
 		pitch := pitchFromSuffix(*staffSym.TaorluathAmach)
 		mv, _ := handleMovement(movement.Taorluath, staffSym.TaorluathAmach, false, false)
+		mv.Note.Movement.AMach = true
+		mv.Note.Movement.PitchHint = pitch
+		return mv, nil
+	}
+	if staffSym.Crunluath != nil {
+		mv, _ := handleMovementWithPitchHintSuffixAndBreabach(
+			movement.Crunluath, staffSym.Crunluath, false, true,
+		)
+		if strings.Contains(*staffSym.Crunluath, "crunllgla") {
+			mv.Note.Movement.AdditionalPitchHint = common.LowG
+		}
+		return mv, nil
+	}
+	if staffSym.CrunluathAbbrev != nil {
+		if lastSym == nil || lastSym.Note == nil {
+			return nil, fmt.Errorf("crunluath abbreviation %s must follow melody note", *staffSym.CrunluathAbbrev)
+		}
+		if !lastSym.Note.IsValid() {
+			return nil, fmt.Errorf("crunluath abbreviation %s must follow a valid melody note", *staffSym.CrunluathAbbrev)
+		}
+		sym, err := handleMovementWithPitchHintSuffixAndBreabach(
+			movement.Crunluath, staffSym.CrunluathAbbrev, false, true,
+		)
+		move := sym.Note.Movement
+		lastSym.Note.Movement = move
+		return nil, err
+	}
+	if staffSym.CrunluathAmach != nil {
+		pitch := pitchFromSuffix(*staffSym.CrunluathAmach)
+		mv, _ := handleMovement(movement.Crunluath, staffSym.CrunluathAmach, false, false)
 		mv.Note.Movement.AMach = true
 		mv.Note.Movement.PitchHint = pitch
 		return mv, nil

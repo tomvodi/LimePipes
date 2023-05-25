@@ -221,6 +221,9 @@ type StaffSymbols struct {
 	TaorluathPio           *string          `| @TAORLUATH_PIO`
 	TaorluathAbbrev        *string          `| @TAORLUATH_ABBREV`
 	TaorluathAmach         *string          `| @TAORLUATH_AMACH`
+	Crunluath              *string          `| @CRUNLUATH`
+	CrunluathAbbrev        *string          `| @CRUNLUATH_ABBREV`
+	CrunluathAmach         *string          `| @CRUNLUATH_AMACH`
 	Description            *TuneDescription `| @@`
 	Comment                *string          `| @STRING`
 }

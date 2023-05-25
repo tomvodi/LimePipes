@@ -513,6 +513,18 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Pattern: `ptbrea|ptbbrea|phtlabrea|phtla|ptb|pt`,
 		},
 		{
+			Name:    "CRUNLUATH",
+			Pattern: `hcrunllabrea|crunlbbrea|crunlbrea|hcrunllgla|hcrunllg|hcrunlla|crunlb|crunl`,
+		},
+		{
+			Name:    "CRUNLUATH_AMACH",
+			Pattern: `pcmb|pcmc|pcmd`,
+		},
+		{
+			Name:    "CRUNLUATH_ABBREV",
+			Pattern: `pcbrea|pcbbrea|phclabrea|phcla|pcb|pc`,
+		},
+		{
 			Name:    "D_DOUBLE_GRACE",
 			Pattern: `dlg|dla|db|dc`,
 		},
