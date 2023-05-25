@@ -7,7 +7,13 @@
             type: First
         - timeLine:
             boundaryType: Start
+            type: Singling
+        - timeLine:
+            boundaryType: Start
             type: Second
+        - timeLine:
+            boundaryType: Start
+            type: Doubling
         - timeLine:
             boundaryType: Start
             type: SecondOf2

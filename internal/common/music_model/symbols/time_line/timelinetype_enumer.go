@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-const _TimeLineTypeName = "NoTypeFirstSecondSecondOf2SecondOf3SecondOf4SecondOf2And4SecondOf5SecondOf6SecondOf7SecondOf8Intro"
+const _TimeLineTypeName = "NoTypeFirstSinglingSecondDoublingSecondOf2SecondOf3SecondOf4SecondOf2And4SecondOf5SecondOf6SecondOf7SecondOf8Intro"
 
-var _TimeLineTypeIndex = [...]uint8{0, 6, 11, 17, 26, 35, 44, 57, 66, 75, 84, 93, 98}
+var _TimeLineTypeIndex = [...]uint8{0, 6, 11, 19, 25, 33, 42, 51, 60, 73, 82, 91, 100, 109, 114}
 
-const _TimeLineTypeLowerName = "notypefirstsecondsecondof2secondof3secondof4secondof2and4secondof5secondof6secondof7secondof8intro"
+const _TimeLineTypeLowerName = "notypefirstsinglingseconddoublingsecondof2secondof3secondof4secondof2and4secondof5secondof6secondof7secondof8intro"
 
 func (i TimeLineType) String() string {
 	if i >= TimeLineType(len(_TimeLineTypeIndex)-1) {
@@ -27,60 +27,68 @@ func _TimeLineTypeNoOp() {
 	var x [1]struct{}
 	_ = x[NoType-(0)]
 	_ = x[First-(1)]
-	_ = x[Second-(2)]
-	_ = x[SecondOf2-(3)]
-	_ = x[SecondOf3-(4)]
-	_ = x[SecondOf4-(5)]
-	_ = x[SecondOf2And4-(6)]
-	_ = x[SecondOf5-(7)]
-	_ = x[SecondOf6-(8)]
-	_ = x[SecondOf7-(9)]
-	_ = x[SecondOf8-(10)]
-	_ = x[Intro-(11)]
+	_ = x[Singling-(2)]
+	_ = x[Second-(3)]
+	_ = x[Doubling-(4)]
+	_ = x[SecondOf2-(5)]
+	_ = x[SecondOf3-(6)]
+	_ = x[SecondOf4-(7)]
+	_ = x[SecondOf2And4-(8)]
+	_ = x[SecondOf5-(9)]
+	_ = x[SecondOf6-(10)]
+	_ = x[SecondOf7-(11)]
+	_ = x[SecondOf8-(12)]
+	_ = x[Intro-(13)]
 }
 
-var _TimeLineTypeValues = []TimeLineType{NoType, First, Second, SecondOf2, SecondOf3, SecondOf4, SecondOf2And4, SecondOf5, SecondOf6, SecondOf7, SecondOf8, Intro}
+var _TimeLineTypeValues = []TimeLineType{NoType, First, Singling, Second, Doubling, SecondOf2, SecondOf3, SecondOf4, SecondOf2And4, SecondOf5, SecondOf6, SecondOf7, SecondOf8, Intro}
 
 var _TimeLineTypeNameToValueMap = map[string]TimeLineType{
-	_TimeLineTypeName[0:6]:        NoType,
-	_TimeLineTypeLowerName[0:6]:   NoType,
-	_TimeLineTypeName[6:11]:       First,
-	_TimeLineTypeLowerName[6:11]:  First,
-	_TimeLineTypeName[11:17]:      Second,
-	_TimeLineTypeLowerName[11:17]: Second,
-	_TimeLineTypeName[17:26]:      SecondOf2,
-	_TimeLineTypeLowerName[17:26]: SecondOf2,
-	_TimeLineTypeName[26:35]:      SecondOf3,
-	_TimeLineTypeLowerName[26:35]: SecondOf3,
-	_TimeLineTypeName[35:44]:      SecondOf4,
-	_TimeLineTypeLowerName[35:44]: SecondOf4,
-	_TimeLineTypeName[44:57]:      SecondOf2And4,
-	_TimeLineTypeLowerName[44:57]: SecondOf2And4,
-	_TimeLineTypeName[57:66]:      SecondOf5,
-	_TimeLineTypeLowerName[57:66]: SecondOf5,
-	_TimeLineTypeName[66:75]:      SecondOf6,
-	_TimeLineTypeLowerName[66:75]: SecondOf6,
-	_TimeLineTypeName[75:84]:      SecondOf7,
-	_TimeLineTypeLowerName[75:84]: SecondOf7,
-	_TimeLineTypeName[84:93]:      SecondOf8,
-	_TimeLineTypeLowerName[84:93]: SecondOf8,
-	_TimeLineTypeName[93:98]:      Intro,
-	_TimeLineTypeLowerName[93:98]: Intro,
+	_TimeLineTypeName[0:6]:          NoType,
+	_TimeLineTypeLowerName[0:6]:     NoType,
+	_TimeLineTypeName[6:11]:         First,
+	_TimeLineTypeLowerName[6:11]:    First,
+	_TimeLineTypeName[11:19]:        Singling,
+	_TimeLineTypeLowerName[11:19]:   Singling,
+	_TimeLineTypeName[19:25]:        Second,
+	_TimeLineTypeLowerName[19:25]:   Second,
+	_TimeLineTypeName[25:33]:        Doubling,
+	_TimeLineTypeLowerName[25:33]:   Doubling,
+	_TimeLineTypeName[33:42]:        SecondOf2,
+	_TimeLineTypeLowerName[33:42]:   SecondOf2,
+	_TimeLineTypeName[42:51]:        SecondOf3,
+	_TimeLineTypeLowerName[42:51]:   SecondOf3,
+	_TimeLineTypeName[51:60]:        SecondOf4,
+	_TimeLineTypeLowerName[51:60]:   SecondOf4,
+	_TimeLineTypeName[60:73]:        SecondOf2And4,
+	_TimeLineTypeLowerName[60:73]:   SecondOf2And4,
+	_TimeLineTypeName[73:82]:        SecondOf5,
+	_TimeLineTypeLowerName[73:82]:   SecondOf5,
+	_TimeLineTypeName[82:91]:        SecondOf6,
+	_TimeLineTypeLowerName[82:91]:   SecondOf6,
+	_TimeLineTypeName[91:100]:       SecondOf7,
+	_TimeLineTypeLowerName[91:100]:  SecondOf7,
+	_TimeLineTypeName[100:109]:      SecondOf8,
+	_TimeLineTypeLowerName[100:109]: SecondOf8,
+	_TimeLineTypeName[109:114]:      Intro,
+	_TimeLineTypeLowerName[109:114]: Intro,
 }
 
 var _TimeLineTypeNames = []string{
 	_TimeLineTypeName[0:6],
 	_TimeLineTypeName[6:11],
-	_TimeLineTypeName[11:17],
-	_TimeLineTypeName[17:26],
-	_TimeLineTypeName[26:35],
-	_TimeLineTypeName[35:44],
-	_TimeLineTypeName[44:57],
-	_TimeLineTypeName[57:66],
-	_TimeLineTypeName[66:75],
-	_TimeLineTypeName[75:84],
-	_TimeLineTypeName[84:93],
-	_TimeLineTypeName[93:98],
+	_TimeLineTypeName[11:19],
+	_TimeLineTypeName[19:25],
+	_TimeLineTypeName[25:33],
+	_TimeLineTypeName[33:42],
+	_TimeLineTypeName[42:51],
+	_TimeLineTypeName[51:60],
+	_TimeLineTypeName[60:73],
+	_TimeLineTypeName[73:82],
+	_TimeLineTypeName[82:91],
+	_TimeLineTypeName[91:100],
+	_TimeLineTypeName[100:109],
+	_TimeLineTypeName[109:114],
 }
 
 // TimeLineTypeString retrieves an enum value from the enum constants string name.

@@ -149,14 +149,6 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Pattern: `REST_16|REST_1|REST_2|REST_4|REST_8|REST_32`,
 		},
 		{
-			Name:    "SINGLE_DOT",
-			Pattern: `'lg|'la|'b|'c|'d|'e|'f|'hg|'ha`,
-		},
-		{
-			Name:    "DOUBLE_DOT",
-			Pattern: `''lg|''la|''b|''c|''d|''e|''f|''hg|''ha`,
-		},
-		{
 			Name:    "FERMATA",
 			Pattern: `fermatlg|fermatla|fermatb|fermatc|fermatd|fermate|fermatf|fermathg|fermatha`,
 		},
@@ -574,11 +566,19 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 		},
 		{
 			Name:    "TIMELINE_START",
-			Pattern: `'224|'22|'23|'24|'intro|'25|'26|'27|'28|'1|'2`,
+			Pattern: `'224|'22|'23|'24|'intro|'25|'26|'27|'28|'1|'2|'si|'do`,
 		},
 		{
 			Name:    "TIMELINE_END",
 			Pattern: `_'|bis_'`,
+		},
+		{
+			Name:    "SINGLE_DOT",
+			Pattern: `'lg|'la|'b|'c|'d|'e|'f|'hg|'ha`,
+		},
+		{
+			Name:    "DOUBLE_DOT",
+			Pattern: `''lg|''la|''b|''c|''d|''e|''f|''hg|''ha`,
 		},
 		{
 			Name:    "STRING",

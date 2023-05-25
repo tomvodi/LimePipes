@@ -1124,6 +1124,12 @@ func handleTimeLine(sym string) (*music_model.Symbol, error) {
 	if sym == "'28" {
 		return newTimeLineStartSymbol(time_line.SecondOf8), nil
 	}
+	if sym == "'si" {
+		return newTimeLineStartSymbol(time_line.Singling), nil
+	}
+	if sym == "'do" {
+		return newTimeLineStartSymbol(time_line.Doubling), nil
+	}
 	if sym == "'intro" {
 		return newTimeLineStartSymbol(time_line.Intro), nil
 	}

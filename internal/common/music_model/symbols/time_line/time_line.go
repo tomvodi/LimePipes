@@ -16,7 +16,9 @@ type TimeLineType uint8
 const (
 	NoType TimeLineType = iota
 	First
+	Singling
 	Second
+	Doubling
 	SecondOf2
 	SecondOf3
 	SecondOf4
