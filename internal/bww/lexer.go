@@ -24,6 +24,10 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Pattern: `_'|bis_'`,
 		},
 		{
+			Name:    "DALSEGNO",
+			Pattern: `dalsegno`,
+		},
+		{
 			Name:    "PARAM_DEF",
 			Pattern: `MIDINoteMappings|FrequencyMappings|InstrumentMappings|GracenoteDurations|FontSizes|TuneFormat`,
 		},
@@ -99,6 +103,10 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 		{
 			Name:    "BARLINE",
 			Pattern: `!\s`,
+		},
+		{
+			Name:    "SEGNO",
+			Pattern: `segno`,
 		},
 		{
 			Name:    "SPACE",
@@ -566,7 +574,7 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 		},
 		{
 			Name:    "TIMELINE_START",
-			Pattern: `'224|'22|'23|'24|'intro|'25|'26|'27|'28|'1|'2|'si|'do`,
+			Pattern: `'224|'22|'23|'24|'intro|'25|'26|'27|'28|'1|'2|'si|'do|'bis`,
 		},
 		{
 			Name:    "TIMELINE_END",

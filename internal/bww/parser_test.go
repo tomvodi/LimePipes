@@ -688,6 +688,20 @@ var _ = Describe("BWW Parser", func() {
 		})
 	})
 
+	When("having file with segno and dalsegno", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/segno_dalsegno.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/segno_dalsegno.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/segno_dalsegno.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
 	When("parsing the file with all bww symbols in it", func() {
 		BeforeEach(func() {
 			data := dataFromFile("./testfiles/all_symbols.bww")
@@ -708,7 +722,7 @@ var _ = Describe("BWW Parser", func() {
 
 		It("should succeed", func() {
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(musicTunesBww).To(HaveLen(8))
+			Expect(musicTunesBww).To(HaveLen(9))
 		})
 	})
 

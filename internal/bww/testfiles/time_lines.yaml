@@ -16,6 +16,9 @@
             type: Doubling
         - timeLine:
             boundaryType: Start
+            type: Bis
+        - timeLine:
+            boundaryType: Start
             type: SecondOf2
         - timeLine:
             boundaryType: Start
@@ -45,3 +48,4 @@
             boundaryType: End
         - timeLine:
             boundaryType: End
+            type: Bis

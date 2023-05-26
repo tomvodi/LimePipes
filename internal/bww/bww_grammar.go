@@ -98,6 +98,7 @@ type Staff struct {
 	Symbols     []*StaffSymbols `@@*`
 	End         string          `@(STAFF_END | EOF)`
 	TimelineEnd *string         `@TIMELINE_END?`
+	Dalsegno    *string         `@DALSEGNO?`
 }
 
 type StaffSymbols struct {
@@ -177,6 +178,7 @@ type StaffSymbols struct {
 	Triplets               *string          `| @TRIPLETS`
 	TimelineStart          *string          `| @TIMELINE_START`
 	TimelineEnd            *string          `| @TIMELINE_END`
+	Segno                  *string          `| @SEGNO`
 	Cadence                *string          `| @CADENCE`
 	FermatCadence          *string          `| @FERMAT_CADENCE`
 	Embari                 *string          `| @EMBARI`

@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-const _TimeLineTypeName = "NoTypeFirstSinglingSecondDoublingSecondOf2SecondOf3SecondOf4SecondOf2And4SecondOf5SecondOf6SecondOf7SecondOf8Intro"
+const _TimeLineTypeName = "NoTypeFirstSinglingSecondDoublingSecondOf2SecondOf3SecondOf4SecondOf2And4SecondOf5SecondOf6SecondOf7SecondOf8BisIntro"
 
-var _TimeLineTypeIndex = [...]uint8{0, 6, 11, 19, 25, 33, 42, 51, 60, 73, 82, 91, 100, 109, 114}
+var _TimeLineTypeIndex = [...]uint8{0, 6, 11, 19, 25, 33, 42, 51, 60, 73, 82, 91, 100, 109, 112, 117}
 
-const _TimeLineTypeLowerName = "notypefirstsinglingseconddoublingsecondof2secondof3secondof4secondof2and4secondof5secondof6secondof7secondof8intro"
+const _TimeLineTypeLowerName = "notypefirstsinglingseconddoublingsecondof2secondof3secondof4secondof2and4secondof5secondof6secondof7secondof8bisintro"
 
 func (i TimeLineType) String() string {
 	if i >= TimeLineType(len(_TimeLineTypeIndex)-1) {
@@ -38,10 +38,11 @@ func _TimeLineTypeNoOp() {
 	_ = x[SecondOf6-(10)]
 	_ = x[SecondOf7-(11)]
 	_ = x[SecondOf8-(12)]
-	_ = x[Intro-(13)]
+	_ = x[Bis-(13)]
+	_ = x[Intro-(14)]
 }
 
-var _TimeLineTypeValues = []TimeLineType{NoType, First, Singling, Second, Doubling, SecondOf2, SecondOf3, SecondOf4, SecondOf2And4, SecondOf5, SecondOf6, SecondOf7, SecondOf8, Intro}
+var _TimeLineTypeValues = []TimeLineType{NoType, First, Singling, Second, Doubling, SecondOf2, SecondOf3, SecondOf4, SecondOf2And4, SecondOf5, SecondOf6, SecondOf7, SecondOf8, Bis, Intro}
 
 var _TimeLineTypeNameToValueMap = map[string]TimeLineType{
 	_TimeLineTypeName[0:6]:          NoType,
@@ -70,8 +71,10 @@ var _TimeLineTypeNameToValueMap = map[string]TimeLineType{
 	_TimeLineTypeLowerName[91:100]:  SecondOf7,
 	_TimeLineTypeName[100:109]:      SecondOf8,
 	_TimeLineTypeLowerName[100:109]: SecondOf8,
-	_TimeLineTypeName[109:114]:      Intro,
-	_TimeLineTypeLowerName[109:114]: Intro,
+	_TimeLineTypeName[109:112]:      Bis,
+	_TimeLineTypeLowerName[109:112]: Bis,
+	_TimeLineTypeName[112:117]:      Intro,
+	_TimeLineTypeLowerName[112:117]: Intro,
 }
 
 var _TimeLineTypeNames = []string{
@@ -88,7 +91,8 @@ var _TimeLineTypeNames = []string{
 	_TimeLineTypeName[82:91],
 	_TimeLineTypeName[91:100],
 	_TimeLineTypeName[100:109],
-	_TimeLineTypeName[109:114],
+	_TimeLineTypeName[109:112],
+	_TimeLineTypeName[112:117],
 }
 
 // TimeLineTypeString retrieves an enum value from the enum constants string name.

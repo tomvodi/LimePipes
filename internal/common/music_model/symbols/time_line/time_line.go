@@ -27,6 +27,7 @@ const (
 	SecondOf6
 	SecondOf7
 	SecondOf8
+	Bis
 	Intro
 )
 

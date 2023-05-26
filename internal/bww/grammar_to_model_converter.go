@@ -3,6 +3,7 @@ package bww
 import (
 	"banduslib/internal/common"
 	"banduslib/internal/common/music_model"
+	"banduslib/internal/common/music_model/barline"
 	"banduslib/internal/common/music_model/symbols"
 	"banduslib/internal/common/music_model/symbols/accidental"
 	emb "banduslib/internal/common/music_model/symbols/embellishment"
@@ -193,8 +194,14 @@ func getMeasuresFromStave(stave *Staff, ctx *staffContext) ([]*music_model.Measu
 
 	// append time line end to measure symbols if it was outside of stave
 	if stave.TimelineEnd != nil {
-		tl := newTimeLineEnd()
+		tl := newTimeLineEnd(stave.TimelineEnd)
 		currMeasure.Symbols = append(currMeasure.Symbols, tl)
+	}
+	if stave.Dalsegno != nil {
+		currMeasure.RightBarline = &barline.Barline{
+			Type:     barline.Regular,
+			Timeline: barline.Dalsegno,
+		}
 	}
 
 	measures = cleanupAndAppendMeasure(measures, currMeasure)
@@ -410,6 +417,17 @@ func appendStaffSymbolToMeasureSymbols(
 			return newSym, nil
 		}
 	}
+	if staffSym.Segno != nil {
+		if currentMeasure.LeftBarline == nil {
+			currentMeasure.LeftBarline = &barline.Barline{
+				Type:     barline.Regular,
+				Timeline: barline.Segno,
+			}
+		} else {
+			currentMeasure.LeftBarline.Timeline = barline.Segno
+		}
+	}
+
 	if staffSym.SingleGrace != nil {
 		newSym.Note = &symbols.Note{
 			Embellishment: embellishmentForSingleGrace(staffSym.SingleGrace),
@@ -627,7 +645,7 @@ func appendStaffSymbolToMeasureSymbols(
 		return handleTimeLine(*staffSym.TimelineStart)
 	}
 	if staffSym.TimelineEnd != nil {
-		return newTimeLineEnd(), nil
+		return newTimeLineEnd(staffSym.TimelineEnd), nil
 	}
 	if staffSym.Comment != nil {
 		handleInsideStaffComment(lastSym, currentMeasure, *staffSym.Comment)
@@ -1130,6 +1148,9 @@ func handleTimeLine(sym string) (*music_model.Symbol, error) {
 	if sym == "'do" {
 		return newTimeLineStartSymbol(time_line.Doubling), nil
 	}
+	if sym == "'bis" {
+		return newTimeLineStartSymbol(time_line.Bis), nil
+	}
 	if sym == "'intro" {
 		return newTimeLineStartSymbol(time_line.Intro), nil
 	}
@@ -1269,11 +1290,15 @@ func stripBreabach(sym *string) (string, bool) {
 	return stripped, didReplace
 }
 
-func newTimeLineEnd() *music_model.Symbol {
+func newTimeLineEnd(sym *string) *music_model.Symbol {
+	ttype := time_line.NoType
+	if *sym == "bis_'" {
+		ttype = time_line.Bis
+	}
 	return &music_model.Symbol{
 		TimeLine: &time_line.TimeLine{
 			BoundaryType: time_line.End,
-			Type:         time_line.NoType,
+			Type:         ttype,
 		},
 	}
 }
