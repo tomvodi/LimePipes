@@ -19,6 +19,8 @@ const (
 	NoTimeline TimelineType = iota
 	Segno
 	Dalsegno
+	Fine
+	DacapoAlFine
 )
 
 type Barline struct {

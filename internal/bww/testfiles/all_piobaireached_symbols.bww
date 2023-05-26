@@ -115,3 +115,11 @@ TuneTempo,90
 ! LA_4 !I dalsegno
 & segno
 ! LA_4 ''!I dalsegno
+
+"Fine and Dacapo Al Fine",(T,L,0,0,Times New Roman,15,700,0,1,2,0,0,32768)
+
+&  LA_4 fine
+! B_4 !I dacapoalfine
+&  LA_4 fine
+! B_4 ''!I dacapoalfine
+

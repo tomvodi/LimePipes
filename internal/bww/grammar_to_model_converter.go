@@ -203,6 +203,12 @@ func getMeasuresFromStave(stave *Staff, ctx *staffContext) ([]*music_model.Measu
 			Timeline: barline.Dalsegno,
 		}
 	}
+	if stave.DacapoAlFine != nil {
+		currMeasure.RightBarline = &barline.Barline{
+			Type:     barline.Regular,
+			Timeline: barline.DacapoAlFine,
+		}
+	}
 
 	measures = cleanupAndAppendMeasure(measures, currMeasure)
 	return measures, nil
@@ -425,6 +431,16 @@ func appendStaffSymbolToMeasureSymbols(
 			}
 		} else {
 			currentMeasure.LeftBarline.Timeline = barline.Segno
+		}
+	}
+	if staffSym.Fine != nil {
+		if currentMeasure.RightBarline == nil {
+			currentMeasure.RightBarline = &barline.Barline{
+				Type:     barline.Regular,
+				Timeline: barline.Fine,
+			}
+		} else {
+			currentMeasure.LeftBarline.Timeline = barline.Fine
 		}
 	}
 

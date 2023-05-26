@@ -28,6 +28,10 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Pattern: `dalsegno`,
 		},
 		{
+			Name:    "DACAPOALFINE",
+			Pattern: `dacapoalfine`,
+		},
+		{
 			Name:    "PARAM_DEF",
 			Pattern: `MIDINoteMappings|FrequencyMappings|InstrumentMappings|GracenoteDurations|FontSizes|TuneFormat`,
 		},
@@ -107,6 +111,10 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 		{
 			Name:    "SEGNO",
 			Pattern: `segno`,
+		},
+		{
+			Name:    "FINE",
+			Pattern: `fine`,
 		},
 		{
 			Name:    "SPACE",

@@ -94,11 +94,12 @@ type TuneBody struct {
 }
 
 type Staff struct {
-	Start       string          `@STAFF_START`
-	Symbols     []*StaffSymbols `@@*`
-	End         string          `@(STAFF_END | EOF)`
-	TimelineEnd *string         `@TIMELINE_END?`
-	Dalsegno    *string         `@DALSEGNO?`
+	Start        string          `@STAFF_START`
+	Symbols      []*StaffSymbols `@@*`
+	End          string          `@(STAFF_END | EOF)`
+	TimelineEnd  *string         `@TIMELINE_END?`
+	Dalsegno     *string         `@DALSEGNO?`
+	DacapoAlFine *string         `@DACAPOALFINE?`
 }
 
 type StaffSymbols struct {
@@ -179,6 +180,7 @@ type StaffSymbols struct {
 	TimelineStart          *string          `| @TIMELINE_START`
 	TimelineEnd            *string          `| @TIMELINE_END`
 	Segno                  *string          `| @SEGNO`
+	Fine                   *string          `| @FINE`
 	Cadence                *string          `| @CADENCE`
 	FermatCadence          *string          `| @FERMAT_CADENCE`
 	Embari                 *string          `| @EMBARI`
