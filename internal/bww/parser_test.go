@@ -2,6 +2,7 @@ package bww
 
 import (
 	"banduslib/internal/common/music_model"
+	"banduslib/internal/common/music_model/import_message"
 	"banduslib/internal/interfaces"
 	"banduslib/internal/utils"
 	. "github.com/onsi/ginkgo/v2"
@@ -36,6 +37,14 @@ func importFromYaml(filePath string) []*music_model.Tune {
 	Expect(err).ShouldNot(HaveOccurred())
 
 	return tunes
+}
+
+func nilAllMeasureMessages(tunes []*music_model.Tune) {
+	for _, tune := range tunes {
+		for _, measure := range tune.Measures {
+			measure.ImportMessages = nil
+		}
+	}
 }
 
 var _ = Describe("BWW Parser", func() {
@@ -348,6 +357,35 @@ var _ = Describe("BWW Parser", func() {
 
 		It("should have parsed file correctly", func() {
 			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
+	When("having ties in old format with error messages", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/ties_old_with_errors.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/ties_old_with_errors.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/ties_old_with_errors.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww[0].Measures[0].ImportMessages[0]).Should(
+				Equal(&import_message.ImportMessage{
+					Symbol: "^tla",
+					Type:   import_message.Warning,
+					Text:   "tie in old format (^tla) must follow a note and can't be the first symbol in a measure",
+					Fix:    import_message.SkipSymbol,
+				}))
+			Expect(musicTunesBww[0].Measures[1].ImportMessages[0]).Should(
+				Equal(&import_message.ImportMessage{
+					Symbol: "^tlg",
+					Type:   import_message.Error,
+					Text:   "tie in old format (^tlg) must follow a note with pitch and length",
+					Fix:    import_message.SkipSymbol,
+				}))
+			nilAllMeasureMessages(musicTunesBww)
 			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
 		})
 	})

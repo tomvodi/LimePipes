@@ -4,6 +4,7 @@ import (
 	"banduslib/internal/common"
 	"banduslib/internal/common/music_model"
 	"banduslib/internal/common/music_model/barline"
+	"banduslib/internal/common/music_model/import_message"
 	"banduslib/internal/common/music_model/symbols"
 	"banduslib/internal/common/music_model/symbols/accidental"
 	emb "banduslib/internal/common/music_model/symbols/embellishment"
@@ -167,7 +168,7 @@ func getMeasuresFromStave(stave *Staff, ctx *staffContext) ([]*music_model.Measu
 		}
 
 		if staffSym.TieOld != nil {
-			err := appendTieStartToPreviousNote(*staffSym.TieOld, lastSym, measures, ctx)
+			err := appendTieStartToPreviousNote(*staffSym.TieOld, lastSym, measures, currMeasure, ctx)
 			if err != nil {
 				return nil, err
 			}
@@ -279,6 +280,7 @@ func appendTieStartToPreviousNote(
 	staffSym string,
 	lastSym *music_model.Symbol,
 	measures []*music_model.Measure,
+	currentMeasure *music_model.Measure,
 	ctx *staffContext,
 ) error {
 	if lastSym == nil {
@@ -287,7 +289,14 @@ func appendTieStartToPreviousNote(
 			lastSym = getLastSymbolFromMeasures(ctx.PreviousStaveMeasures)
 		}
 		if lastSym == nil {
-			return fmt.Errorf("tie in old format (%s) must follow something", staffSym)
+			msg := fmt.Sprintf("tie in old format (%s) must follow a note and can't be the first symbol in a measure", staffSym)
+			currentMeasure.AddMessage(&import_message.ImportMessage{
+				Symbol: staffSym,
+				Type:   import_message.Warning,
+				Text:   msg,
+				Fix:    import_message.SkipSymbol,
+			})
+			return nil
 		}
 
 		if lastSym.IsValidNote() {
@@ -300,10 +309,17 @@ func appendTieStartToPreviousNote(
 		return fmt.Errorf("tie in old format (%s) must follow a sym", staffSym)
 	}
 	if !lastSym.Note.IsValid() {
-		return fmt.Errorf(
+		msg := fmt.Sprintf(
 			"tie in old format (%s) must follow a note with pitch and length",
 			staffSym,
 		)
+		currentMeasure.AddMessage(&import_message.ImportMessage{
+			Symbol: staffSym,
+			Type:   import_message.Error,
+			Text:   msg,
+			Fix:    import_message.SkipSymbol,
+		})
+		return nil
 	}
 	lastSym.Note.Tie = tie.Start
 	tiePitch := pitchFromSuffix(staffSym)
@@ -467,7 +483,7 @@ func appendStaffSymbolToMeasureSymbols(
 		// if so, add tie start to previous note
 		oldTieEndE := "^te"
 		if *staffSym.TieEnd == oldTieEndE && !ctx.PendingNewTie {
-			err := appendTieStartToPreviousNote(oldTieEndE, lastSym, currentStaffMeasures, ctx)
+			err := appendTieStartToPreviousNote(oldTieEndE, lastSym, currentStaffMeasures, currentMeasure, ctx)
 			if err != nil {
 				return nil, err
 			}
