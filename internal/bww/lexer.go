@@ -605,6 +605,11 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Pattern: `"[^"]*"`,
 		},
 		{
+			Name:    "TEMPO_DEF",
+			Pattern: `TuneTempo`,
+			Action:  lexer.Push("TuneTempo"),
+		},
+		{
 			Name:    "PARAM_START",
 			Pattern: `\(`,
 			Action:  lexer.Push("ParamList"),

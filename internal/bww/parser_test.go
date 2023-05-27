@@ -600,6 +600,20 @@ var _ = Describe("BWW Parser", func() {
 		})
 	})
 
+	When("having tune with inline tune tempo", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/tunetempo_inline.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/tunetempo_inline.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/tunetempo_inline.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
 	When("having file with all cadences in it", func() {
 		BeforeEach(func() {
 			bwwData := dataFromFile("./testfiles/cadences.bww")

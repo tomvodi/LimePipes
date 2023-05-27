@@ -902,6 +902,13 @@ func appendStaffSymbolToMeasureSymbols(
 		mv.Note.Movement.Pitch = pitch
 		return mv, nil
 	}
+	if staffSym.Tempo != nil {
+		tempo, err := strconv.ParseUint(staffSym.Tempo.Tempo, 10, 64)
+		if err != nil {
+			return nil, fmt.Errorf("failed parsing tune tempo: %s", err.Error())
+		}
+		return &music_model.Symbol{TempoChange: tempo}, nil
+	}
 
 	return nil, nil // fmt.Errorf("staff symbol %v not handled", staffSym)
 }

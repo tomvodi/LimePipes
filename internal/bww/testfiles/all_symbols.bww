@@ -90,3 +90,4 @@ TuneTempo,50
 ! HG_8 B_8 C_8 ^3hg
 ! HA_8 B_8 C_8 ^3ha !t
 & '1  '2  '22  '23  '24  '224  'intro  '25  '26  '27  '28  _' !t
+& TuneTempo,80 !t

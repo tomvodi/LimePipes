@@ -230,6 +230,7 @@ type StaffSymbols struct {
 	CrunluathAmach         *string          `| @CRUNLUATH_AMACH`
 	Tripling               *string          `| @TRIPLINGS`
 	Description            *TuneDescription `| @@`
+	Tempo                  *TuneTempo       `| @@`
 	Comment                *string          `| @STRING`
 }
 

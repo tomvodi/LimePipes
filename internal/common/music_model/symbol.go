@@ -7,10 +7,11 @@ import (
 )
 
 type Symbol struct {
-	Note     *symbols.Note       `yaml:"note,omitempty"`
-	Rest     *symbols.Rest       `yaml:"rest,omitempty"`
-	Tuplet   *tuplet.Tuplet      `yaml:"tuplet,omitempty"`
-	TimeLine *time_line.TimeLine `yaml:"timeLine,omitempty"`
+	Note        *symbols.Note       `yaml:"note,omitempty"`
+	Rest        *symbols.Rest       `yaml:"rest,omitempty"`
+	Tuplet      *tuplet.Tuplet      `yaml:"tuplet,omitempty"`
+	TimeLine    *time_line.TimeLine `yaml:"timeLine,omitempty"`
+	TempoChange uint64              `yaml:"tempoChange,omitempty"`
 }
 
 func (s *Symbol) IsNote() bool {
