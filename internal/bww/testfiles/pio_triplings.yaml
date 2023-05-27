@@ -1,0 +1,98 @@
+- title: Triplings
+  tempo: 0
+  measures:
+    - symbols:
+        - note:
+            pitch: LowG
+            length: Quarter
+            movement:
+                type: Triplings
+                pitch: LowG
+                abbreviate: true
+        - note:
+            pitch: LowA
+            length: Quarter
+            movement:
+                type: Triplings
+                pitch: LowA
+                abbreviate: true
+        - note:
+            pitch: B
+            length: Quarter
+            movement:
+                type: Triplings
+                pitch: B
+                abbreviate: true
+        - note:
+            pitch: C
+            length: Quarter
+            movement:
+                type: Triplings
+                pitch: C
+                abbreviate: true
+    - symbols:
+        - note:
+            pitch: LowG
+            length: Quarter
+            movement:
+                type: Triplings
+                variant: Thumb
+                pitch: LowG
+                abbreviate: true
+        - note:
+            pitch: LowA
+            length: Quarter
+            movement:
+                type: Triplings
+                variant: Thumb
+                pitch: LowA
+                abbreviate: true
+        - note:
+            pitch: B
+            length: Quarter
+            movement:
+                type: Triplings
+                variant: Thumb
+                pitch: B
+                abbreviate: true
+        - note:
+            pitch: C
+            length: Quarter
+            movement:
+                type: Triplings
+                variant: Thumb
+                pitch: C
+                abbreviate: true
+    - symbols:
+        - note:
+            pitch: LowG
+            length: Quarter
+            movement:
+                type: Triplings
+                variant: Half
+                pitch: LowG
+                abbreviate: true
+        - note:
+            pitch: LowA
+            length: Quarter
+            movement:
+                type: Triplings
+                variant: Half
+                pitch: LowA
+                abbreviate: true
+        - note:
+            pitch: B
+            length: Quarter
+            movement:
+                type: Triplings
+                variant: Half
+                pitch: B
+                abbreviate: true
+        - note:
+            pitch: C
+            length: Quarter
+            movement:
+                type: Triplings
+                variant: Half
+                pitch: C
+                abbreviate: true

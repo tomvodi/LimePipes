@@ -712,6 +712,20 @@ var _ = Describe("BWW Parser", func() {
 		})
 	})
 
+	When("having file with piobairached triplings in it", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/pio_triplings.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/pio_triplings.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/pio_triplings.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
 	When("having file with misc movements in it", func() {
 		BeforeEach(func() {
 			bwwData := dataFromFile("./testfiles/pio_misc.bww")
@@ -774,7 +788,7 @@ var _ = Describe("BWW Parser", func() {
 
 		It("should succeed", func() {
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(musicTunesBww).To(HaveLen(10))
+			Expect(musicTunesBww).To(HaveLen(11))
 		})
 	})
 

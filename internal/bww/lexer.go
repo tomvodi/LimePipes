@@ -513,6 +513,10 @@ var BwwLexer = lexer.MustStateful(lexer.Rules{
 			Pattern: `tarb|tar|htar`,
 		},
 		{
+			Name:    "TRIPLINGS",
+			Pattern: `phtriplg|phtripla|phtripb|phtripc|pttriplg|pttripla|pttripb|pttripc|ptriplg|ptripla|ptripb|ptripc`,
+		},
+		{
 			Name:    "TAORLUATH_AMACH",
 			Pattern: `ptmb|ptmc|ptmd`,
 		},

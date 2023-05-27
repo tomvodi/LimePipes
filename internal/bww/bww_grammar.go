@@ -228,6 +228,7 @@ type StaffSymbols struct {
 	Crunluath              *string          `| @CRUNLUATH`
 	CrunluathAbbrev        *string          `| @CRUNLUATH_ABBREV`
 	CrunluathAmach         *string          `| @CRUNLUATH_AMACH`
+	Tripling               *string          `| @TRIPLINGS`
 	Description            *TuneDescription `| @@`
 	Comment                *string          `| @STRING`
 }

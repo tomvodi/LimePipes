@@ -892,6 +892,16 @@ func appendStaffSymbolToMeasureSymbols(
 		mv.Note.Movement.PitchHint = pitch
 		return mv, nil
 	}
+	if staffSym.Tripling != nil {
+		pitch := pitchFromSuffix(*staffSym.Tripling)
+		mv, _ := handleMovement(movement.Tripling, staffSym.Tripling, false, true)
+		// thumb variant handled here because pt is always recognized as thumb
+		if strings.HasPrefix(*staffSym.Tripling, "ptt") {
+			mv.Note.Movement.Variant = movement.Thumb
+		}
+		mv.Note.Movement.Pitch = pitch
+		return mv, nil
+	}
 
 	return nil, nil // fmt.Errorf("staff symbol %v not handled", staffSym)
 }
@@ -924,7 +934,7 @@ func handleMovement(mtype movement.Type, sym *string, withThumb bool, withHalf b
 	}
 
 	if withThumb {
-		if strings.HasPrefix(*sym, "t") {
+		if strings.HasPrefix(*sym, "t") || strings.HasPrefix(*sym, "pt") {
 			mVar = movement.Thumb
 		}
 	}

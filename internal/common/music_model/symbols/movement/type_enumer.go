@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-const _TypeName = "NoMovementCadenceEmbariEndariChedariHedariDiliTraEdreDareCheCheReGripDedaEnbainOtroOdroAdedaEchoBeatDarodoHiharinRodinChelalhoDinLemluathTaorluathCrunluath"
+const _TypeName = "NoMovementCadenceEmbariEndariChedariHedariDiliTraEdreDareCheCheReGripDedaEnbainOtroOdroAdedaEchoBeatDarodoHiharinRodinChelalhoDinLemluathTaorluathCrunluathTriplings"
 
-var _TypeIndex = [...]uint8{0, 10, 17, 23, 29, 36, 42, 46, 49, 53, 57, 65, 69, 73, 79, 83, 87, 92, 100, 106, 113, 118, 126, 129, 137, 146, 155}
+var _TypeIndex = [...]uint8{0, 10, 17, 23, 29, 36, 42, 46, 49, 53, 57, 65, 69, 73, 79, 83, 87, 92, 100, 106, 113, 118, 126, 129, 137, 146, 155, 164}
 
-const _TypeLowerName = "nomovementcadenceembariendarichedarihedaridilitraedredarechecheregripdedaenbainotroodroadedaechobeatdarodohiharinrodinchelalhodinlemluathtaorluathcrunluath"
+const _TypeLowerName = "nomovementcadenceembariendarichedarihedaridilitraedredarechecheregripdedaenbainotroodroadedaechobeatdarodohiharinrodinchelalhodinlemluathtaorluathcrunluathtriplings"
 
 func (i Type) String() string {
 	if i >= Type(len(_TypeIndex)-1) {
@@ -51,9 +51,10 @@ func _TypeNoOp() {
 	_ = x[Lemluath-(23)]
 	_ = x[Taorluath-(24)]
 	_ = x[Crunluath-(25)]
+	_ = x[Tripling-(26)]
 }
 
-var _TypeValues = []Type{NoMovement, Cadence, Embari, Endari, Chedari, Hedari, Dili, Tra, Edre, Dare, CheCheRe, Grip, Deda, Enbain, Otro, Odro, Adeda, EchoBeat, Darodo, Hiharin, Rodin, Chelalho, Din, Lemluath, Taorluath, Crunluath}
+var _TypeValues = []Type{NoMovement, Cadence, Embari, Endari, Chedari, Hedari, Dili, Tra, Edre, Dare, CheCheRe, Grip, Deda, Enbain, Otro, Odro, Adeda, EchoBeat, Darodo, Hiharin, Rodin, Chelalho, Din, Lemluath, Taorluath, Crunluath, Tripling}
 
 var _TypeNameToValueMap = map[string]Type{
 	_TypeName[0:10]:         NoMovement,
@@ -108,6 +109,8 @@ var _TypeNameToValueMap = map[string]Type{
 	_TypeLowerName[137:146]: Taorluath,
 	_TypeName[146:155]:      Crunluath,
 	_TypeLowerName[146:155]: Crunluath,
+	_TypeName[155:164]:      Tripling,
+	_TypeLowerName[155:164]: Tripling,
 }
 
 var _TypeNames = []string{
@@ -137,6 +140,7 @@ var _TypeNames = []string{
 	_TypeName[129:137],
 	_TypeName[137:146],
 	_TypeName[146:155],
+	_TypeName[155:164],
 }
 
 // TypeString retrieves an enum value from the enum constants string name.

@@ -36,6 +36,7 @@ const (
 	Lemluath
 	Taorluath
 	Crunluath
+	Tripling
 )
 
 type Variant uint
