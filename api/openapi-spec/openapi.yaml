@@ -92,35 +92,6 @@ paths:
           $ref: '#/components/responses/NotFound'
         default:
           $ref: '#/components/responses/Error'
-  '/tunes/{tuneId}/files':
-    post:
-      summary: Add files to a tune
-      operationId: addTuneFiles
-      parameters:
-        - $ref: '#/components/parameters/tuneId'
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                filename:
-                  type: array
-                  items:
-                    type: string
-                    format: binary
-      responses:
-        '200':
-          description: The requested tune
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tune'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        default:
-          $ref: '#/components/responses/Error'
-
   '/sets':
     get:
       summary: List all sets
@@ -228,6 +199,26 @@ paths:
                 $ref: '#/components/schemas/MusicSet'
         '404':
           $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Error'
+  '/imports/bww':
+    post:
+      summary: Import tunes/sets from one or more bww files
+      operationId: importBww
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                filename:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '200':
+          $ref: '#/components/responses/Import'
         default:
           $ref: '#/components/responses/Error'
 
@@ -340,6 +331,47 @@ components:
       example:
         [1, 2, 3]
 
+    ImportTune:
+      allOf:
+        - $ref: '#/components/schemas/Tune'
+        - type: object
+          properties:
+            warnings:
+              type: array
+              items:
+                type: string
+            errors:
+              type: array
+              items:
+                type: string
+            infos:
+              type: array
+              items:
+                type: string
+
+    ParseResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+
+    ImportFile:
+      type: object
+      properties:
+        name:
+          type: string
+        result:
+          $ref: '#/components/schemas/ParseResult'
+        tunes:
+          description: if import was successful, the array of imported tunes
+          type: array
+          items:
+            $ref: '#/components/schemas/ImportTune'
+      required:
+        - name
+
   responses:
     Error:
       description: General error for the service
@@ -359,6 +391,15 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    Import:
+      description: Information about an import of one or more files
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/ImportFile'
+
   parameters:
     tuneId:
       name: tuneId

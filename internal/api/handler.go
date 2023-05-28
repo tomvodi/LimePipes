@@ -15,7 +15,7 @@ type apiHandler struct {
 	service interfaces.DataService
 }
 
-func (a *apiHandler) AddTuneFiles(c *gin.Context) {
+func (a *apiHandler) ImportBww(c *gin.Context) {
 	form, _ := c.MultipartForm()
 	files := form.File["upload[]"]
 

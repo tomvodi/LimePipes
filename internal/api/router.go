@@ -61,10 +61,10 @@ func (a *apiRouter) getRoutes() routes {
 		},
 
 		{
-			"AddTuneFiles",
+			"ImportBww",
 			http.MethodPost,
-			"/tunes/:tuneId/files",
-			a.apiHandler.AddTuneFiles,
+			"/imports/bww",
+			a.apiHandler.ImportBww,
 		},
 
 		{

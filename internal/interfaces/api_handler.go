@@ -30,5 +30,6 @@ type ApiHandler interface {
 	UpdateSet(c *gin.Context)
 	// UpdateTune - Update a tune by ID
 	UpdateTune(c *gin.Context)
-	AddTuneFiles(c *gin.Context)
+	// ImportBww - Import tunes/sets from one or more bww files
+	ImportBww(c *gin.Context)
 }

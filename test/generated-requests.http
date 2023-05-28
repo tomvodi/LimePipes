@@ -22,7 +22,7 @@ Content-Type: application/json
 }
 
 ### Add files to tune
-POST http://{{host}}/v1/tunes/1/files
+POST http://{{host}}/v1/imports/bww
 Content-Type: multipart/form-data; boundary=boundary
 
 --boundary
