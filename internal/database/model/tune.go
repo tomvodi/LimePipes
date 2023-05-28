@@ -12,6 +12,7 @@ type Tune struct {
 	Composer  string
 	Arranger  string
 	Sets      []MusicSet ` gorm:"many2many:music_set_tunes;constraint:OnUpdate:CASCADE;"`
+	Files     []*TuneFile
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

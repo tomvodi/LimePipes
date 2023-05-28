@@ -9,7 +9,7 @@ import (
 type bwwParser struct {
 }
 
-func (b *bwwParser) ParseBwwData(data []byte) ([]*music_model.Tune, error) {
+func (b *bwwParser) ParseBwwData(data []byte) (music_model.MusicModel, error) {
 	parser, err := participle.Build[BwwDocument](
 		participle.Elide("WHITESPACE"),
 		participle.Lexer(BwwLexer),

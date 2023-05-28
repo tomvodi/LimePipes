@@ -27,8 +27,8 @@ type staffContext struct {
 	PreviousStaveMeasures []*music_model.Measure
 }
 
-func convertGrammarToModel(grammar *BwwDocument) ([]*music_model.Tune, error) {
-	var tunes []*music_model.Tune
+func convertGrammarToModel(grammar *BwwDocument) (music_model.MusicModel, error) {
+	var tunes music_model.MusicModel
 
 	var newTune *music_model.Tune
 	staffCtx := &staffContext{

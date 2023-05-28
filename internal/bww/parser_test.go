@@ -22,25 +22,25 @@ func dataFromFile(filePath string) []byte {
 	return data
 }
 
-func exportToYaml(tunes []*music_model.Tune, filePath string) {
-	data, err := yaml.Marshal(tunes)
+func exportToYaml(muMo music_model.MusicModel, filePath string) {
+	data, err := yaml.Marshal(muMo)
 	Expect(err).ShouldNot(HaveOccurred())
 	err = os.WriteFile(filePath, data, 0664)
 	Expect(err).ShouldNot(HaveOccurred())
 }
 
-func importFromYaml(filePath string) []*music_model.Tune {
-	tunes := make([]*music_model.Tune, 0)
+func importFromYaml(filePath string) music_model.MusicModel {
+	muMo := make(music_model.MusicModel, 0)
 	fileData, err := os.ReadFile(filePath)
 	Expect(err).ShouldNot(HaveOccurred())
-	err = yaml.Unmarshal(fileData, &tunes)
+	err = yaml.Unmarshal(fileData, &muMo)
 	Expect(err).ShouldNot(HaveOccurred())
 
-	return tunes
+	return muMo
 }
 
-func nilAllMeasureMessages(tunes []*music_model.Tune) {
-	for _, tune := range tunes {
+func nilAllMeasureMessages(muMo music_model.MusicModel) {
+	for _, tune := range muMo {
 		for _, measure := range tune.Measures {
 			measure.ImportMessages = nil
 		}
@@ -51,8 +51,8 @@ var _ = Describe("BWW Parser", func() {
 	utils.SetupConsoleLogger()
 	var err error
 	var parser interfaces.BwwParser
-	var musicTunesBww []*music_model.Tune
-	var musicTunesExpect []*music_model.Tune
+	var musicTunesBww music_model.MusicModel
+	var musicTunesExpect music_model.MusicModel
 
 	BeforeEach(func() {
 		parser = NewBwwParser()

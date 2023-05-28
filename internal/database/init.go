@@ -20,6 +20,7 @@ func GetInitSqliteDb(name string) (*gorm.DB, error) {
 		&model.MusicSet{},
 		&model.Tune{},
 		&model.MusicSetTunes{},
+		&model.TuneFile{},
 	); err != nil {
 		return nil, err
 	}
