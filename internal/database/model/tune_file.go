@@ -6,13 +6,11 @@ import (
 	"bytes"
 	"encoding/gob"
 	"fmt"
-	"gorm.io/gorm"
 )
 
 type TuneFile struct {
-	gorm.Model
-	TuneID uint64
-	Type   file_type.Type
+	TuneID uint64         `gorm:"primaryKey"`
+	Type   file_type.Type `gorm:"primaryKey"`
 	Data   []byte
 }
 

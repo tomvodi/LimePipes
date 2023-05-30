@@ -24,6 +24,8 @@ type ImportTune struct {
 
 	Arranger string `json:"arranger,omitempty"`
 
+	Set *BasicMusicSet `json:"set,omitempty"`
+
 	Warnings []string `json:"warnings,omitempty"`
 
 	Errors []string `json:"errors,omitempty"`

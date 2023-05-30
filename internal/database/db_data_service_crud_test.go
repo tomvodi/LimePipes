@@ -3,6 +3,9 @@ package database
 import (
 	"banduslib/internal/api/apimodel"
 	"banduslib/internal/common"
+	"banduslib/internal/common/music_model"
+	"banduslib/internal/database/model"
+	"banduslib/internal/database/model/file_type"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"gorm.io/gorm"
@@ -153,6 +156,77 @@ var _ = Describe("DbDataService", func() {
 
 			It("should fail", func() {
 				Expect(err).Should(HaveOccurred())
+			})
+		})
+
+		When("adding a file to that tune", func() {
+			var testTune *music_model.Tune
+			var tuneFile *model.TuneFile
+			var tuneFiles []*model.TuneFile
+			var returnTuneFile *model.TuneFile
+
+			BeforeEach(func() {
+				testTune = model.TestMusicModelTune("test tune")
+				tuneFile, err = model.TuneFileFromTune(testTune)
+				Expect(err).ShouldNot(HaveOccurred())
+				err = service.AddFileToTune(tune.ID, tuneFile)
+			})
+
+			It("should add that file", func() {
+				Expect(err).ShouldNot(HaveOccurred())
+			})
+
+			When("retrieving that tune file again", func() {
+				BeforeEach(func() {
+					returnTuneFile, err = service.GetTuneFile(tune.ID, file_type.MusicModelTune)
+				})
+
+				It("should contain that same music model tune", func() {
+					returnTune, err := returnTuneFile.MusicModelTune()
+					Expect(err).ShouldNot(HaveOccurred())
+					Expect(returnTune).Should(Equal(testTune))
+				})
+			})
+
+			When("deleting that file", func() {
+				BeforeEach(func() {
+					err = service.DeleteFileFromTune(tune.ID, file_type.MusicModelTune)
+				})
+
+				It("should succeed", func() {
+					Expect(err).ShouldNot(HaveOccurred())
+				})
+
+				When("retrieving all tune files", func() {
+					BeforeEach(func() {
+						tuneFiles, err = service.GetTuneFiles(tune.ID)
+					})
+
+					It("should have no tune files again", func() {
+						Expect(err).ShouldNot(HaveOccurred())
+						Expect(tuneFiles).To(BeEmpty())
+					})
+				})
+			})
+
+			When("deleting that tune", func() {
+				BeforeEach(func() {
+					err = service.DeleteTune(tune.ID)
+				})
+
+				It("should have deleted that tune", func() {
+					Expect(err).ShouldNot(HaveOccurred())
+				})
+
+				When("retrieving all tune files", func() {
+					BeforeEach(func() {
+						tuneFiles, err = service.GetTuneFiles(tune.ID)
+					})
+
+					It("should have removed all tune files", func() {
+						Expect(tuneFiles).To(BeEmpty())
+					})
+				})
 			})
 		})
 

@@ -11,9 +11,9 @@ import (
 	"banduslib/internal/common/music_model/symbols/tie"
 )
 
-func testMusicModelTune() *music_model.Tune {
+func TestMusicModelTune(title string) *music_model.Tune {
 	return &music_model.Tune{
-		Title:      "tune 1",
+		Title:      title,
 		Type:       "march",
 		Composer:   "someone",
 		Footer:     []string{"footer tune 1"},

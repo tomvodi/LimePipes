@@ -15,5 +15,5 @@ type ImportFile struct {
 	Result ParseResult `json:"result,omitempty"`
 
 	// if import was successful, the array of imported tunes
-	Tunes []ImportTune `json:"tunes,omitempty"`
+	Tunes []*ImportTune `json:"tunes,omitempty"`
 }

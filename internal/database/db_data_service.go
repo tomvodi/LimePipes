@@ -6,6 +6,7 @@ import (
 	"banduslib/internal/common/music_model"
 	"banduslib/internal/common/music_model/import_message"
 	"banduslib/internal/database/model"
+	"banduslib/internal/database/model/file_type"
 	"banduslib/internal/interfaces"
 	"fmt"
 	"github.com/jinzhu/copier"
@@ -373,8 +374,8 @@ func tunesOrderedByIds(tunes []model.Tune, tuneIds []uint64) []model.Tune {
 func (d *dbService) ImportMusicModel(
 	muMo music_model.MusicModel,
 	filename string,
-) ([]apimodel.ImportTune, error) {
-	var apiTunes []apimodel.ImportTune
+) ([]*apimodel.ImportTune, error) {
+	var apiTunes []*apimodel.ImportTune
 
 	err := d.db.Transaction(func(tx *gorm.DB) error {
 		for _, tune := range muMo {
@@ -397,18 +398,17 @@ func (d *dbService) ImportMusicModel(
 			if err != nil {
 				return err
 			}
-			tuneFile.TuneID = apiTune.ID
 
-			if err = d.db.Create(tuneFile).Error; err != nil {
+			if err = d.AddFileToTune(apiTune.ID, tuneFile); err != nil {
 				return err
 			}
 
-			importTune := apimodel.ImportTune{}
+			importTune := &apimodel.ImportTune{}
 			err = copier.Copy(&importTune, apiTune)
 			if err != nil {
 				return err
 			}
-			setMessagesToApiTune(&importTune, tune)
+			setMessagesToApiTune(importTune, tune)
 			apiTunes = append(apiTunes, importTune)
 		}
 
@@ -426,6 +426,16 @@ func (d *dbService) ImportMusicModel(
 			apiSet, err := d.CreateMusicSet(createSet)
 			if err != nil {
 				return fmt.Errorf("failed creating set for file %s: %s", filename, err.Error())
+			}
+
+			basicSet := &apimodel.BasicMusicSet{}
+			err = copier.Copy(basicSet, apiSet)
+			if err != nil {
+				return fmt.Errorf("failed creating basic music set from music set")
+			}
+
+			for _, tune := range apiTunes {
+				tune.Set = basicSet
 			}
 
 			log.Info().Msgf("created set with id %d and name %s", apiSet.ID, filename)
@@ -452,6 +462,60 @@ func setMessagesToApiTune(apiTune *apimodel.ImportTune, tune *music_model.Tune) 
 			apiTune.Infos = append(apiTune.Infos, message.Text)
 		}
 	}
+}
+
+func (d *dbService) GetTuneFile(tuneId uint64, fType file_type.Type) (*model.TuneFile, error) {
+	tuneFile := &model.TuneFile{
+		TuneID: tuneId,
+		Type:   fType,
+	}
+
+	if err := d.db.First(tuneFile).Error; err != nil {
+		return nil, common.NotFound
+	}
+
+	return tuneFile, nil
+}
+
+func (d *dbService) GetTuneFiles(tuneId uint64) ([]*model.TuneFile, error) {
+	var tune = &model.Tune{}
+	if err := d.db.First(tune, tuneId).Error; err != nil {
+		return nil, common.NotFound
+	}
+
+	var tuneFiles []*model.TuneFile
+	if err := d.db.Where("tune_id = ?", tuneId).Find(&tuneFiles).Error; err != nil {
+		return nil, err
+	}
+
+	return tuneFiles, nil
+}
+
+func (d *dbService) AddFileToTune(tuneId uint64, tFile *model.TuneFile) error {
+	var tune = &model.Tune{}
+	if err := d.db.First(tune, tuneId).Error; err != nil {
+		return common.NotFound
+	}
+
+	tFile.TuneID = tuneId
+
+	if err := d.db.Create(tFile).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (d *dbService) DeleteFileFromTune(tuneId uint64, fType file_type.Type) error {
+	tuneFile := &model.TuneFile{
+		TuneID: tuneId,
+		Type:   fType,
+	}
+	if err := d.db.Delete(tuneFile).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func NewDbDataService(db *gorm.DB) interfaces.DataService {

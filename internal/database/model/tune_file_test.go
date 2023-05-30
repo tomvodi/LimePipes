@@ -34,7 +34,7 @@ var _ = Describe("TuneFile", func() {
 
 	Context("a TuneFile created from a music model", func() {
 		BeforeEach(func() {
-			tune = testMusicModelTune()
+			tune = TestMusicModelTune("tune 1")
 			tf, err = TuneFileFromTune(tune)
 		})
 
