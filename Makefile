@@ -7,8 +7,14 @@ mocks:
 test:
 	go test ./...
 
+test-cover:
+	go test ./... -coverprofile cover.out
+
 lint:
 	golangci-lint run
+
+cover-html: test-cover
+	go tool cover -html=cover.out
 
 server:
 	openapi-generator-cli generate \

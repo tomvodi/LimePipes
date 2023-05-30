@@ -2,5 +2,6 @@
 .idea/*
 !.idea/runConfigurations/
 *.db
+cover.out
 
 **/*.env
