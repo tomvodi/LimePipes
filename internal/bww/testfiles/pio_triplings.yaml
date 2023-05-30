@@ -6,28 +6,28 @@
             pitch: LowG
             length: Quarter
             movement:
-                type: Triplings
+                type: Tripling
                 pitch: LowG
                 abbreviate: true
         - note:
             pitch: LowA
             length: Quarter
             movement:
-                type: Triplings
+                type: Tripling
                 pitch: LowA
                 abbreviate: true
         - note:
             pitch: B
             length: Quarter
             movement:
-                type: Triplings
+                type: Tripling
                 pitch: B
                 abbreviate: true
         - note:
             pitch: C
             length: Quarter
             movement:
-                type: Triplings
+                type: Tripling
                 pitch: C
                 abbreviate: true
     - symbols:
@@ -35,7 +35,7 @@
             pitch: LowG
             length: Quarter
             movement:
-                type: Triplings
+                type: Tripling
                 variant: Thumb
                 pitch: LowG
                 abbreviate: true
@@ -43,7 +43,7 @@
             pitch: LowA
             length: Quarter
             movement:
-                type: Triplings
+                type: Tripling
                 variant: Thumb
                 pitch: LowA
                 abbreviate: true
@@ -51,7 +51,7 @@
             pitch: B
             length: Quarter
             movement:
-                type: Triplings
+                type: Tripling
                 variant: Thumb
                 pitch: B
                 abbreviate: true
@@ -59,7 +59,7 @@
             pitch: C
             length: Quarter
             movement:
-                type: Triplings
+                type: Tripling
                 variant: Thumb
                 pitch: C
                 abbreviate: true
@@ -68,7 +68,7 @@
             pitch: LowG
             length: Quarter
             movement:
-                type: Triplings
+                type: Tripling
                 variant: Half
                 pitch: LowG
                 abbreviate: true
@@ -76,7 +76,7 @@
             pitch: LowA
             length: Quarter
             movement:
-                type: Triplings
+                type: Tripling
                 variant: Half
                 pitch: LowA
                 abbreviate: true
@@ -84,7 +84,7 @@
             pitch: B
             length: Quarter
             movement:
-                type: Triplings
+                type: Tripling
                 variant: Half
                 pitch: B
                 abbreviate: true
@@ -92,7 +92,7 @@
             pitch: C
             length: Quarter
             movement:
-                type: Triplings
+                type: Tripling
                 variant: Half
                 pitch: C
                 abbreviate: true

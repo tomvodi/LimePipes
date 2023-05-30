@@ -4,6 +4,9 @@ API_GEN_DIR=./internal/api_gen
 mocks:
 	go generate mockgen ./...
 
+test:
+	go test ./...
+
 server:
 	openapi-generator-cli generate \
 		-i ./api/openapi-spec/openapi.yaml \
