@@ -7,6 +7,9 @@ mocks:
 test:
 	go test ./...
 
+lint:
+	golangci-lint run
+
 server:
 	openapi-generator-cli generate \
 		-i ./api/openapi-spec/openapi.yaml \

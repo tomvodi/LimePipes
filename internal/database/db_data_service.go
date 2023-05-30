@@ -370,7 +370,10 @@ func tunesOrderedByIds(tunes []model.Tune, tuneIds []uint64) []model.Tune {
 	return orderedTunes
 }
 
-func (d *dbService) ImportMusicModel(muMo music_model.MusicModel, filename string) ([]apimodel.ImportTune, error) {
+func (d *dbService) ImportMusicModel(
+	muMo music_model.MusicModel,
+	filename string,
+) ([]apimodel.ImportTune, error) {
 	var apiTunes []apimodel.ImportTune
 
 	err := d.db.Transaction(func(tx *gorm.DB) error {
@@ -402,6 +405,9 @@ func (d *dbService) ImportMusicModel(muMo music_model.MusicModel, filename strin
 
 			importTune := apimodel.ImportTune{}
 			err = copier.Copy(&importTune, apiTune)
+			if err != nil {
+				return err
+			}
 			setMessagesToApiTune(&importTune, tune)
 			apiTunes = append(apiTunes, importTune)
 		}

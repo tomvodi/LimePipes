@@ -17,9 +17,7 @@ func (t *Tune) ImportMessages() []*import_message.ImportMessage {
 	var messages []*import_message.ImportMessage
 
 	for _, measure := range t.Measures {
-		for _, message := range measure.ImportMessages {
-			messages = append(messages, message)
-		}
+		messages = append(messages, measure.ImportMessages...)
 	}
 
 	return messages

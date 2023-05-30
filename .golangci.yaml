@@ -1,0 +1,10 @@
+run:
+  tests: false
+  skip-files:
+    - '.*test_data.go'
+
+issues:
+  exclude-rules:
+    - path: 'internal/bww/bww_grammar.go'
+      linters:
+        - govet

@@ -4,13 +4,13 @@ import "encoding/xml"
 
 const (
 	CreditTypePageNumber string = "page number"
-	CreditTypeTitle             = "title"
-	CreditTypeSubtitle          = "subtitle"
-	CreditTypeComposer          = "composer"
-	CreditTypeArranger          = "arranger"
-	CreditTypeLyricist          = "lyricist"
-	CreditTypeRights            = "rights"
-	CreditTypePartName          = "part name"
+	CreditTypeTitle      string = "title"
+	CreditTypeSubtitle   string = "subtitle"
+	CreditTypeComposer   string = "composer"
+	CreditTypeArranger   string = "arranger"
+	CreditTypeLyricist   string = "lyricist"
+	CreditTypeRights     string = "rights"
+	CreditTypePartName   string = "part name"
 )
 
 type Credit struct {
