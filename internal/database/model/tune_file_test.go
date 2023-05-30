@@ -10,20 +10,20 @@ import (
 var _ = Describe("TuneFile", func() {
 	var tf *TuneFile
 	var err error
-	var muMo music_model.MusicModel
-	var gotMuMo music_model.MusicModel
+	var tune *music_model.Tune
+	var gotTune *music_model.Tune
 
 	Context("having an empty tune file with correct type", func() {
 		BeforeEach(func() {
 			tf = &TuneFile{
-				Type: file_type.MusicModel,
+				Type: file_type.MusicModelTune,
 				Data: nil,
 			}
 		})
 
 		When("getting the music model from it", func() {
 			BeforeEach(func() {
-				gotMuMo, err = tf.MusicModel()
+				gotTune, err = tf.MusicModelTune()
 			})
 
 			It("should return an error", func() {
@@ -34,29 +34,29 @@ var _ = Describe("TuneFile", func() {
 
 	Context("a TuneFile created from a music model", func() {
 		BeforeEach(func() {
-			muMo = testMusicModel()
-			tf, err = TuneFileFromMusicModel(muMo)
+			tune = testMusicModelTune()
+			tf, err = TuneFileFromTune(tune)
 		})
 
 		It("should have the correct file type", func() {
-			Expect(tf.Type).Should(Equal(file_type.MusicModel))
+			Expect(tf.Type).Should(Equal(file_type.MusicModelTune))
 		})
 
 		It("should not return an error", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 		})
 
-		When("getting the MusicModel from the tune file", func() {
+		When("getting the MusicModelTune from the tune file", func() {
 			BeforeEach(func() {
-				gotMuMo, err = tf.MusicModel()
+				gotTune, err = tf.MusicModelTune()
 			})
 
 			It("should succeed", func() {
 				Expect(err).ShouldNot(HaveOccurred())
 			})
 
-			It("should return the same MusicModel", func() {
-				Expect(gotMuMo).To(Equal(muMo))
+			It("should return the same MusicModelTune", func() {
+				Expect(gotTune).To(Equal(tune))
 			})
 		})
 
@@ -65,9 +65,9 @@ var _ = Describe("TuneFile", func() {
 				tf.Type = file_type.Bww
 			})
 
-			When("getting the MusicModel from tune file", func() {
+			When("getting the MusicModelTune from tune file", func() {
 				BeforeEach(func() {
-					gotMuMo, err = tf.MusicModel()
+					gotTune, err = tf.MusicModelTune()
 				})
 
 				It("should return an error", func() {

@@ -3,29 +3,84 @@ package api
 import (
 	"banduslib/internal/api/apimodel"
 	"banduslib/internal/common"
+	"banduslib/internal/common/music_model"
 	"banduslib/internal/interfaces"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"log"
+	"io"
+	"mime/multipart"
 	"net/http"
+	"path/filepath"
 	"strconv"
+	"strings"
 )
 
 type apiHandler struct {
-	service interfaces.DataService
+	service   interfaces.DataService
+	bwwParser interfaces.BwwParser
 }
 
 func (a *apiHandler) ImportBww(c *gin.Context) {
 	form, _ := c.MultipartForm()
 	files := form.File["upload[]"]
 
+	var importFiles []*apimodel.ImportFile
 	for _, file := range files {
-		log.Println(file.Filename)
+		importFile, err := a.importBwwFile(file, a.bwwParser)
+		if err != nil {
+			httpErrorResponse(c, http.StatusInternalServerError, err)
+			return
+		}
 
-		// Upload the file to specific dst.
-		//c.SaveUploadedFile(file, dst)
+		importFiles = append(importFiles, importFile)
 	}
-	c.String(http.StatusOK, fmt.Sprintf("%d files uploaded!", len(files)))
+	c.JSON(http.StatusOK, importFiles)
+}
+
+func (a *apiHandler) importBwwFile(
+	file *multipart.FileHeader,
+	parser interfaces.BwwParser,
+) (*apimodel.ImportFile, error) {
+	fileReader, err := file.Open()
+	if err != nil {
+		return nil, fmt.Errorf("failed open file %s for reading", file.Filename)
+	}
+	defer fileReader.Close()
+
+	fileData, err := io.ReadAll(fileReader)
+	if err != nil {
+		return nil, fmt.Errorf("failed reading file %s: %s", file.Filename, err.Error())
+	}
+
+	importFile := &apimodel.ImportFile{
+		Name: file.Filename,
+		Result: apimodel.ParseResult{
+			Success: false,
+		},
+	}
+
+	var muModel music_model.MusicModel
+	muModel, err = parser.ParseBwwData(fileData)
+	if err != nil {
+		importFile.Result = apimodel.ParseResult{
+			Message: err.Error(),
+		}
+		return importFile, err
+	}
+
+	fileName := strings.TrimSuffix(file.Filename, filepath.Ext(file.Filename))
+
+	apiImpTunes, err := a.service.ImportMusicModel(muModel, fileName)
+	if err != nil {
+		importFile.Result = apimodel.ParseResult{
+			Message: err.Error(),
+		}
+		return importFile, err
+	}
+
+	importFile.Result.Success = true
+	importFile.Tunes = apiImpTunes
+	return importFile, nil
 }
 
 func httpErrorResponse(c *gin.Context, code int, err error) {
@@ -229,8 +284,12 @@ func (a *apiHandler) AssignTunesToSet(c *gin.Context) {
 	c.JSON(http.StatusOK, set)
 }
 
-func NewApiHandler(service interfaces.DataService) interfaces.ApiHandler {
+func NewApiHandler(
+	service interfaces.DataService,
+	bwwParser interfaces.BwwParser,
+) interfaces.ApiHandler {
 	return &apiHandler{
-		service: service,
+		service:   service,
+		bwwParser: bwwParser,
 	}
 }

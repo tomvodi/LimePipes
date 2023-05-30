@@ -2,6 +2,7 @@ package main
 
 import (
 	"banduslib/internal/api"
+	"banduslib/internal/bww"
 	"banduslib/internal/database"
 	"banduslib/internal/utils"
 	"fmt"
@@ -42,8 +43,9 @@ func main() {
 		panic(fmt.Sprintf("failed initializing database: %s", err.Error()))
 	}
 
+	bwwParser := bww.NewBwwParser()
 	dbService := database.NewDbDataService(db)
-	apiHandler := api.NewApiHandler(dbService)
+	apiHandler := api.NewApiHandler(dbService, bwwParser)
 	apiRouter := api.NewApiRouter(apiHandler)
 
 	router := apiRouter.GetEngine()

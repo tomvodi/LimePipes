@@ -12,7 +12,7 @@ package apimodel
 type ImportTune struct {
 
 	// Unique identifier for an object
-	Id int64 `json:"id"`
+	ID uint64 `json:"id"`
 
 	Title string `json:"title"`
 

@@ -1,6 +1,9 @@
 package interfaces
 
-import "banduslib/internal/api/apimodel"
+import (
+	"banduslib/internal/api/apimodel"
+	"banduslib/internal/common/music_model"
+)
 
 //go:generate mockgen -source data_service.go -destination ./mocks/mock_data_service.go
 
@@ -18,4 +21,6 @@ type DataService interface {
 	DeleteMusicSet(id uint64) error
 
 	AssignTunesToMusicSet(setId uint64, tuneIds []uint64) (*apimodel.MusicSet, error)
+
+	ImportMusicModel(muMo music_model.MusicModel, filename string) ([]apimodel.ImportTune, error)
 }

@@ -6,6 +6,7 @@ package mock_interfaces
 
 import (
 	apimodel "banduslib/internal/api/apimodel"
+	music_model "banduslib/internal/common/music_model"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -135,6 +136,21 @@ func (m *MockDataService) GetTune(id uint64) (*apimodel.Tune, error) {
 func (mr *MockDataServiceMockRecorder) GetTune(id interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTune", reflect.TypeOf((*MockDataService)(nil).GetTune), id)
+}
+
+// ImportMusicModel mocks base method.
+func (m *MockDataService) ImportMusicModel(muMo music_model.MusicModel, filename string) ([]apimodel.ImportTune, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ImportMusicModel", muMo, filename)
+	ret0, _ := ret[0].([]apimodel.ImportTune)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ImportMusicModel indicates an expected call of ImportMusicModel.
+func (mr *MockDataServiceMockRecorder) ImportMusicModel(muMo, filename interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ImportMusicModel", reflect.TypeOf((*MockDataService)(nil).ImportMusicModel), muMo, filename)
 }
 
 // MusicSets mocks base method.

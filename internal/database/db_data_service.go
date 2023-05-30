@@ -3,11 +3,14 @@ package database
 import (
 	"banduslib/internal/api/apimodel"
 	"banduslib/internal/common"
+	"banduslib/internal/common/music_model"
+	"banduslib/internal/common/music_model/import_message"
 	"banduslib/internal/database/model"
 	"banduslib/internal/interfaces"
 	"fmt"
 	"github.com/jinzhu/copier"
 	"github.com/mitchellh/mapstructure"
+	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
 )
 
@@ -365,6 +368,84 @@ func tunesOrderedByIds(tunes []model.Tune, tuneIds []uint64) []model.Tune {
 		}
 	}
 	return orderedTunes
+}
+
+func (d *dbService) ImportMusicModel(muMo music_model.MusicModel, filename string) ([]apimodel.ImportTune, error) {
+	var apiTunes []apimodel.ImportTune
+
+	err := d.db.Transaction(func(tx *gorm.DB) error {
+		for _, tune := range muMo {
+			timeSigStr := ""
+			timeSig := tune.FirstTimeSignature()
+			if timeSig != nil {
+				timeSigStr = timeSig.String()
+			}
+			createTune := apimodel.CreateTune{
+				Title:    tune.Title,
+				Type:     tune.Type,
+				TimeSig:  timeSigStr,
+				Composer: tune.Composer,
+			}
+			apiTune, err := d.CreateTune(createTune)
+			if err != nil {
+				return err
+			}
+			tuneFile, err := model.TuneFileFromTune(tune)
+			if err != nil {
+				return err
+			}
+			tuneFile.TuneID = apiTune.ID
+
+			if err = d.db.Create(tuneFile).Error; err != nil {
+				return err
+			}
+
+			importTune := apimodel.ImportTune{}
+			err = copier.Copy(&importTune, apiTune)
+			setMessagesToApiTune(&importTune, tune)
+			apiTunes = append(apiTunes, importTune)
+		}
+
+		if len(muMo) > 1 {
+			var tuneIds []uint64
+			for _, tune := range apiTunes {
+				tuneIds = append(tuneIds, tune.ID)
+			}
+			createSet := apimodel.CreateSet{
+				Title:       filename,
+				Description: "imported from bww file",
+				Creator:     "",
+				Tunes:       tuneIds,
+			}
+			apiSet, err := d.CreateMusicSet(createSet)
+			if err != nil {
+				return fmt.Errorf("failed creating set for file %s: %s", filename, err.Error())
+			}
+
+			log.Info().Msgf("created set with id %d and name %s", apiSet.ID, filename)
+		}
+
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return apiTunes, nil
+}
+
+func setMessagesToApiTune(apiTune *apimodel.ImportTune, tune *music_model.Tune) {
+	messages := tune.ImportMessages()
+	for _, message := range messages {
+		switch message.Type {
+		case import_message.Error:
+			apiTune.Errors = append(apiTune.Errors, message.Text)
+		case import_message.Warning:
+			apiTune.Warnings = append(apiTune.Warnings, message.Text)
+		case import_message.Info:
+			apiTune.Infos = append(apiTune.Infos, message.Text)
+		}
+	}
 }
 
 func NewDbDataService(db *gorm.DB) interfaces.DataService {

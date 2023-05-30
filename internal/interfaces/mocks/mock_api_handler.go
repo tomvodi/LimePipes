@@ -118,6 +118,18 @@ func (mr *MockApiHandlerMockRecorder) GetTune(c interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTune", reflect.TypeOf((*MockApiHandler)(nil).GetTune), c)
 }
 
+// ImportBww mocks base method.
+func (m *MockApiHandler) ImportBww(c *gin.Context) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "ImportBww", c)
+}
+
+// ImportBww indicates an expected call of ImportBww.
+func (mr *MockApiHandlerMockRecorder) ImportBww(c interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ImportBww", reflect.TypeOf((*MockApiHandler)(nil).ImportBww), c)
+}
+
 // Index mocks base method.
 func (m *MockApiHandler) Index(c *gin.Context) {
 	m.ctrl.T.Helper()

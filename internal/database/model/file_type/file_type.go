@@ -5,7 +5,7 @@ package file_type
 type Type uint8
 
 const (
-	MusicModel Type = iota + 1
+	MusicModelTune Type = iota + 1
 	MusicXml
 	Bww
 )
