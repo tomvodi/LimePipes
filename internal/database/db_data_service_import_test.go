@@ -83,7 +83,22 @@ var _ = Describe("DbDataService Import", func() {
 					It("should return the same data as for the imported music model tune", func() {
 						Expect(err).ShouldNot(HaveOccurred())
 						Expect(tuneFileTune).Should(Equal(muMo[0]))
+						Expect(returnTunes[0].Set).ShouldNot(BeNil())
+						Expect(returnTunes[1].Set).ShouldNot(BeNil())
+						setId := returnTunes[0].Set.ID
+						Expect(setId).To(Equal(returnTunes[1].Set.ID))
 					})
+				})
+			})
+
+			When("importing this music model a second time", func() {
+				BeforeEach(func() {
+					returnTunes, err = service.ImportMusicModel(muMo, filename, nil)
+				})
+
+				It("should return two apimodel tunes again", func() {
+					Expect(err).ShouldNot(HaveOccurred())
+					Expect(returnTunes).Should(HaveLen(2))
 				})
 			})
 		})

@@ -66,6 +66,23 @@ func (d *dbService) GetTune(id uint64) (*apimodel.Tune, error) {
 	return apiTune, nil
 }
 
+func (d *dbService) getTuneByTitle(title string) (*apimodel.Tune, error) {
+	var tune = &model.Tune{
+		Title: title,
+	}
+	if err := d.db.Where(tune).First(tune).Error; err != nil {
+		return nil, common.NotFound
+	}
+
+	apiTune := &apimodel.Tune{}
+	err := copier.Copy(apiTune, tune)
+	if err != nil {
+		return nil, err
+	}
+
+	return apiTune, nil
+}
+
 func (d *dbService) UpdateTune(id uint64, updateTune apimodel.UpdateTune) (*apimodel.Tune, error) {
 	if err := updateTune.Validate(); err != nil {
 		return nil, err
@@ -164,6 +181,26 @@ func (d *dbService) CreateMusicSet(musicSet apimodel.CreateSet) (*apimodel.Music
 func (d *dbService) GetMusicSet(id uint64) (*apimodel.MusicSet, error) {
 	var set = &model.MusicSet{}
 	if err := d.db.First(set, id).Error; err != nil {
+		return &apimodel.MusicSet{}, common.NotFound
+	}
+
+	apiSet := &apimodel.MusicSet{}
+	if err := copier.Copy(apiSet, set); err != nil {
+		return &apimodel.MusicSet{}, err
+	}
+
+	if err := d.setTunesInApiSet(apiSet); err != nil {
+		return &apimodel.MusicSet{}, err
+	}
+
+	return apiSet, nil
+}
+
+func (d *dbService) getMusicSetByTitle(title string) (*apimodel.MusicSet, error) {
+	var set = &model.MusicSet{
+		Title: title,
+	}
+	if err := d.db.Where(set).First(set).Error; err != nil {
 		return &apimodel.MusicSet{}, common.NotFound
 	}
 
@@ -402,6 +439,14 @@ func (d *dbService) ImportMusicModel(
 				continue
 			}
 
+			tuneInDb, err := d.getTuneByTitle(tune.Title)
+			if err == nil {
+				impTune := &apimodel.ImportTune{}
+				err = copier.Copy(impTune, tuneInDb)
+				apiTunes = append(apiTunes, impTune)
+				continue
+			}
+
 			createTune := apimodel.CreateTune{
 				Title:    tune.Title,
 				Type:     tune.Type,
@@ -445,19 +490,25 @@ func (d *dbService) ImportMusicModel(
 		}
 
 		if len(muMo) > 1 {
-			var tuneIds []uint64
-			for _, tune := range apiTunes {
-				tuneIds = append(tuneIds, tune.ID)
-			}
-			createSet := apimodel.CreateSet{
-				Title:       filename,
-				Description: "imported from bww file",
-				Creator:     "",
-				Tunes:       tuneIds,
-			}
-			apiSet, err := d.CreateMusicSet(createSet)
-			if err != nil {
-				return fmt.Errorf("failed creating set for file %s: %s", filename, err.Error())
+			var apiSet *apimodel.MusicSet
+			var err error
+			apiSet, err = d.getMusicSetByTitle(filename)
+			if err != nil { // music set not yet in db
+				var tuneIds []uint64
+				for _, tune := range apiTunes {
+					tuneIds = append(tuneIds, tune.ID)
+				}
+
+				createSet := apimodel.CreateSet{
+					Title:       filename,
+					Description: "imported from bww file",
+					Creator:     "",
+					Tunes:       tuneIds,
+				}
+				apiSet, err = d.CreateMusicSet(createSet)
+				if err != nil {
+					return fmt.Errorf("failed creating set for file %s: %s", filename, err.Error())
+				}
 			}
 
 			basicSet := &apimodel.BasicMusicSet{}
