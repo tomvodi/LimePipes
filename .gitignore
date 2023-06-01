@@ -5,3 +5,5 @@
 cover.out
 
 **/*.env
+banduslib-cli
+!cmd/banduslib-cli

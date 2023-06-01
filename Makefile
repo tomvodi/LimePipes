@@ -3,6 +3,9 @@ API_GEN_DIR=./internal/api_gen
 
 .PHONY: test test-cover lint cover-html server
 
+cli:
+	go build -o ./banduslib-cli banduslib/cmd/banduslib-cli
+
 mocks:
 	go generate mockgen ./...
 
