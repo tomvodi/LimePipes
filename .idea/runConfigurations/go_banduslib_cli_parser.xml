@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="go banduslib-cli parser" type="GoApplicationRunConfiguration" factoryName="Go Application">
+    <module name="banduslib" />
+    <working_directory value="$PROJECT_DIR$" />
+    <parameters value="parser -r -d -s -v -o $PROJECT_DIR$/../bwwfiles/parser_success $PROJECT_DIR$/../bwwfiles/parser_errors  " />
+    <kind value="PACKAGE" />
+    <package value="banduslib/cmd/banduslib-cli" />
+    <directory value="$PROJECT_DIR$" />
+    <filePath value="$PROJECT_DIR$/cmd/banduslib-cli/main.go" />
+    <method v="2" />
+  </configuration>
+</component>
