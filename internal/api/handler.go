@@ -16,8 +16,9 @@ import (
 )
 
 type apiHandler struct {
-	service   interfaces.DataService
-	bwwParser interfaces.BwwParser
+	service             interfaces.DataService
+	bwwParser           interfaces.BwwParser
+	bwwFileTuneSplitter interfaces.BwwFileByTuneSplitter
 }
 
 func (a *apiHandler) ImportBww(c *gin.Context) {
@@ -26,7 +27,7 @@ func (a *apiHandler) ImportBww(c *gin.Context) {
 
 	var importFiles []*apimodel.ImportFile
 	for _, file := range files {
-		importFile, err := a.importBwwFile(file, a.bwwParser)
+		importFile, err := a.importBwwFile(file)
 		if err != nil {
 			httpErrorResponse(c, http.StatusInternalServerError, err)
 			return
@@ -39,7 +40,6 @@ func (a *apiHandler) ImportBww(c *gin.Context) {
 
 func (a *apiHandler) importBwwFile(
 	file *multipart.FileHeader,
-	parser interfaces.BwwParser,
 ) (*apimodel.ImportFile, error) {
 	fileReader, err := file.Open()
 	if err != nil {
@@ -59,8 +59,13 @@ func (a *apiHandler) importBwwFile(
 		},
 	}
 
+	bwwFileTuneData, err := a.bwwFileTuneSplitter.SplitFileData(fileData)
+	if err != nil {
+		return nil, err
+	}
+
 	var muModel music_model.MusicModel
-	muModel, err = parser.ParseBwwData(fileData)
+	muModel, err = a.bwwParser.ParseBwwData(fileData)
 	if err != nil {
 		importFile.Result = apimodel.ParseResult{
 			Message: err.Error(),
@@ -70,7 +75,7 @@ func (a *apiHandler) importBwwFile(
 
 	fileName := strings.TrimSuffix(file.Filename, filepath.Ext(file.Filename))
 
-	apiImpTunes, err := a.service.ImportMusicModel(muModel, fileName)
+	apiImpTunes, err := a.service.ImportMusicModel(muModel, fileName, bwwFileTuneData)
 	if err != nil {
 		importFile.Result = apimodel.ParseResult{
 			Message: err.Error(),
@@ -287,9 +292,11 @@ func (a *apiHandler) AssignTunesToSet(c *gin.Context) {
 func NewApiHandler(
 	service interfaces.DataService,
 	bwwParser interfaces.BwwParser,
+	bwwFileTuneSplitter interfaces.BwwFileByTuneSplitter,
 ) interfaces.ApiHandler {
 	return &apiHandler{
-		service:   service,
-		bwwParser: bwwParser,
+		service:             service,
+		bwwParser:           bwwParser,
+		bwwFileTuneSplitter: bwwFileTuneSplitter,
 	}
 }

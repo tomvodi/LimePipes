@@ -44,8 +44,9 @@ func main() {
 	}
 
 	bwwParser := bww.NewBwwParser()
+	bwwFileTuneSplitter := bww.NewBwwFileTuneSplitter()
 	dbService := database.NewDbDataService(db)
-	apiHandler := api.NewApiHandler(dbService, bwwParser)
+	apiHandler := api.NewApiHandler(dbService, bwwParser, bwwFileTuneSplitter)
 	apiRouter := api.NewApiRouter(apiHandler)
 
 	router := apiRouter.GetEngine()

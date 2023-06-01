@@ -1,6 +1,8 @@
 
 API_GEN_DIR=./internal/api_gen
 
+.PHONY: test test-cover lint cover-html server
+
 mocks:
 	go generate mockgen ./...
 

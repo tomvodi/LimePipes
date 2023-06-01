@@ -11,7 +11,6 @@ import (
 	"fmt"
 	"github.com/jinzhu/copier"
 	"github.com/mitchellh/mapstructure"
-	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
 )
 
@@ -315,12 +314,25 @@ func (d *dbService) dbTunesFromIds(tuneIds []uint64) ([]model.Tune, error) {
 		return nil, nil
 	}
 
+	var distinctTuneIds []uint64
+	for _, id := range tuneIds {
+		inDistinct := false
+		for _, distTuneId := range distinctTuneIds {
+			if id == distTuneId {
+				inDistinct = true
+			}
+		}
+		if !inDistinct {
+			distinctTuneIds = append(distinctTuneIds, id)
+		}
+	}
+
 	var dbTunes []model.Tune
-	if err := d.db.Where("id IN (?)", tuneIds).Find(&dbTunes).Error; err != nil {
+	if err := d.db.Where("id IN (?)", distinctTuneIds).Find(&dbTunes).Error; err != nil {
 		return nil, err
 	}
 
-	if len(dbTunes) != len(tuneIds) {
+	if len(dbTunes) != len(distinctTuneIds) {
 		return nil, fmt.Errorf("not all tune IDs are from valid tunes")
 	}
 
@@ -328,13 +340,12 @@ func (d *dbService) dbTunesFromIds(tuneIds []uint64) ([]model.Tune, error) {
 }
 
 func (d *dbService) deleteMusicSetTunes(set *model.MusicSet) error {
-	for _, tune := range set.Tunes {
-		if err := d.db.Delete(&model.MusicSetTunes{
-			MusicSetID: set.ID,
-			TuneID:     tune.ID,
-		}).Error; err != nil {
-			return err
-		}
+	err := d.db.Where(&model.MusicSetTunes{
+		MusicSetID: set.ID,
+	}).Delete(&model.MusicSetTunes{}).Error
+
+	if err != nil {
+		return err
 	}
 
 	// set tunes to nil to reflect the database state
@@ -359,7 +370,7 @@ func (d *dbService) assignMusicSetTunes(setId uint64, tuneIds []uint64) error {
 }
 
 func tunesOrderedByIds(tunes []model.Tune, tuneIds []uint64) []model.Tune {
-	var orderedTunes = make([]model.Tune, len(tunes))
+	var orderedTunes = make([]model.Tune, len(tuneIds))
 	for i, id := range tuneIds {
 		for _, tune := range tunes {
 			if tune.ID == id {
@@ -374,6 +385,7 @@ func tunesOrderedByIds(tunes []model.Tune, tuneIds []uint64) []model.Tune {
 func (d *dbService) ImportMusicModel(
 	muMo music_model.MusicModel,
 	filename string,
+	bwwFileData *common.BwwFileTuneData,
 ) ([]*apimodel.ImportTune, error) {
 	var apiTunes []*apimodel.ImportTune
 
@@ -384,6 +396,12 @@ func (d *dbService) ImportMusicModel(
 			if timeSig != nil {
 				timeSigStr = timeSig.String()
 			}
+			alreadyImportedTune := apiTuneWithTitle(tune.Title, apiTunes)
+			if alreadyImportedTune != nil {
+				apiTunes = append(apiTunes, alreadyImportedTune)
+				continue
+			}
+
 			createTune := apimodel.CreateTune{
 				Title:    tune.Title,
 				Type:     tune.Type,
@@ -401,6 +419,20 @@ func (d *dbService) ImportMusicModel(
 
 			if err = d.AddFileToTune(apiTune.ID, tuneFile); err != nil {
 				return err
+			}
+
+			if bwwFileData != nil {
+				if !bwwFileData.HasDataForTune(tune.Title) {
+					return fmt.Errorf("no bww tune file data for tune %s", tune.Title)
+				}
+
+				tuneFile = &model.TuneFile{
+					Type: file_type.Bww,
+					Data: bwwFileData.DataForTune(tune.Title),
+				}
+				if err = d.AddFileToTune(apiTune.ID, tuneFile); err != nil {
+					return err
+				}
 			}
 
 			importTune := &apimodel.ImportTune{}
@@ -437,8 +469,6 @@ func (d *dbService) ImportMusicModel(
 			for _, tune := range apiTunes {
 				tune.Set = basicSet
 			}
-
-			log.Info().Msgf("created set with id %d and name %s", apiSet.ID, filename)
 		}
 
 		return nil
@@ -448,6 +478,22 @@ func (d *dbService) ImportMusicModel(
 	}
 
 	return apiTunes, nil
+}
+
+func apiTuneWithTitle(
+	title string,
+	apiTunes []*apimodel.ImportTune,
+) *apimodel.ImportTune {
+	if apiTunes == nil {
+		return nil
+	}
+
+	for _, tune := range apiTunes {
+		if tune.Title == title {
+			return tune
+		}
+	}
+	return nil
 }
 
 func setMessagesToApiTune(apiTune *apimodel.ImportTune, tune *music_model.Tune) {

@@ -2,6 +2,7 @@ package database
 
 import (
 	"banduslib/internal/api/apimodel"
+	"banduslib/internal/common"
 	"banduslib/internal/common/music_model"
 	"banduslib/internal/database/model"
 	"banduslib/internal/database/model/file_type"
@@ -14,10 +15,12 @@ import (
 var _ = Describe("DbDataService Import", func() {
 	var err error
 	var returnTunes []*apimodel.ImportTune
+	var bwwFileData *common.BwwFileTuneData
 	var tuneFile *model.TuneFile
 	var tuneFileTune *music_model.Tune
 	var service *dbService
 	var muMo music_model.MusicModel
+	var musicSet *apimodel.MusicSet
 	var filename string
 	var gormDb *gorm.DB
 
@@ -48,7 +51,7 @@ var _ = Describe("DbDataService Import", func() {
 
 		When("importing this music model", func() {
 			BeforeEach(func() {
-				returnTunes, err = service.ImportMusicModel(muMo, filename)
+				returnTunes, err = service.ImportMusicModel(muMo, filename, nil)
 			})
 
 			It("should return two apimodel tunes", func() {
@@ -81,6 +84,84 @@ var _ = Describe("DbDataService Import", func() {
 						Expect(err).ShouldNot(HaveOccurred())
 						Expect(tuneFileTune).Should(Equal(muMo[0]))
 					})
+				})
+			})
+		})
+
+		Context("having bww tune file data", func() {
+			BeforeEach(func() {
+				bwwFileData = &common.BwwFileTuneData{}
+				bwwFileData.AddTuneData(muMo[0].Title, []byte("& LA_4 !t"))
+				bwwFileData.AddTuneData(muMo[1].Title, []byte("& B_4 !t"))
+			})
+
+			When("importing this music model", func() {
+
+				BeforeEach(func() {
+					returnTunes, err = service.ImportMusicModel(muMo, filename, bwwFileData)
+				})
+
+				It("should return two apimodel tunes", func() {
+					Expect(err).ShouldNot(HaveOccurred())
+					Expect(returnTunes).Should(HaveLen(2))
+					Expect(returnTunes[0].Set).ShouldNot(BeNil())
+					Expect(returnTunes[1].Set).ShouldNot(BeNil())
+					setId := returnTunes[0].Set.ID
+					Expect(setId).To(Equal(returnTunes[1].Set.ID))
+				})
+
+				When("retrieving the tune file for bww", func() {
+					var getTuneFileErr error
+					BeforeEach(func() {
+						tuneFile, getTuneFileErr = service.GetTuneFile(
+							returnTunes[0].ID,
+							file_type.Bww,
+						)
+					})
+
+					It("should return the tune file data", func() {
+						Expect(getTuneFileErr).ShouldNot(HaveOccurred())
+						bwwData := bwwFileData.DataForTune(muMo[0].Title)
+						Expect(tuneFile.Data).To(Equal(bwwData))
+					})
+				})
+			})
+		})
+	})
+
+	Context("having a music model with three tunes, where two of them have the same title", func() {
+		BeforeEach(func() {
+			filename = "testfile"
+			muMo = music_model.MusicModel{
+				model.TestMusicModelTune("scotty"),
+				model.TestMusicModelTune("wings"),
+				model.TestMusicModelTune("scotty"),
+			}
+		})
+
+		When("importing this music model", func() {
+			BeforeEach(func() {
+				returnTunes, err = service.ImportMusicModel(muMo, filename, nil)
+			})
+
+			It("should return three apimodel tunes", func() {
+				Expect(err).ShouldNot(HaveOccurred())
+				Expect(returnTunes).Should(HaveLen(3))
+			})
+
+			When("I retrieve the set", func() {
+				BeforeEach(func() {
+					setId := returnTunes[0].Set.ID
+					musicSet, err = service.GetMusicSet(setId)
+				})
+
+				It("should successfully got that set", func() {
+					Expect(err).ShouldNot(HaveOccurred())
+				})
+
+				It("should have three tunes, where the first and last are the same", func() {
+					Expect(musicSet.Tunes).To(HaveLen(3))
+					Expect(musicSet.Tunes[0]).To(Equal(musicSet.Tunes[2]))
 				})
 			})
 		})

@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"banduslib/internal/api/apimodel"
+	"banduslib/internal/common"
 	"banduslib/internal/common/music_model"
 	"banduslib/internal/database/model"
 	"banduslib/internal/database/model/file_type"
@@ -29,5 +30,9 @@ type DataService interface {
 
 	AssignTunesToMusicSet(setId uint64, tuneIds []uint64) (*apimodel.MusicSet, error)
 
-	ImportMusicModel(muMo music_model.MusicModel, filename string) ([]*apimodel.ImportTune, error)
+	ImportMusicModel(
+		muMo music_model.MusicModel,
+		filename string,
+		bwwFileData *common.BwwFileTuneData,
+	) ([]*apimodel.ImportTune, error)
 }
