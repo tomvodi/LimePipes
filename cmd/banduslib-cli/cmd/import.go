@@ -2,15 +2,16 @@ package cmd
 
 import (
 	"banduslib/internal/bww"
+	"banduslib/internal/common"
 	"banduslib/internal/common/music_model"
+	"banduslib/internal/config"
+	"banduslib/internal/database"
 	"banduslib/internal/utils"
 	"fmt"
 	"github.com/rs/zerolog/log"
-	"os"
-	"reflect"
-	"strings"
-
 	"github.com/spf13/cobra"
+	"gorm.io/gorm"
+	"os"
 )
 
 var (
@@ -29,7 +30,20 @@ If a given file that has an extension which is not in the import-file-types, it 
 	Args: cobra.MinimumNArgs(1),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		utils.SetupConsoleLogger()
-		err := checkForInvalidImportTypes()
+		cfg, err := config.Init()
+		if err != nil {
+			return fmt.Errorf("failed init configuration: %s", err.Error())
+		}
+
+		var db *gorm.DB
+		db, err = database.GetInitSqliteDb(cfg.SqliteDbPath)
+		if err != nil {
+			return fmt.Errorf("failed initializing database: %s", err.Error())
+		}
+		dbService := database.NewDbDataService(db)
+		bwwFileTuneSplitter := bww.NewBwwFileTuneSplitter()
+
+		err = checkForInvalidImportTypes()
 		if err != nil {
 			return err
 		}
@@ -38,14 +52,10 @@ If a given file that has an extension which is not in the import-file-types, it 
 		if err != nil {
 			return fmt.Errorf("failed getting files: %s", err.Error())
 		}
-		if verbose {
-			log.Info().Msg("Processing files: ")
-			for _, file := range allFiles {
-				log.Info().Msg(file)
-			}
-		}
 
-		tuneMap := make(map[string]*music_model.Tune)
+		log.Info().Msgf("found %d files for import", len(allFiles))
+
+		importedTunesCnt := 0
 		parser := bww.NewBwwParser()
 		allFileCnt := len(allFiles)
 		for i, file := range allFiles {
@@ -53,9 +63,7 @@ If a given file that has an extension which is not in the import-file-types, it 
 			if err != nil {
 				return err
 			}
-			if verbose {
-				log.Info().Msgf("importing file %s", file)
-			}
+			log.Info().Msgf("importing file %d/%d %s", i+1, allFileCnt, file)
 			var muModel music_model.MusicModel
 			muModel, err = parser.ParseBwwData(fileData)
 			if err != nil {
@@ -76,22 +84,37 @@ If a given file that has an extension which is not in the import-file-types, it 
 				)
 			}
 
-			for _, tune := range muModel {
-				existingTune, ok := tuneMap[tune.Title]
-				if ok && reflect.DeepEqual(tune, existingTune) {
-					if verbose {
-						log.Info().Msgf("tune with title %s was already parsed and is equals existing one", tune.Title)
-					}
+			filename := common.FilenameFromPath(file)
+
+			bwwFileTuneData, err := bwwFileTuneSplitter.SplitFileData(fileData)
+			if err != nil {
+				msg := fmt.Sprintf("failed splitting file %s by tunes: %s", file, err.Error())
+				if skipFailedFiles {
+					log.Error().Msg(msg)
+					continue
+				} else {
+					return fmt.Errorf(msg)
 				}
-				if !ok {
-					tuneMap[tune.Title] = tune
+			}
+
+			apiTunes, err := dbService.ImportMusicModel(muModel, filename, bwwFileTuneData)
+			if err != nil {
+				if skipFailedFiles {
+					log.Error().Err(err).Msg("failed importing tunes")
+					continue
+				} else {
+					return fmt.Errorf("failed importing tunes: %s", err.Error())
+				}
+			}
+			for _, tune := range apiTunes {
+				if tune.ImportedToDatabase {
+					importedTunesCnt++
 				}
 			}
 		}
 
-		log.Info().Msgf("from %d files, got %d tunes without duplicates", len(allFiles), len(tuneMap))
+		log.Info().Msgf("from %d files, imported %d new tunes into database", len(allFiles), importedTunesCnt)
 
-		fmt.Printf("import called with %v, importing files of type %s", args, strings.Join(importTypes, ", "))
 		return nil
 	},
 }
