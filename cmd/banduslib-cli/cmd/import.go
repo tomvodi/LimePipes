@@ -4,6 +4,7 @@ import (
 	"banduslib/internal/bww"
 	"banduslib/internal/common"
 	"banduslib/internal/common/music_model"
+	"banduslib/internal/common/music_model/helper"
 	"banduslib/internal/config"
 	"banduslib/internal/database"
 	"banduslib/internal/utils"
@@ -42,6 +43,7 @@ If a given file that has an extension which is not in the import-file-types, it 
 		}
 		dbService := database.NewDbDataService(db)
 		bwwFileTuneSplitter := bww.NewBwwFileTuneSplitter()
+		tuneFixer := helper.NewTuneFixer()
 
 		err = checkForInvalidImportTypes()
 		if err != nil {
@@ -83,6 +85,8 @@ If a given file that has an extension which is not in the import-file-types, it 
 					file,
 				)
 			}
+
+			tuneFixer.Fix(muModel)
 
 			filename := common.FilenameFromPath(file)
 

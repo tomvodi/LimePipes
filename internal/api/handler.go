@@ -17,6 +17,7 @@ type apiHandler struct {
 	service             interfaces.DataService
 	bwwParser           interfaces.BwwParser
 	bwwFileTuneSplitter interfaces.BwwFileByTuneSplitter
+	tuneFixer           interfaces.TuneFixer
 }
 
 func (a *apiHandler) ImportBww(c *gin.Context) {
@@ -70,6 +71,8 @@ func (a *apiHandler) importBwwFile(
 		}
 		return importFile, err
 	}
+
+	a.tuneFixer.Fix(muModel)
 
 	filename := common.FilenameFromPath(file.Filename)
 
@@ -291,10 +294,12 @@ func NewApiHandler(
 	service interfaces.DataService,
 	bwwParser interfaces.BwwParser,
 	bwwFileTuneSplitter interfaces.BwwFileByTuneSplitter,
+	tuneFixer interfaces.TuneFixer,
 ) interfaces.ApiHandler {
 	return &apiHandler{
 		service:             service,
 		bwwParser:           bwwParser,
 		bwwFileTuneSplitter: bwwFileTuneSplitter,
+		tuneFixer:           tuneFixer,
 	}
 }

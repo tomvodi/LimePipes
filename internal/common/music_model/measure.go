@@ -25,8 +25,5 @@ func (m *Measure) AddMessage(msg *import_message.ImportMessage) {
 }
 
 func (m *Measure) IsNil() bool {
-	if reflect.DeepEqual(m, &Measure{}) {
-		return true
-	}
-	return false
+	return reflect.DeepEqual(m, &Measure{})
 }

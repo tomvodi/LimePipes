@@ -461,6 +461,7 @@ func (d *dbService) ImportMusicModel(
 				Type:     tune.Type,
 				TimeSig:  timeSigStr,
 				Composer: tune.Composer,
+				Arranger: tune.Arranger,
 			}
 			apiTune, err := d.CreateTune(createTune)
 			if err != nil {

@@ -6,6 +6,7 @@ type Tune struct {
 	Title      string     `yaml:"title"`
 	Type       string     `yaml:"type,omitempty"`
 	Composer   string     `yaml:"composer,omitempty"`
+	Arranger   string     `yaml:"arranger,omitempty"`
 	Footer     []string   `yaml:"footer,omitempty"`
 	Comments   []string   `yaml:"comments,omitempty"`
 	InLineText []string   `yaml:"inLineText,omitempty"`
