@@ -343,6 +343,9 @@ components:
           properties:
             set:
               $ref: '#/components/schemas/BasicMusicSet'
+            importedToDatabase:
+              type: boolean
+              description: true, if tune was imported into database, false if a tune with this title was already there
             warnings:
               type: array
               items:

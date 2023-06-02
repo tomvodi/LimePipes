@@ -26,6 +26,8 @@ type ImportTune struct {
 
 	Set *BasicMusicSet `json:"set,omitempty"`
 
+	ImportedToDatabase bool `json:"importedToDatabase"`
+
 	Warnings []string `json:"warnings,omitempty"`
 
 	Errors []string `json:"errors,omitempty"`

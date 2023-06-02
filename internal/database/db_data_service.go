@@ -435,7 +435,13 @@ func (d *dbService) ImportMusicModel(
 			}
 			alreadyImportedTune := apiTuneWithTitle(tune.Title, apiTunes)
 			if alreadyImportedTune != nil {
-				apiTunes = append(apiTunes, alreadyImportedTune)
+				impTune := &apimodel.ImportTune{}
+				err := copier.Copy(impTune, alreadyImportedTune)
+				if err != nil {
+					return fmt.Errorf("failed creating import tune from already imported tune: %s", err.Error())
+				}
+				impTune.ImportedToDatabase = false
+				apiTunes = append(apiTunes, impTune)
 				continue
 			}
 
@@ -443,6 +449,9 @@ func (d *dbService) ImportMusicModel(
 			if err == nil {
 				impTune := &apimodel.ImportTune{}
 				err = copier.Copy(impTune, tuneInDb)
+				if err != nil {
+					return fmt.Errorf("failed creating import tune: %s", err.Error())
+				}
 				apiTunes = append(apiTunes, impTune)
 				continue
 			}
@@ -480,7 +489,9 @@ func (d *dbService) ImportMusicModel(
 				}
 			}
 
-			importTune := &apimodel.ImportTune{}
+			importTune := &apimodel.ImportTune{
+				ImportedToDatabase: true,
+			}
 			err = copier.Copy(&importTune, apiTune)
 			if err != nil {
 				return err

@@ -63,6 +63,11 @@ var _ = Describe("DbDataService Import", func() {
 				Expect(setId).To(Equal(returnTunes[1].Set.ID))
 			})
 
+			It("should have imported both tunes into database", func() {
+				Expect(returnTunes[0].ImportedToDatabase).To(BeTrue())
+				Expect(returnTunes[1].ImportedToDatabase).To(BeTrue())
+			})
+
 			When("retrieving tune file for music model", func() {
 				BeforeEach(func() {
 					tuneFile, err = service.GetTuneFile(
@@ -99,6 +104,11 @@ var _ = Describe("DbDataService Import", func() {
 				It("should return two apimodel tunes again", func() {
 					Expect(err).ShouldNot(HaveOccurred())
 					Expect(returnTunes).Should(HaveLen(2))
+				})
+
+				It("shouldn't have imported both tunes again", func() {
+					Expect(returnTunes[0].ImportedToDatabase).To(BeFalse())
+					Expect(returnTunes[1].ImportedToDatabase).To(BeFalse())
 				})
 			})
 		})
@@ -162,6 +172,12 @@ var _ = Describe("DbDataService Import", func() {
 			It("should return three apimodel tunes", func() {
 				Expect(err).ShouldNot(HaveOccurred())
 				Expect(returnTunes).Should(HaveLen(3))
+			})
+
+			It("shouldn't have imported the last tune into database", func() {
+				Expect(returnTunes[0].ImportedToDatabase).To(BeTrue())
+				Expect(returnTunes[1].ImportedToDatabase).To(BeTrue())
+				Expect(returnTunes[2].ImportedToDatabase).To(BeFalse())
 			})
 
 			When("I retrieve the set", func() {
