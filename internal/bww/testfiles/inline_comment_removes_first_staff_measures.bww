@@ -1,0 +1,13 @@
+Bagpipe Music Writer Gold:1.0
+
+"inline comment removes first staff measures",(T,C,0,0,DS_Celtic-1,22,700,0,0,18,0,0,0)
+
+TuneTempo,62
+
+"A:",(I,L,0,0,Times New Roman,11,700,0,0,0,0,0,0)
+& sharpf sharpc
+4_4
+! LA_4 !t
+
+"B:",(I,L,0,0,Times New Roman,11,700,0,0,0,0,0,0)
+& LA_4 !t

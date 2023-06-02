@@ -122,7 +122,7 @@ func fillTunePartsFromStaves(
 
 		measures = append(measures, staveMeasures...)
 	}
-	tune.Measures = measures
+	tune.Measures = append(tune.Measures, measures...)
 
 	return nil
 }

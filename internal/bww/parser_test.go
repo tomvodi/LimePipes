@@ -782,6 +782,20 @@ var _ = Describe("BWW Parser", func() {
 		})
 	})
 
+	When("having inline comment shouldn't remove measures", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/inline_comment_removes_first_staff_measures.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/inline_comment_removes_first_staff_measures.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/inline_comment_removes_first_staff_measures.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
 	When("parsing the file with all bww symbols in it", func() {
 		BeforeEach(func() {
 			data := dataFromFile("./testfiles/all_symbols.bww")
