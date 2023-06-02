@@ -10,9 +10,7 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
-	"path/filepath"
 	"strconv"
-	"strings"
 )
 
 type apiHandler struct {
@@ -73,9 +71,9 @@ func (a *apiHandler) importBwwFile(
 		return importFile, err
 	}
 
-	fileName := strings.TrimSuffix(file.Filename, filepath.Ext(file.Filename))
+	filename := common.FilenameFromPath(file.Filename)
 
-	apiImpTunes, err := a.service.ImportMusicModel(muModel, fileName, bwwFileTuneData)
+	apiImpTunes, err := a.service.ImportMusicModel(muModel, filename, bwwFileTuneData)
 	if err != nil {
 		importFile.Result = apimodel.ParseResult{
 			Message: err.Error(),
