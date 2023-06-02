@@ -1,7 +1,9 @@
 - title: Tune Title
   tempo: 0
   measures:
-    - symbols:
+    - rightBarline:
+        type: Heavy
+      symbols:
         - timeLine:
             boundaryType: Start
             type: First

@@ -185,7 +185,7 @@ var _ = Describe("BWW Parser", func() {
 			bwwData := dataFromFile("./testfiles/accidentals.bww")
 			musicTunesBww, err = parser.ParseBwwData(bwwData)
 			musicTunesExpect = importFromYaml("./testfiles/accidentals.yaml")
-			//exportToYaml(musicTunesBww, "./testfiles/.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/accidentals.yaml")
 		})
 
 		It("should have parsed file correctly", func() {
@@ -788,6 +788,20 @@ var _ = Describe("BWW Parser", func() {
 			musicTunesBww, err = parser.ParseBwwData(bwwData)
 			musicTunesExpect = importFromYaml("./testfiles/inline_comment_removes_first_staff_measures.yaml")
 			//exportToYaml(musicTunesBww, "./testfiles/inline_comment_removes_first_staff_measures.yaml")
+		})
+
+		It("should have parsed file correctly", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+		})
+	})
+
+	When("having a tune with repeats", func() {
+		BeforeEach(func() {
+			bwwData := dataFromFile("./testfiles/tune_with_repeats.bww")
+			musicTunesBww, err = parser.ParseBwwData(bwwData)
+			musicTunesExpect = importFromYaml("./testfiles/tune_with_repeats.yaml")
+			//exportToYaml(musicTunesBww, "./testfiles/tune_with_repeats.yaml")
 		})
 
 		It("should have parsed file correctly", func() {

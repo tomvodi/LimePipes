@@ -8,6 +8,12 @@
   measures:
     - symbols:
         - note:
+            pitch: LowA
+            length: Quarter
+    - rightBarline:
+        type: Heavy
+      symbols:
+        - note:
             pitch: D
             length: Quarter
       comments:

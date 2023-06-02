@@ -21,6 +21,7 @@ const (
 	Dalsegno
 	Fine
 	DacapoAlFine
+	Repeat // a normal |: ... :| repeat lines
 )
 
 type Barline struct {

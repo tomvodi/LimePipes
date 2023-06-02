@@ -2,20 +2,15 @@
   tempo: 0
   measures:
     - symbols:
-    - symbols:
-        - note:
-            pitch: HighA
-            length: Eighth
-    - symbols:
         - note:
             pitch: LowG
             length: Whole
-            accidental: sharp
+            accidental: Sharp
         - note:
             pitch: LowA
             length: Whole
-            accidental: natural
+            accidental: Natural
         - note:
             pitch: B
             length: Whole
-            accidental: flat
+            accidental: Flat

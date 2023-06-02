@@ -121,6 +121,25 @@ func fillTunePartsFromStaves(
 		staffCtx.PreviousStaveMeasures = staveMeasures
 
 		measures = append(measures, staveMeasures...)
+		if stave.End != "" &&
+			stave.Dalsegno == nil &&
+			stave.DacapoAlFine == nil &&
+			len(measures) >= 1 {
+			lastMeasure := measures[len(measures)-1]
+			var rightBarline *barline.Barline
+			if stave.End == "''!I" {
+				rightBarline = &barline.Barline{
+					Type:     barline.Heavy,
+					Timeline: barline.Repeat,
+				}
+			}
+			if stave.End == "!I" {
+				rightBarline = &barline.Barline{
+					Type: barline.Heavy,
+				}
+			}
+			lastMeasure.RightBarline = rightBarline
+		}
 	}
 	tune.Measures = append(tune.Measures, measures...)
 
@@ -142,7 +161,21 @@ func getMeasuresFromStave(stave *Staff, ctx *staffContext) ([]*music_model.Measu
 			staffSym.PartStart != nil ||
 			staffSym.NextStaffStart != nil {
 			measures = cleanupAndAppendMeasure(measures, currMeasure)
-			currMeasure = &music_model.Measure{}
+
+			var leftBarline *barline.Barline
+			if staffSym.PartStart != nil {
+				leftBarline = &barline.Barline{
+					Type: barline.Heavy,
+				}
+				ps := *staffSym.PartStart
+				if ps == "I!''" {
+					leftBarline.Timeline = barline.Repeat
+				}
+			}
+
+			currMeasure = &music_model.Measure{
+				LeftBarline: leftBarline,
+			}
 
 			continue
 		}
@@ -336,7 +369,12 @@ func cleanupAndAppendMeasure(
 	if len(measure.Symbols) == 0 {
 		measure.Symbols = nil
 	}
-	return append(measures, measure)
+
+	if !measure.IsNil() {
+		return append(measures, measure)
+	}
+
+	return measures
 }
 
 // cleanupMeasure removes invalid symbols from the measure

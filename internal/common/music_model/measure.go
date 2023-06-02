@@ -3,6 +3,7 @@ package music_model
 import (
 	"banduslib/internal/common/music_model/barline"
 	"banduslib/internal/common/music_model/import_message"
+	"reflect"
 )
 
 type Measure struct {
@@ -21,4 +22,11 @@ func (m *Measure) AddMessage(msg *import_message.ImportMessage) {
 	}
 
 	m.ImportMessages = append(m.ImportMessages, msg)
+}
+
+func (m *Measure) IsNil() bool {
+	if reflect.DeepEqual(m, &Measure{}) {
+		return true
+	}
+	return false
 }

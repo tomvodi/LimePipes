@@ -5,7 +5,9 @@
         - note:
             pitch: LowA
             length: Quarter
-    - symbols:
+    - rightBarline:
+        type: Heavy
+      symbols:
         - note:
             pitch: D
             length: Quarter

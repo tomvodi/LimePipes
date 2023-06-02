@@ -8,11 +8,11 @@ import (
 	"strings"
 )
 
-const _TimelineTypeName = "NoTimelineSegnoDalsegnoFineDacapoAlFine"
+const _TimelineTypeName = "NoTimelineSegnoDalsegnoFineDacapoAlFineRepeat"
 
-var _TimelineTypeIndex = [...]uint8{0, 10, 15, 23, 27, 39}
+var _TimelineTypeIndex = [...]uint8{0, 10, 15, 23, 27, 39, 45}
 
-const _TimelineTypeLowerName = "notimelinesegnodalsegnofinedacapoalfine"
+const _TimelineTypeLowerName = "notimelinesegnodalsegnofinedacapoalfinerepeat"
 
 func (i TimelineType) String() string {
 	if i >= TimelineType(len(_TimelineTypeIndex)-1) {
@@ -30,9 +30,10 @@ func _TimelineTypeNoOp() {
 	_ = x[Dalsegno-(2)]
 	_ = x[Fine-(3)]
 	_ = x[DacapoAlFine-(4)]
+	_ = x[Repeat-(5)]
 }
 
-var _TimelineTypeValues = []TimelineType{NoTimeline, Segno, Dalsegno, Fine, DacapoAlFine}
+var _TimelineTypeValues = []TimelineType{NoTimeline, Segno, Dalsegno, Fine, DacapoAlFine, Repeat}
 
 var _TimelineTypeNameToValueMap = map[string]TimelineType{
 	_TimelineTypeName[0:10]:       NoTimeline,
@@ -45,6 +46,8 @@ var _TimelineTypeNameToValueMap = map[string]TimelineType{
 	_TimelineTypeLowerName[23:27]: Fine,
 	_TimelineTypeName[27:39]:      DacapoAlFine,
 	_TimelineTypeLowerName[27:39]: DacapoAlFine,
+	_TimelineTypeName[39:45]:      Repeat,
+	_TimelineTypeLowerName[39:45]: Repeat,
 }
 
 var _TimelineTypeNames = []string{
@@ -53,6 +56,7 @@ var _TimelineTypeNames = []string{
 	_TimelineTypeName[15:23],
 	_TimelineTypeName[23:27],
 	_TimelineTypeName[27:39],
+	_TimelineTypeName[39:45],
 }
 
 // TimelineTypeString retrieves an enum value from the enum constants string name.
