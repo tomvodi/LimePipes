@@ -171,7 +171,7 @@ var _ = Describe("DbDataService Import", func() {
 
 					It("should return the tune file data", func() {
 						Expect(getTuneFileErr).ShouldNot(HaveOccurred())
-						bwwData := bwwFileData.DataForTune(muMo[0].Title)
+						bwwData := bwwFileData.Data(0)
 						Expect(tuneFile.Data).To(Equal(bwwData))
 					})
 				})

@@ -3,6 +3,7 @@ package main
 import (
 	"banduslib/internal/api"
 	"banduslib/internal/bww"
+	"banduslib/internal/common/music_model/helper"
 	"banduslib/internal/config"
 	"banduslib/internal/database"
 	"banduslib/internal/utils"
@@ -28,7 +29,8 @@ func main() {
 	bwwParser := bww.NewBwwParser()
 	bwwFileTuneSplitter := bww.NewBwwFileTuneSplitter()
 	dbService := database.NewDbDataService(db)
-	apiHandler := api.NewApiHandler(dbService, bwwParser, bwwFileTuneSplitter)
+	tuneFixer := helper.NewTuneFixer()
+	apiHandler := api.NewApiHandler(dbService, bwwParser, bwwFileTuneSplitter, tuneFixer)
 	apiRouter := api.NewApiRouter(apiHandler)
 
 	router := apiRouter.GetEngine()

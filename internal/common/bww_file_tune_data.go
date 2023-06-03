@@ -1,5 +1,7 @@
 package common
 
+import "github.com/rs/zerolog/log"
+
 type tuneFileData struct {
 	Title string
 	Data  []byte
@@ -16,22 +18,13 @@ func (b *BwwFileTuneData) TuneTitles() (titles []string) {
 	return titles
 }
 
-func (b *BwwFileTuneData) HasDataForTune(title string) bool {
-	for _, tuneData := range b.tuneData {
-		if tuneData.Title == title {
-			return true
-		}
+func (b *BwwFileTuneData) Data(idx int) []byte {
+	if idx >= len(b.tuneData) {
+		log.Error().Msgf("no tune data for index found")
+		return nil
 	}
-	return false
-}
 
-func (b *BwwFileTuneData) DataForTune(title string) []byte {
-	for _, tuneData := range b.tuneData {
-		if tuneData.Title == title {
-			return tuneData.Data
-		}
-	}
-	return nil
+	return b.tuneData[idx].Data
 }
 
 func (b *BwwFileTuneData) AddTuneData(title string, data []byte) {

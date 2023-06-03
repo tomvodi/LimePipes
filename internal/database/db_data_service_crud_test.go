@@ -45,23 +45,6 @@ var _ = Describe("DbDataService", func() {
 		})
 	})
 
-	Context("creating two tunes with same title", func() {
-		BeforeEach(func() {
-			title := "test title"
-			_, err = service.CreateTune(apimodel.CreateTune{
-				Title: title,
-			})
-			Expect(err).ShouldNot(HaveOccurred())
-			_, err = service.CreateTune(apimodel.CreateTune{
-				Title: title,
-			})
-		})
-
-		It("should return an error", func() {
-			Expect(err).Should(HaveOccurred())
-		})
-	})
-
 	Context("creating a valid tune with all fields", func() {
 		var tune *apimodel.Tune
 		BeforeEach(func() {
@@ -282,23 +265,6 @@ var _ = Describe("DbDataService", func() {
 		BeforeEach(func() {
 			_, err = service.CreateMusicSet(apimodel.CreateSet{
 				Title: "",
-			})
-		})
-
-		It("should return an error", func() {
-			Expect(err).Should(HaveOccurred())
-		})
-	})
-
-	Context("creating two sets with same title", func() {
-		BeforeEach(func() {
-			title := "test title"
-			_, err = service.CreateMusicSet(apimodel.CreateSet{
-				Title: title,
-			})
-			Expect(err).ShouldNot(HaveOccurred())
-			_, err = service.CreateMusicSet(apimodel.CreateSet{
-				Title: title,
 			})
 		})
 

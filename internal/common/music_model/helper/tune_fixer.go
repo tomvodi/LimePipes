@@ -19,6 +19,7 @@ func (t *tuneFix) Fix(muMo music_model.MusicModel) {
 		removeTimeSigFromTuneType(tune)
 		trimSpaces(tune)
 		fixTitle(tune)
+		capitalizeTuneType(tune)
 	}
 }
 
