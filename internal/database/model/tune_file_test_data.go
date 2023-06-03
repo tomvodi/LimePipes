@@ -16,6 +16,7 @@ func TestMusicModelTune(title string) *music_model.Tune {
 		Title:      title,
 		Type:       "march",
 		Composer:   "someone",
+		Arranger:   "someone arranged it",
 		Footer:     []string{"footer tune 1"},
 		Comments:   []string{"comment 1", "comment 2"},
 		InLineText: []string{"inline text 1", "inline text 2"},

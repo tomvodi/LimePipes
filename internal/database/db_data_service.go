@@ -66,6 +66,23 @@ func (d *dbService) GetTune(id uint64) (*apimodel.Tune, error) {
 	return apiTune, nil
 }
 
+// getTuneFromDb returns a tune from the database if it is identical
+// this means it has the same title, composer, type and arranger
+func (d *dbService) getIdenticalTuneFromDb(tune *music_model.Tune) (*apimodel.Tune, error) {
+	dbTune, err := d.getTuneByTitle(tune.Title)
+	if err != nil {
+		return nil, err
+	}
+
+	if dbTune.Composer == tune.Composer &&
+		dbTune.Arranger == tune.Arranger &&
+		dbTune.Type == tune.Type {
+		return dbTune, nil
+	}
+
+	return nil, common.NotFound
+}
+
 func (d *dbService) getTuneByTitle(title string) (*apimodel.Tune, error) {
 	var tune = &model.Tune{
 		Title: title,
@@ -445,13 +462,16 @@ func (d *dbService) ImportMusicModel(
 				continue
 			}
 
-			tuneInDb, err := d.getTuneByTitle(tune.Title)
+			// when tune has the same title but for example another arranger,
+			// the tune should be added to database
+			tuneInDb, err := d.getIdenticalTuneFromDb(tune)
 			if err == nil {
 				impTune := &apimodel.ImportTune{}
 				err = copier.Copy(impTune, tuneInDb)
 				if err != nil {
 					return fmt.Errorf("failed creating import tune: %s", err.Error())
 				}
+
 				apiTunes = append(apiTunes, impTune)
 				continue
 			}
@@ -505,12 +525,13 @@ func (d *dbService) ImportMusicModel(
 			var apiSet *apimodel.MusicSet
 			var err error
 			apiSet, err = d.getMusicSetByTitle(filename)
-			if err != nil { // music set not yet in db
+			if err == common.NotFound { // music set not yet in db
 				var tuneIds []uint64
 				for _, tune := range apiTunes {
 					tuneIds = append(tuneIds, tune.ID)
 				}
 
+				// TODO: import file name to set and/or tune
 				createSet := apimodel.CreateSet{
 					Title:       filename,
 					Description: "imported from bww file",

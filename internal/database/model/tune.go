@@ -6,7 +6,7 @@ import (
 
 type Tune struct {
 	ID        uint64 `gorm:"primaryKey"`
-	Title     string `gorm:"unique;not null;default:null"`
+	Title     string
 	Type      string
 	TimeSig   string
 	Composer  string

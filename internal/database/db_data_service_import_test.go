@@ -111,6 +111,31 @@ var _ = Describe("DbDataService Import", func() {
 					Expect(returnTunes[1].ImportedToDatabase).To(BeFalse())
 				})
 			})
+
+			When("having a a tune with title of already imported tune but with another arranger", func() {
+				BeforeEach(func() {
+					tune1 := muMo[0]
+					tune1.Arranger = "another arranger"
+					muMo = music_model.MusicModel{
+						tune1,
+					}
+				})
+
+				When("importing that tune with different arranger", func() {
+					BeforeEach(func() {
+						returnTunes, err = service.ImportMusicModel(muMo, filename, nil)
+					})
+
+					It("should succeed", func() {
+						Expect(err).ShouldNot(HaveOccurred())
+					})
+
+					It("should return that tune", func() {
+						Expect(returnTunes).To(HaveLen(1))
+						Expect(returnTunes[0].Arranger).To(Equal("another arranger"))
+					})
+				})
+			})
 		})
 
 		Context("having bww tune file data", func() {
