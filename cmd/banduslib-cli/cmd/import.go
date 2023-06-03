@@ -101,6 +101,11 @@ If a given file that has an extension which is not in the import-file-types, it 
 				}
 			}
 
+			if len(bwwFileTuneData.TuneTitles()) != len(muModel) {
+				log.Warn().Msgf("split bww file and music model don't have the same amount of tunes: %s",
+					file)
+			}
+
 			apiTunes, err := dbService.ImportMusicModel(muModel, filename, bwwFileTuneData)
 			if err != nil {
 				if skipFailedFiles {
