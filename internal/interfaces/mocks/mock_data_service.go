@@ -68,33 +68,33 @@ func (mr *MockDataServiceMockRecorder) AssignTunesToMusicSet(setId, tuneIds inte
 }
 
 // CreateMusicSet mocks base method.
-func (m *MockDataService) CreateMusicSet(tune apimodel.CreateSet) (*apimodel.MusicSet, error) {
+func (m *MockDataService) CreateMusicSet(tune apimodel.CreateSet, importFile *model.ImportFile) (*apimodel.MusicSet, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateMusicSet", tune)
+	ret := m.ctrl.Call(m, "CreateMusicSet", tune, importFile)
 	ret0, _ := ret[0].(*apimodel.MusicSet)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // CreateMusicSet indicates an expected call of CreateMusicSet.
-func (mr *MockDataServiceMockRecorder) CreateMusicSet(tune interface{}) *gomock.Call {
+func (mr *MockDataServiceMockRecorder) CreateMusicSet(tune, importFile interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateMusicSet", reflect.TypeOf((*MockDataService)(nil).CreateMusicSet), tune)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateMusicSet", reflect.TypeOf((*MockDataService)(nil).CreateMusicSet), tune, importFile)
 }
 
 // CreateTune mocks base method.
-func (m *MockDataService) CreateTune(tune apimodel.CreateTune) (*apimodel.Tune, error) {
+func (m *MockDataService) CreateTune(tune apimodel.CreateTune, importFile *model.ImportFile) (*apimodel.Tune, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateTune", tune)
+	ret := m.ctrl.Call(m, "CreateTune", tune, importFile)
 	ret0, _ := ret[0].(*apimodel.Tune)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // CreateTune indicates an expected call of CreateTune.
-func (mr *MockDataServiceMockRecorder) CreateTune(tune interface{}) *gomock.Call {
+func (mr *MockDataServiceMockRecorder) CreateTune(tune, importFile interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTune", reflect.TypeOf((*MockDataService)(nil).CreateTune), tune)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTune", reflect.TypeOf((*MockDataService)(nil).CreateTune), tune, importFile)
 }
 
 // DeleteFileFromTune mocks base method.
@@ -200,18 +200,18 @@ func (mr *MockDataServiceMockRecorder) GetTuneFiles(tuneId interface{}) *gomock.
 }
 
 // ImportMusicModel mocks base method.
-func (m *MockDataService) ImportMusicModel(muMo music_model.MusicModel, filename string, bwwFileData *common.BwwFileTuneData) ([]*apimodel.ImportTune, error) {
+func (m *MockDataService) ImportMusicModel(muMo music_model.MusicModel, fileInfo *common.ImportFileInfo, bwwFileData *common.BwwFileTuneData) ([]*apimodel.ImportTune, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ImportMusicModel", muMo, filename, bwwFileData)
+	ret := m.ctrl.Call(m, "ImportMusicModel", muMo, fileInfo, bwwFileData)
 	ret0, _ := ret[0].([]*apimodel.ImportTune)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ImportMusicModel indicates an expected call of ImportMusicModel.
-func (mr *MockDataServiceMockRecorder) ImportMusicModel(muMo, filename, bwwFileData interface{}) *gomock.Call {
+func (mr *MockDataServiceMockRecorder) ImportMusicModel(muMo, fileInfo, bwwFileData interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ImportMusicModel", reflect.TypeOf((*MockDataService)(nil).ImportMusicModel), muMo, filename, bwwFileData)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ImportMusicModel", reflect.TypeOf((*MockDataService)(nil).ImportMusicModel), muMo, fileInfo, bwwFileData)
 }
 
 // MusicSets mocks base method.

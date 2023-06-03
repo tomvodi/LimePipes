@@ -34,12 +34,15 @@ func (d *dbService) Tunes() ([]*apimodel.Tune, error) {
 	return apiTunes, nil
 }
 
-func (d *dbService) CreateTune(tune apimodel.CreateTune) (*apimodel.Tune, error) {
+func (d *dbService) CreateTune(tune apimodel.CreateTune, importFile *model.ImportFile) (*apimodel.Tune, error) {
 	if strings.TrimSpace(tune.Title) == "" {
 		return nil, fmt.Errorf("can't create tune without a title")
 	}
 
 	dbTune := model.Tune{}
+	if importFile != nil {
+		dbTune.ImportFileId = importFile.ID
+	}
 	err := copier.Copy(&dbTune, &tune)
 	if err != nil {
 		return &apimodel.Tune{}, fmt.Errorf("could not create db object")
@@ -106,6 +109,42 @@ func (d *dbService) getTuneByTitle(title string) (*apimodel.Tune, error) {
 	return apiTune, nil
 }
 
+func (d *dbService) getImportFileByHash(fHash string) (*model.ImportFile, error) {
+	var importFile = &model.ImportFile{
+		Hash: fHash,
+	}
+	if err := d.db.Where(importFile).First(importFile).Error; err != nil {
+		return nil, common.NotFound
+	}
+
+	return importFile, nil
+}
+
+func (d *dbService) getOrCreateImportFile(
+	fileInfo *common.ImportFileInfo,
+) (*model.ImportFile, error) {
+	importFile, err := d.getImportFileByHash(fileInfo.Hash)
+	if err == common.NotFound {
+		return d.createImportFile(fileInfo)
+	}
+
+	return importFile, err
+}
+
+func (d *dbService) createImportFile(importFile *common.ImportFileInfo) (*model.ImportFile, error) {
+	dbImportFile := &model.ImportFile{}
+	err := copier.Copy(dbImportFile, importFile)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = d.db.Create(&dbImportFile).Error; err != nil {
+		return nil, err
+	}
+
+	return dbImportFile, nil
+}
+
 func (d *dbService) UpdateTune(id uint64, updateTune apimodel.UpdateTune) (*apimodel.Tune, error) {
 	if err := updateTune.Validate(); err != nil {
 		return nil, err
@@ -166,12 +205,15 @@ func (d *dbService) MusicSets() ([]*apimodel.MusicSet, error) {
 	return apiSets, nil
 }
 
-func (d *dbService) CreateMusicSet(musicSet apimodel.CreateSet) (*apimodel.MusicSet, error) {
+func (d *dbService) CreateMusicSet(musicSet apimodel.CreateSet, importFile *model.ImportFile) (*apimodel.MusicSet, error) {
 	if strings.TrimSpace(musicSet.Title) == "" {
 		return nil, fmt.Errorf("can't create music set without a title")
 	}
 
 	dbSet := model.MusicSet{}
+	if importFile != nil {
+		dbSet.ImportFileId = importFile.ID
+	}
 	if err := copier.Copy(&dbSet, &musicSet); err != nil {
 		return &apimodel.MusicSet{}, fmt.Errorf("could not create db object")
 	}
@@ -223,24 +265,36 @@ func (d *dbService) GetMusicSet(id uint64) (*apimodel.MusicSet, error) {
 	return apiSet, nil
 }
 
-func (d *dbService) getMusicSetByTitle(title string) (*apimodel.MusicSet, error) {
-	var set = &model.MusicSet{
-		Title: title,
-	}
-	if err := d.db.Where(set).First(set).Error; err != nil {
-		return &apimodel.MusicSet{}, common.NotFound
+func (d *dbService) getMusicSetByTuneIds(tuneIds []uint64) (*apimodel.MusicSet, error) {
+	allMusicSets, err := d.MusicSets()
+	if err != nil {
+		return nil, err
 	}
 
-	apiSet := &apimodel.MusicSet{}
-	if err := copier.Copy(apiSet, set); err != nil {
-		return &apimodel.MusicSet{}, err
+	var matchingSet *apimodel.MusicSet
+	for _, set := range allMusicSets {
+		if len(set.Tunes) != len(tuneIds) {
+			continue
+		}
+
+		allTunesMatch := true
+		for i, tune := range set.Tunes {
+			if tuneIds[i] != tune.ID {
+				allTunesMatch = false
+				break
+			}
+		}
+		if allTunesMatch {
+			matchingSet = set
+			break
+		}
 	}
 
-	if err := d.setTunesInApiSet(apiSet); err != nil {
-		return &apimodel.MusicSet{}, err
+	if matchingSet == nil {
+		return nil, common.NotFound
+	} else {
+		return matchingSet, nil
 	}
-
-	return apiSet, nil
 }
 
 func (d *dbService) setTunesInApiSet(apiSet *apimodel.MusicSet) error {
@@ -448,12 +502,21 @@ func tunesOrderedByIds(tunes []model.Tune, tuneIds []uint64) []model.Tune {
 
 func (d *dbService) ImportMusicModel(
 	muMo music_model.MusicModel,
-	filename string,
+	fileInfo *common.ImportFileInfo,
 	bwwFileData *common.BwwFileTuneData,
 ) ([]*apimodel.ImportTune, error) {
 	var apiTunes []*apimodel.ImportTune
 
 	err := d.db.Transaction(func(tx *gorm.DB) error {
+		var importFile *model.ImportFile
+		var err error
+		if fileInfo != nil {
+			importFile, err = d.getOrCreateImportFile(fileInfo)
+			if err != nil {
+				return err
+			}
+		}
+
 		for i, tune := range muMo {
 			timeSigStr := ""
 			timeSig := tune.FirstTimeSignature()
@@ -493,7 +556,7 @@ func (d *dbService) ImportMusicModel(
 				Composer: tune.Composer,
 				Arranger: tune.Arranger,
 			}
-			apiTune, err := d.CreateTune(createTune)
+			apiTune, err := d.CreateTune(createTune, importFile)
 			if err != nil {
 				return err
 			}
@@ -530,23 +593,21 @@ func (d *dbService) ImportMusicModel(
 		if len(muMo) > 1 {
 			var apiSet *apimodel.MusicSet
 			var err error
-			apiSet, err = d.getMusicSetByTitle(filename)
-			if err == common.NotFound { // music set not yet in db
-				var tuneIds []uint64
-				for _, tune := range apiTunes {
-					tuneIds = append(tuneIds, tune.ID)
-				}
+			var tuneIds []uint64
+			for _, tune := range apiTunes {
+				tuneIds = append(tuneIds, tune.ID)
+			}
 
-				// TODO: import file name to set and/or tune
+			musicSetTitle := musicSetTitleFromTunes(apiTunes)
+			apiSet, err = d.getMusicSetByTuneIds(tuneIds)
+			if err == common.NotFound { // music set not yet in db
 				createSet := apimodel.CreateSet{
-					Title:       musicSetTitleFromTunes(apiTunes),
-					Description: "imported from bww file",
-					Creator:     "",
-					Tunes:       tuneIds,
+					Title: musicSetTitle,
+					Tunes: tuneIds,
 				}
-				apiSet, err = d.CreateMusicSet(createSet)
+				apiSet, err = d.CreateMusicSet(createSet, importFile)
 				if err != nil {
-					return fmt.Errorf("failed creating set for file %s: %s", filename, err.Error())
+					return fmt.Errorf("failed creating set for file %s: %s", fileInfo.Name, err.Error())
 				}
 			}
 
@@ -577,7 +638,7 @@ func musicSetTitleFromTunes(tunes []*apimodel.ImportTune) string {
 	}
 
 	if tuneTypesAndTimeSigsAreTheSame(tunes) {
-		return fmt.Sprintf("%s %s Set", tunes[0].Type, tunes[0].Type)
+		return fmt.Sprintf("%s %s Set", tunes[0].TimeSig, tunes[0].Type)
 	}
 
 	if tuneTypesAreTheSame(tunes) {
@@ -590,7 +651,11 @@ func musicSetTitleFromTunes(tunes []*apimodel.ImportTune) string {
 
 	var tuneTypes []string
 	for _, tune := range tunes {
-		tuneTypes = append(tuneTypes, tune.Type)
+		if strings.TrimSpace(tune.Type) == "" {
+			tuneTypes = append(tuneTypes, "Unknown Type")
+		} else {
+			tuneTypes = append(tuneTypes, tune.Type)
+		}
 	}
 
 	return fmt.Sprint(strings.Join(tuneTypes, " - "))

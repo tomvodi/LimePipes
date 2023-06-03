@@ -35,11 +35,11 @@ var _ = Describe("DbDataService", func() {
 
 	Context("having some tunes created", func() {
 		BeforeEach(func() {
-			tune1, err = service.CreateTune(apimodel.CreateTune{Title: "tune 1"})
+			tune1, err = service.CreateTune(apimodel.CreateTune{Title: "tune 1"}, nil)
 			Expect(err).ShouldNot(HaveOccurred())
-			tune2, err = service.CreateTune(apimodel.CreateTune{Title: "tune 2"})
+			tune2, err = service.CreateTune(apimodel.CreateTune{Title: "tune 2"}, nil)
 			Expect(err).ShouldNot(HaveOccurred())
-			tune3, err = service.CreateTune(apimodel.CreateTune{Title: "tune 3"})
+			tune3, err = service.CreateTune(apimodel.CreateTune{Title: "tune 3"}, nil)
 			Expect(err).ShouldNot(HaveOccurred())
 		})
 
@@ -62,6 +62,7 @@ var _ = Describe("DbDataService", func() {
 						Title: "test music set",
 						Tunes: tuneIds,
 					},
+					nil,
 				)
 				Expect(err).ShouldNot(HaveOccurred())
 			})
@@ -78,6 +79,21 @@ var _ = Describe("DbDataService", func() {
 				It("should have the tunes in correct order", func() {
 					Expect(err).ShouldNot(HaveOccurred())
 					Expect(musicSet.Tunes).To(Equal(expectedTuneOrder))
+				})
+			})
+
+			When("retrieving the music set by tune ids", func() {
+				var foundMusicSet *apimodel.MusicSet
+				BeforeEach(func() {
+					foundMusicSet, err = service.getMusicSetByTuneIds([]uint64{
+						expectedTuneOrder[0].ID,
+						expectedTuneOrder[1].ID,
+						expectedTuneOrder[2].ID,
+					})
+				})
+
+				It("should get the music set", func() {
+					Expect(foundMusicSet).To(Equal(musicSet))
 				})
 			})
 
@@ -116,6 +132,7 @@ var _ = Describe("DbDataService", func() {
 			BeforeEach(func() {
 				musicSet, err = service.CreateMusicSet(
 					apimodel.CreateSet{Title: "test music set"},
+					nil,
 				)
 				Expect(err).ShouldNot(HaveOccurred())
 			})

@@ -74,9 +74,12 @@ func (a *apiHandler) importBwwFile(
 
 	a.tuneFixer.Fix(muModel)
 
-	filename := common.FilenameFromPath(file.Filename)
+	info, err := common.NewImportFileInfo(file.Filename, fileData)
+	if err != nil {
+		return nil, err
+	}
 
-	apiImpTunes, err := a.service.ImportMusicModel(muModel, filename, bwwFileTuneData)
+	apiImpTunes, err := a.service.ImportMusicModel(muModel, info, bwwFileTuneData)
 	if err != nil {
 		importFile.Result = apimodel.ParseResult{
 			Message: err.Error(),
@@ -119,7 +122,7 @@ func (a *apiHandler) CreateTune(c *gin.Context) {
 		return
 	}
 
-	tune, err := a.service.CreateTune(createTune)
+	tune, err := a.service.CreateTune(createTune, nil)
 	if err != nil {
 		httpErrorResponse(c, http.StatusInternalServerError, err)
 		return
@@ -198,7 +201,7 @@ func (a *apiHandler) CreateSet(c *gin.Context) {
 		return
 	}
 
-	set, err := a.service.CreateMusicSet(createSet)
+	set, err := a.service.CreateMusicSet(createSet, nil)
 	if err != nil {
 		httpErrorResponse(c, http.StatusInternalServerError, err)
 		return

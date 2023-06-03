@@ -88,8 +88,6 @@ If a given file that has an extension which is not in the import-file-types, it 
 
 			tuneFixer.Fix(muModel)
 
-			filename := common.FilenameFromPath(file)
-
 			bwwFileTuneData, err := bwwFileTuneSplitter.SplitFileData(fileData)
 			if err != nil {
 				msg := fmt.Sprintf("failed splitting file %s by tunes: %s", file, err.Error())
@@ -106,7 +104,16 @@ If a given file that has an extension which is not in the import-file-types, it 
 					file)
 			}
 
-			apiTunes, err := dbService.ImportMusicModel(muModel, filename, bwwFileTuneData)
+			fInfo, err := common.NewImportFileInfoFromLocalFile(file)
+			if err != nil {
+				if skipFailedFiles {
+					log.Error().Err(err).Msg("failed creating import file info")
+					continue
+				} else {
+					return err
+				}
+			}
+			apiTunes, err := dbService.ImportMusicModel(muModel, fInfo, bwwFileTuneData)
 			if err != nil {
 				if skipFailedFiles {
 					log.Error().Err(err).Msg("failed importing tunes")

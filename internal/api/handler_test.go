@@ -61,7 +61,7 @@ var _ = Describe("CreateTune", func() {
 
 		When("service returns an error on creation", func() {
 			BeforeEach(func() {
-				dataService.EXPECT().CreateTune(tune).
+				dataService.EXPECT().CreateTune(tune, nil).
 					Return(nil, fmt.Errorf("xxx"))
 			})
 
@@ -72,7 +72,7 @@ var _ = Describe("CreateTune", func() {
 
 		When("service successfully creates tune", func() {
 			BeforeEach(func() {
-				dataService.EXPECT().CreateTune(tune).
+				dataService.EXPECT().CreateTune(tune, nil).
 					Return(&apimodel.Tune{
 						ID:    1,
 						Title: tune.Title,

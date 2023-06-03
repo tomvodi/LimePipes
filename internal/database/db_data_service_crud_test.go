@@ -37,7 +37,7 @@ var _ = Describe("DbDataService", func() {
 		BeforeEach(func() {
 			_, err = service.CreateTune(apimodel.CreateTune{
 				Title: "",
-			})
+			}, nil)
 		})
 
 		It("should return an error", func() {
@@ -54,7 +54,7 @@ var _ = Describe("DbDataService", func() {
 				TimeSig:  "2/4",
 				Composer: "mr. x",
 				Arranger: "mr. y",
-			})
+			}, nil)
 		})
 
 		It("should succeed", func() {
@@ -242,10 +242,10 @@ var _ = Describe("DbDataService", func() {
 		BeforeEach(func() {
 			tune1, err = service.CreateTune(apimodel.CreateTune{
 				Title: "tune1",
-			})
+			}, nil)
 			tune2, err = service.CreateTune(apimodel.CreateTune{
 				Title: "tune2",
-			})
+			}, nil)
 		})
 
 		It("should return both tunes", func() {
@@ -265,7 +265,7 @@ var _ = Describe("DbDataService", func() {
 		BeforeEach(func() {
 			_, err = service.CreateMusicSet(apimodel.CreateSet{
 				Title: "",
-			})
+			}, nil)
 		})
 
 		It("should return an error", func() {
@@ -280,7 +280,7 @@ var _ = Describe("DbDataService", func() {
 				Title:       "title",
 				Description: "desc",
 				Creator:     "creator",
-			})
+			}, nil)
 		})
 
 		It("should succeed", func() {
@@ -387,10 +387,10 @@ var _ = Describe("DbDataService", func() {
 		BeforeEach(func() {
 			set1, err = service.CreateMusicSet(apimodel.CreateSet{
 				Title: "set1",
-			})
+			}, nil)
 			set2, err = service.CreateMusicSet(apimodel.CreateSet{
 				Title: "set2",
-			})
+			}, nil)
 		})
 
 		It("should return both sets", func() {

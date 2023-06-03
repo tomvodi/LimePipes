@@ -17,6 +17,7 @@ func (t *tuneFix) Fix(muMo music_model.MusicModel) {
 		fixComposerArranger(tune)
 		fixComposerTrad(tune)
 		removeTimeSigFromTuneType(tune)
+		removeSpecialCharsFromTuneType(tune)
 		trimSpaces(tune)
 		fixTitle(tune)
 		capitalizeTuneType(tune)
@@ -69,6 +70,12 @@ func removeTimeSigFromTuneType(tune *music_model.Tune) {
 	typeWithoutTimesig := regX.ReplaceAllString(trimmedType, "")
 	typeWithoutTimesig = strings.TrimSpace(typeWithoutTimesig)
 	tune.Type = typeWithoutTimesig
+}
+
+func removeSpecialCharsFromTuneType(tune *music_model.Tune) {
+	trimmedType := strings.TrimSpace(tune.Type)
+	trimmedType = strings.Trim(trimmedType, ".:/-|")
+	tune.Type = trimmedType
 }
 
 func trimSpaces(tune *music_model.Tune) {
