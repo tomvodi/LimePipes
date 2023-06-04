@@ -7,7 +7,8 @@ import (
 type Tune struct {
 	ID           uint64 `gorm:"primaryKey"`
 	Title        string
-	Type         string
+	TuneTypeId   *uint64
+	TuneType     *TuneType
 	TimeSig      string
 	Composer     string
 	Arranger     string

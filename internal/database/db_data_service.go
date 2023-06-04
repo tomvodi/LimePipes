@@ -43,9 +43,21 @@ func (d *dbService) CreateTune(tune apimodel.CreateTune, importFile *model.Impor
 	if importFile != nil {
 		dbTune.ImportFileId = importFile.ID
 	}
-	err := copier.Copy(&dbTune, &tune)
+	var tuneType *model.TuneType
+	var err error
+	if tune.Type != "" {
+		tuneType, err = d.getOrCreateTuneType(tune.Type)
+		if err != nil {
+			return &apimodel.Tune{}, err
+		}
+	}
+
+	err = copier.Copy(&dbTune, &tune)
 	if err != nil {
 		return &apimodel.Tune{}, fmt.Errorf("could not create db object")
+	}
+	if tuneType != nil {
+		dbTune.TuneTypeId = &tuneType.ID
 	}
 
 	if err = d.db.Create(&dbTune).Error; err != nil {
@@ -56,13 +68,19 @@ func (d *dbService) CreateTune(tune apimodel.CreateTune, importFile *model.Impor
 	if err := copier.Copy(apiTune, dbTune); err != nil {
 		return nil, err
 	}
+	if tuneType != nil {
+		apiTune.Type = tuneType.Name
+	}
 
 	return apiTune, nil
 }
 
 func (d *dbService) GetTune(id uint64) (*apimodel.Tune, error) {
 	var tune = &model.Tune{}
-	if err := d.db.Preload("Sets").First(tune, id).Error; err != nil {
+	if err := d.db.
+		Preload("Sets").
+		Preload("TuneType").
+		First(tune, id).Error; err != nil {
 		return &apimodel.Tune{}, common.NotFound
 	}
 
@@ -70,6 +88,9 @@ func (d *dbService) GetTune(id uint64) (*apimodel.Tune, error) {
 	err := copier.Copy(apiTune, tune)
 	if err != nil {
 		return &apimodel.Tune{}, err
+	}
+	if tune.TuneType != nil {
+		apiTune.Type = tune.TuneType.Name
 	}
 
 	return apiTune, nil
@@ -96,7 +117,10 @@ func (d *dbService) getTuneByTitle(title string) (*apimodel.Tune, error) {
 	var tune = &model.Tune{
 		Title: title,
 	}
-	if err := d.db.Where(tune).First(tune).Error; err != nil {
+	if err := d.db.
+		Preload("TuneType").
+		Where(tune).
+		First(tune).Error; err != nil {
 		return nil, common.NotFound
 	}
 
@@ -104,6 +128,9 @@ func (d *dbService) getTuneByTitle(title string) (*apimodel.Tune, error) {
 	err := copier.Copy(apiTune, tune)
 	if err != nil {
 		return nil, err
+	}
+	if tune.TuneType != nil {
+		apiTune.Type = tune.TuneType.Name
 	}
 
 	return apiTune, nil
@@ -150,6 +177,11 @@ func (d *dbService) UpdateTune(id uint64, updateTune apimodel.UpdateTune) (*apim
 		return nil, err
 	}
 
+	tuneType, err := d.getOrCreateTuneType(updateTune.Type)
+	if err != nil {
+		return nil, err
+	}
+
 	var tune = &model.Tune{}
 	if err := d.db.First(tune, id).Error; err != nil {
 		return nil, common.NotFound
@@ -159,6 +191,8 @@ func (d *dbService) UpdateTune(id uint64, updateTune apimodel.UpdateTune) (*apim
 	if err := mapstructure.Decode(&updateTune, &updateVals); err != nil {
 		return nil, err
 	}
+	updateVals["TuneTypeId"] = tuneType.ID
+	delete(updateVals, "Type")
 
 	if err := d.db.Model(tune).Updates(updateVals).Error; err != nil {
 		return nil, err
@@ -168,6 +202,7 @@ func (d *dbService) UpdateTune(id uint64, updateTune apimodel.UpdateTune) (*apim
 	if err := copier.Copy(apiTune, tune); err != nil {
 		return nil, err
 	}
+	apiTune.Type = tuneType.Name
 
 	return apiTune, nil
 }
@@ -183,6 +218,45 @@ func (d *dbService) DeleteTune(id uint64) error {
 	}
 
 	return nil
+}
+
+func (d *dbService) getOrCreateTuneType(
+	name string,
+) (*model.TuneType, error) {
+	var tuneType = &model.TuneType{}
+	var err error
+	tuneType, err = d.getTuneTypeByName(name)
+	if err == common.NotFound {
+		return d.createTuneType(name)
+	}
+
+	return tuneType, err
+}
+
+func (d *dbService) getTuneTypeByName(name string) (*model.TuneType, error) {
+	var tuneType = &model.TuneType{}
+	if err := d.db.Where("lower(name) = ?", strings.ToLower(name)).
+		First(tuneType).Error; err != nil {
+		return nil, common.NotFound
+	}
+
+	return tuneType, nil
+}
+
+func (d *dbService) createTuneType(name string) (*model.TuneType, error) {
+	if strings.TrimSpace(name) == "" {
+		return nil, fmt.Errorf("tune type name must have a value")
+	}
+
+	dbTuneType := &model.TuneType{
+		Name: name,
+	}
+
+	if err := d.db.Create(&dbTuneType).Error; err != nil {
+		return nil, err
+	}
+
+	return dbTuneType, nil
 }
 
 func (d *dbService) MusicSets() ([]*apimodel.MusicSet, error) {

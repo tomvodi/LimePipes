@@ -45,6 +45,86 @@ var _ = Describe("DbDataService", func() {
 		})
 	})
 
+	Context("creating a tune type", func() {
+		var marchType, returnedType *model.TuneType
+		BeforeEach(func() {
+			marchType, err = service.createTuneType("March")
+			Expect(err).ShouldNot(HaveOccurred())
+		})
+
+		When("calling get or create march with other lowercase letters", func() {
+			BeforeEach(func() {
+				returnedType, err = service.getOrCreateTuneType("march")
+			})
+
+			It("should return the march type", func() {
+				Expect(err).ShouldNot(HaveOccurred())
+				Expect(returnedType).Should(BeComparableTo(marchType))
+			})
+		})
+
+		When("calling get or create a new tune type", func() {
+			BeforeEach(func() {
+				returnedType, err = service.getOrCreateTuneType("slow march")
+			})
+
+			It("should return the new type with capitalized letters", func() {
+				Expect(err).ShouldNot(HaveOccurred())
+				Expect(returnedType.Name).Should(Equal("slow march"))
+			})
+		})
+
+		When("creating the exactly same tune type again", func() {
+			BeforeEach(func() {
+				returnedType, err = service.createTuneType(marchType.Name)
+			})
+
+			It("should fail", func() {
+				Expect(err).Should(HaveOccurred())
+			})
+		})
+
+		When("creating a tune type with empty name", func() {
+			BeforeEach(func() {
+				returnedType, err = service.createTuneType("")
+			})
+
+			It("should fail", func() {
+				Expect(err).Should(HaveOccurred())
+			})
+		})
+	})
+
+	Context("creating a tune only with a title", func() {
+		var tune *apimodel.Tune
+		BeforeEach(func() {
+			tune, err = service.CreateTune(apimodel.CreateTune{
+				Title: "title",
+			}, nil)
+		})
+
+		It("should succeed", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(tune).Should(Equal(
+				&apimodel.Tune{
+					ID:    1,
+					Title: "title",
+				}))
+		})
+
+		When("getting it again by title", func() {
+			var returnedTune *apimodel.Tune
+			BeforeEach(func() {
+				returnedTune, err = service.getTuneByTitle(tune.Title)
+			})
+
+			It("should return the same tune", func() {
+				Expect(err).ShouldNot(HaveOccurred())
+				Expect(returnedTune).To(Equal(tune))
+			})
+		})
+	})
+
 	Context("creating a valid tune with all fields", func() {
 		var tune *apimodel.Tune
 		BeforeEach(func() {
@@ -74,6 +154,18 @@ var _ = Describe("DbDataService", func() {
 			var returnedTune *apimodel.Tune
 			BeforeEach(func() {
 				returnedTune, err = service.GetTune(tune.ID)
+			})
+
+			It("should return the same tune", func() {
+				Expect(err).ShouldNot(HaveOccurred())
+				Expect(returnedTune).To(Equal(tune))
+			})
+		})
+
+		When("getting it again by title", func() {
+			var returnedTune *apimodel.Tune
+			BeforeEach(func() {
+				returnedTune, err = service.getTuneByTitle(tune.Title)
 			})
 
 			It("should return the same tune", func() {
