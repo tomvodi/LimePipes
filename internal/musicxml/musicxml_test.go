@@ -48,10 +48,24 @@ var _ = Describe("ScoreFromMusicModelTune", func() {
 
 	Context("having a tune with four measures", func() {
 		BeforeEach(func() {
-			muMo := importFromYaml("./testfiles/four_measures.yaml")
+			muMo := importFromYaml("../testfiles/four_measures.yaml")
 			score, err = ScoreFromMusicModelTune(muMo[0])
 			//exportToMusicXml(score, "./testfiles/four_measures.musicxml")
 			readScore = importFromMusicXml("./testfiles/four_measures.musicxml")
+		})
+
+		It("should succeed", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(readScore).Should(BeComparableTo(score))
+		})
+	})
+
+	Context("having a file with all melody notes", func() {
+		BeforeEach(func() {
+			muMo := importFromYaml("../testfiles/all_melody_notes.yaml")
+			score, err = ScoreFromMusicModelTune(muMo[0])
+			exportToMusicXml(score, "./testfiles/all_melody_notes.musicxml")
+			//readScore = importFromMusicXml("./testfiles/all_melody_notes.musicxml")
 		})
 
 		It("should succeed", func() {

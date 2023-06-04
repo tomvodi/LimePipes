@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 3.1 Partwise//EN"
+        "http://www.musicxml.org/dtds/partwise.dtd">
+ <score-partwise version="3.1">
+   <part-list>
+     <score-part id="P1">
+       <part-name>Bagpipe</part-name>
+       <score-instrument id="P1-I1">
+         <instrument-name>Bagpipe</instrument-name>
+       </score-instrument>
+       <midi-device id="P1-I1" port="1"></midi-device>
+       <midi-instrument id="P1-I1">
+         <midi-channel>1</midi-channel>
+         <midi-program>110</midi-program>
+         <volume>78.7402</volume>
+         <pan>0</pan>
+       </midi-instrument>
+     </score-part>
+   </part-list>
+   <part id="P1">
+     <measure number="0">
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+     </measure>
+     <measure number="1">
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+     </measure>
+     <measure number="2">
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+     </measure>
+     <measure number="3">
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+     </measure>
+     <measure number="4">
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+     </measure>
+     <measure number="5">
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+     </measure>
+     <measure number="6">
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+     </measure>
+     <measure number="7">
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+     </measure>
+     <measure number="8">
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+     </measure>
+     <measure number="9">
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+     </measure>
+     <measure number="10">
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+     </measure>
+     <measure number="11">
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+       <note></note>
+     </measure>
+   </part>
+ </score-partwise>

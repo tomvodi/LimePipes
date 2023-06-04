@@ -1,5 +1,5 @@
 - title: Tune Title
-  tempo: 80
+  tempo: 0
   measures:
     - time:
         beats: 4

@@ -102,5 +102,17 @@ func xmlMeasureFromMusicModelMeasure(measure *music_model.Measure, id int) model
 		},
 		Number: id,
 	}
+	notes := []model.Note{}
+	for _, symbol := range measure.Symbols {
+		if symbol.IsNote() {
+			note := model.Note{
+				XMLName: xml.Name{
+					Local: "note",
+				},
+			}
+			notes = append(notes, note)
+		}
+	}
+	xmlMeasure.Notes = notes
 	return xmlMeasure
 }

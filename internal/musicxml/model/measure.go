@@ -5,4 +5,5 @@ import "encoding/xml"
 type Measure struct {
 	XMLName xml.Name `xml:"measure"`
 	Number  int      `xml:"number,attr"`
+	Notes   []Note   `xml:"note"`
 }
