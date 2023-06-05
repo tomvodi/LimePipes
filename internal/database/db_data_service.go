@@ -223,7 +223,7 @@ func (d *dbService) DeleteTune(id uint64) error {
 func (d *dbService) getOrCreateTuneType(
 	name string,
 ) (*model.TuneType, error) {
-	var tuneType = &model.TuneType{}
+	var tuneType *model.TuneType
 	var err error
 	tuneType, err = d.getTuneTypeByName(name)
 	if err == common.NotFound {

@@ -36,7 +36,7 @@ func ReadScore(reader io.Reader) (*model.Score, error) {
 func ScoreFromMusicModelTune(tune *music_model.Tune) (*model.Score, error) {
 	measures := []model.Measure{}
 	for i, measure := range tune.Measures {
-		xmlMeasure := xmlMeasureFromMusicModelMeasure(measure, i)
+		xmlMeasure := xmlMeasureFromMusicModelMeasure(measure, i, 32)
 		measures = append(measures, xmlMeasure)
 	}
 
@@ -95,21 +95,20 @@ func ScoreFromMusicModelTune(tune *music_model.Tune) (*model.Score, error) {
 	return score, nil
 }
 
-func xmlMeasureFromMusicModelMeasure(measure *music_model.Measure, id int) model.Measure {
+func xmlMeasureFromMusicModelMeasure(measure *music_model.Measure, idx int, divisions uint8) model.Measure {
 	xmlMeasure := model.Measure{
 		XMLName: xml.Name{
 			Local: "measure",
 		},
-		Number: id,
+		Number: idx + 1,
 	}
-	notes := []model.Note{}
+	if idx == 0 {
+		xmlMeasure.Attributes = model.NewAttributes(divisions)
+	}
+	var notes []model.Note
 	for _, symbol := range measure.Symbols {
 		if symbol.IsNote() {
-			note := model.Note{
-				XMLName: xml.Name{
-					Local: "note",
-				},
-			}
+			note := model.NoteFromMusicModel(symbol.Note, divisions)
 			notes = append(notes, note)
 		}
 	}

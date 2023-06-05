@@ -1,9 +1,12 @@
 package model
 
-import "encoding/xml"
+import (
+	"encoding/xml"
+)
 
 type Measure struct {
-	XMLName xml.Name `xml:"measure"`
-	Number  int      `xml:"number,attr"`
-	Notes   []Note   `xml:"note"`
+	XMLName    xml.Name    `xml:"measure"`
+	Number     int         `xml:"number,attr"`
+	Attributes *Attributes `xml:"attributes,omitempty"`
+	Notes      []Note      `xml:"note"`
 }

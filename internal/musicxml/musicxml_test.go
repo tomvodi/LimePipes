@@ -64,8 +64,8 @@ var _ = Describe("ScoreFromMusicModelTune", func() {
 		BeforeEach(func() {
 			muMo := importFromYaml("../testfiles/all_melody_notes.yaml")
 			score, err = ScoreFromMusicModelTune(muMo[0])
-			exportToMusicXml(score, "./testfiles/all_melody_notes.musicxml")
-			//readScore = importFromMusicXml("./testfiles/all_melody_notes.musicxml")
+			//exportToMusicXml(score, "./testfiles/all_melody_notes.musicxml")
+			readScore = importFromMusicXml("./testfiles/all_melody_notes.musicxml")
 		})
 
 		It("should succeed", func() {
