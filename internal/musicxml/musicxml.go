@@ -3,6 +3,7 @@ package musicxml
 import (
 	"banduslib/internal/common/music_model"
 	"banduslib/internal/musicxml/model"
+	"bytes"
 	"encoding/xml"
 	"io"
 )
@@ -14,6 +15,7 @@ func WriteScore(score *model.Score, writer io.Writer) error {
 	}
 
 	data = append([]byte(musicXMLHeader), data...)
+	data = bytes.ReplaceAll(data, []byte("></grace>"), []byte("/>"))
 	if _, err := writer.Write(data); err != nil {
 		return err
 	}
@@ -105,13 +107,13 @@ func xmlMeasureFromMusicModelMeasure(measure *music_model.Measure, idx int, divi
 	if idx == 0 {
 		xmlMeasure.Attributes = model.NewAttributes(divisions)
 	}
-	var notes []model.Note
+	var measureNotes []model.Note
 	for _, symbol := range measure.Symbols {
 		if symbol.IsNote() {
-			note := model.NoteFromMusicModel(symbol.Note, divisions)
-			notes = append(notes, note)
+			symbolNotes := model.NotesFromMusicModel(symbol.Note, divisions)
+			measureNotes = append(measureNotes, symbolNotes...)
 		}
 	}
-	xmlMeasure.Notes = notes
+	xmlMeasure.Notes = measureNotes
 	return xmlMeasure
 }

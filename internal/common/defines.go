@@ -3,7 +3,7 @@ package common
 //go:generate go run github.com/dmarkham/enumer -json -yaml -type=Pitch
 //go:generate go run github.com/dmarkham/enumer -json -yaml -type=Length
 
-type Length uint
+type Length uint8
 
 const (
 	NoLength Length = iota
@@ -15,7 +15,7 @@ const (
 	Thirtysecond
 )
 
-type Pitch uint
+type Pitch uint8
 
 const (
 	NoPitch Pitch = iota

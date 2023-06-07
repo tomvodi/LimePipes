@@ -3,6 +3,7 @@ package main
 import (
 	"banduslib/internal/api"
 	"banduslib/internal/bww"
+	"banduslib/internal/common/music_model/expander"
 	"banduslib/internal/common/music_model/helper"
 	"banduslib/internal/config"
 	"banduslib/internal/database"
@@ -26,7 +27,8 @@ func main() {
 		panic(fmt.Sprintf("failed initializing database: %s", err.Error()))
 	}
 
-	bwwParser := bww.NewBwwParser()
+	embExpander := expander.NewEmbellishmentExpander()
+	bwwParser := bww.NewBwwParser(embExpander)
 	bwwFileTuneSplitter := bww.NewBwwFileTuneSplitter()
 	dbService := database.NewDbDataService(db)
 	tuneFixer := helper.NewTuneFixer()

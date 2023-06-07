@@ -3,7 +3,7 @@
   measures:
     - symbols:
         - note:
-            pitch: LowA
+            pitch: LowG
             length: Quarter
             embellishment:
                 type: Doubling
@@ -13,43 +13,43 @@
             embellishment:
                 type: Doubling
         - note:
-            pitch: LowA
+            pitch: B
             length: Quarter
             embellishment:
                 type: Doubling
         - note:
-            pitch: LowA
+            pitch: C
             length: Quarter
             embellishment:
                 type: Doubling
         - note:
-            pitch: LowA
+            pitch: D
             length: Quarter
             embellishment:
                 type: Doubling
         - note:
-            pitch: LowA
+            pitch: E
             length: Quarter
             embellishment:
                 type: Doubling
         - note:
-            pitch: LowA
+            pitch: F
             length: Quarter
             embellishment:
                 type: Doubling
         - note:
-            pitch: LowA
+            pitch: HighG
             length: Quarter
             embellishment:
                 type: Doubling
         - note:
-            pitch: LowA
+            pitch: HighA
             length: Quarter
             embellishment:
                 type: Doubling
     - symbols:
         - note:
-            pitch: LowA
+            pitch: LowG
             length: Quarter
             embellishment:
                 type: Doubling
@@ -61,38 +61,38 @@
                 type: Doubling
                 variant: Thumb
         - note:
-            pitch: LowA
+            pitch: B
             length: Quarter
             embellishment:
                 type: Doubling
                 variant: Thumb
         - note:
-            pitch: LowA
+            pitch: C
             length: Quarter
             embellishment:
                 type: Doubling
                 variant: Thumb
         - note:
-            pitch: LowA
+            pitch: D
             length: Quarter
             embellishment:
                 type: Doubling
                 variant: Thumb
         - note:
-            pitch: LowA
+            pitch: E
             length: Quarter
             embellishment:
                 type: Doubling
                 variant: Thumb
         - note:
-            pitch: LowA
+            pitch: F
             length: Quarter
             embellishment:
                 type: Doubling
                 variant: Thumb
     - symbols:
         - note:
-            pitch: LowA
+            pitch: LowG
             length: Quarter
             embellishment:
                 type: Doubling
@@ -104,31 +104,31 @@
                 type: Doubling
                 variant: Half
         - note:
-            pitch: LowA
+            pitch: B
             length: Quarter
             embellishment:
                 type: Doubling
                 variant: Half
         - note:
-            pitch: LowA
+            pitch: C
             length: Quarter
             embellishment:
                 type: Doubling
                 variant: Half
         - note:
-            pitch: LowA
+            pitch: D
             length: Quarter
             embellishment:
                 type: Doubling
                 variant: Half
         - note:
-            pitch: LowA
+            pitch: E
             length: Quarter
             embellishment:
                 type: Doubling
                 variant: Half
         - note:
-            pitch: LowA
+            pitch: F
             length: Quarter
             embellishment:
                 type: Doubling

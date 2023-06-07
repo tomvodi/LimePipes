@@ -7,6 +7,7 @@ import (
 )
 
 type bwwParser struct {
+	embExpander interfaces.EmbellishmentExpander
 }
 
 func (b *bwwParser) ParseBwwData(data []byte) (music_model.MusicModel, error) {
@@ -25,9 +26,19 @@ func (b *bwwParser) ParseBwwData(data []byte) (music_model.MusicModel, error) {
 		return nil, err
 	}
 
-	return convertGrammarToModel(bwwDoc)
+	muMo, err := convertGrammarToModel(bwwDoc)
+	if err != nil {
+		return nil, err
+	}
+
+	b.embExpander.ExpandModel(muMo)
+	return muMo, nil
 }
 
-func NewBwwParser() interfaces.BwwParser {
-	return &bwwParser{}
+func NewBwwParser(
+	embExpander interfaces.EmbellishmentExpander,
+) interfaces.BwwParser {
+	return &bwwParser{
+		embExpander: embExpander,
+	}
 }

@@ -16,8 +16,10 @@ type Note struct {
 	Fermata       bool                         `yaml:"fermata,omitempty"`
 	Tie           tie.Tie                      `yaml:"tie,omitempty"`
 	Embellishment *embellishment.Embellishment `yaml:"embellishment,omitempty"`
-	Movement      *movement.Movement           `yaml:"movement,omitempty"` // Piobairached movements
-	Comment       string                       `yaml:"comment,omitempty"`
+	// ExpandedEmbellishment is a list of pitches that makes up the embellishment
+	ExpandedEmbellishment []common.Pitch     `yaml:"-"`
+	Movement              *movement.Movement `yaml:"movement,omitempty"` // Piobairached movements
+	Comment               string             `yaml:"comment,omitempty"`
 }
 
 func (n *Note) IsValid() bool {

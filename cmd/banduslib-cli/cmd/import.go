@@ -4,6 +4,7 @@ import (
 	"banduslib/internal/bww"
 	"banduslib/internal/common"
 	"banduslib/internal/common/music_model"
+	"banduslib/internal/common/music_model/expander"
 	"banduslib/internal/common/music_model/helper"
 	"banduslib/internal/config"
 	"banduslib/internal/database"
@@ -58,7 +59,8 @@ If a given file that has an extension which is not in the import-file-types, it 
 		log.Info().Msgf("found %d files for import", len(allFiles))
 
 		importedTunesCnt := 0
-		parser := bww.NewBwwParser()
+		embExpander := expander.NewEmbellishmentExpander()
+		parser := bww.NewBwwParser(embExpander)
 		allFileCnt := len(allFiles)
 		for i, file := range allFiles {
 			fileData, err := os.ReadFile(file)

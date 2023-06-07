@@ -2,6 +2,7 @@ package bww
 
 import (
 	"banduslib/internal/common/music_model"
+	"banduslib/internal/common/music_model/expander"
 	"banduslib/internal/common/music_model/import_message"
 	"banduslib/internal/interfaces"
 	"banduslib/internal/utils"
@@ -11,6 +12,8 @@ import (
 	"io"
 	"os"
 )
+
+var embExpander = expander.NewEmbellishmentExpander()
 
 func dataFromFile(filePath string) []byte {
 	bwwFile, err := os.Open(filePath)
@@ -36,6 +39,8 @@ func importFromYaml(filePath string) music_model.MusicModel {
 	err = yaml.Unmarshal(fileData, &muMo)
 	Expect(err).ShouldNot(HaveOccurred())
 
+	embExpander.ExpandModel(muMo)
+
 	return muMo
 }
 
@@ -55,7 +60,7 @@ var _ = Describe("BWW Parser", func() {
 	var musicTunesExpect music_model.MusicModel
 
 	BeforeEach(func() {
-		parser = NewBwwParser()
+		parser = NewBwwParser(embExpander)
 	})
 
 	When("parsing a file with a staff with 4 measures in it", func() {
@@ -200,8 +205,8 @@ var _ = Describe("BWW Parser", func() {
 		BeforeEach(func() {
 			bwwData := dataFromFile("./testfiles/doublings.bww")
 			musicTunesBww, err = parser.ParseBwwData(bwwData)
-			musicTunesExpect = importFromYaml("./testfiles/doublings.yaml")
-			//exportToYaml(musicTunesBww, "./testfiles/.yaml")
+			musicTunesExpect = importFromYaml("../testfiles/doublings.yaml")
+			//exportToYaml(musicTunesBww, "../testfiles/doublings.yaml")
 		})
 
 		It("should have parsed file correctly", func() {

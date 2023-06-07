@@ -2,6 +2,7 @@ package musicxml
 
 import (
 	"banduslib/internal/common/music_model"
+	"banduslib/internal/common/music_model/expander"
 	"banduslib/internal/musicxml/model"
 	"banduslib/internal/utils"
 	. "github.com/onsi/ginkgo/v2"
@@ -9,6 +10,8 @@ import (
 	"gopkg.in/yaml.v3"
 	"os"
 )
+
+var embExpander = expander.NewEmbellishmentExpander()
 
 func exportToMusicXml(score *model.Score, filePath string) {
 	f, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0660)
@@ -36,6 +39,8 @@ func importFromYaml(filePath string) music_model.MusicModel {
 	Expect(err).ShouldNot(HaveOccurred())
 	err = yaml.Unmarshal(fileData, &muMo)
 	Expect(err).ShouldNot(HaveOccurred())
+
+	embExpander.ExpandModel(muMo)
 
 	return muMo
 }
@@ -66,6 +71,20 @@ var _ = Describe("ScoreFromMusicModelTune", func() {
 			score, err = ScoreFromMusicModelTune(muMo[0])
 			//exportToMusicXml(score, "./testfiles/all_melody_notes.musicxml")
 			readScore = importFromMusicXml("./testfiles/all_melody_notes.musicxml")
+		})
+
+		It("should succeed", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(readScore).Should(BeComparableTo(score))
+		})
+	})
+
+	Context("having a file with doublings", func() {
+		BeforeEach(func() {
+			muMo := importFromYaml("../testfiles/doublings.yaml")
+			score, err = ScoreFromMusicModelTune(muMo[0])
+			//exportToMusicXml(score, "./testfiles/doublings.musicxml")
+			readScore = importFromMusicXml("./testfiles/doublings.musicxml")
 		})
 
 		It("should succeed", func() {

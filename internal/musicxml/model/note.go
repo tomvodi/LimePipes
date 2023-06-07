@@ -9,15 +9,36 @@ import (
 
 type Note struct {
 	XMLName  xml.Name `xml:"note"`
+	Grace    *Grace   `xml:"grace,omitempty"`
 	Pitch    Pitch    `xml:"pitch"`
 	Duration uint8    `xml:"duration,omitempty"`
 	Voice    uint8    `xml:"voice,omitempty"`
 	Type     string   `xml:"type"`
 	Stem     string   `xml:"stem,omitempty"`
+	Beams    []Beam   `xml:"beam,omitempty"`
 }
 
-func NoteFromMusicModel(note *symbols.Note, divisions uint8) Note {
-	return Note{
+func NotesFromMusicModel(note *symbols.Note, divisions uint8) []Note {
+	var notes []Note
+
+	if note.Embellishment != nil && note.ExpandedEmbellishment != nil {
+		for i, pitch := range note.ExpandedEmbellishment {
+			grace := Note{
+				XMLName: xml.Name{
+					Local: "note",
+				},
+				Grace: NewGrace(),
+				Pitch: PitchFromMusicModel(pitch),
+				Voice: 1,
+				Type:  typeFromLength(common.Thirtysecond),
+				Stem:  "up",
+				Beams: embellishmentBeamsForPosition(i, len(note.ExpandedEmbellishment)),
+			}
+			notes = append(notes, grace)
+		}
+	}
+
+	xmlNote := Note{
 		XMLName: xml.Name{
 			Local: "note",
 		},
@@ -27,6 +48,27 @@ func NoteFromMusicModel(note *symbols.Note, divisions uint8) Note {
 		Type:     typeFromLength(note.Length),
 		Stem:     stemFromLength(note.Length),
 	}
+	notes = append(notes, xmlNote)
+
+	return notes
+}
+
+func embellishmentBeamsForPosition(idx int, len int) []Beam {
+	var bType BeamType
+	if idx == 0 {
+		bType = Begin
+	} else if idx == len-1 {
+		bType = End
+	} else {
+		bType = Continue
+	}
+	const beamCnt = 3
+	beams := make([]Beam, beamCnt)
+	for i := uint8(0); i < beamCnt; i++ {
+		beams[i] = NewBeam(i+1, bType)
+	}
+
+	return beams
 }
 
 func typeFromLength(length common.Length) string {
