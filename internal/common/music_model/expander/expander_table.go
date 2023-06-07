@@ -11,6 +11,8 @@ type ExpandTable map[emb.Embellishment]interfaces.SymbolExpander
 func newSymbolExpanderTable() ExpandTable {
 	singleGraceExp := NewSingleGraceExpander()
 	dblExpander := NewDoublingsExpander()
+	strikesExpander := NewStrikesExpander()
+
 	return map[emb.Embellishment]interfaces.SymbolExpander{
 		emb.Embellishment{
 			Type:  emb.SingleGrace,
@@ -55,5 +57,59 @@ func newSymbolExpanderTable() ExpandTable {
 			Type:    emb.Doubling,
 			Variant: emb.Half,
 		}: dblExpander,
+		emb.Embellishment{
+			Type:  emb.Strike,
+			Pitch: common.LowG,
+		}: strikesExpander,
+		emb.Embellishment{
+			Type:  emb.Strike,
+			Pitch: common.LowA,
+		}: strikesExpander,
+		emb.Embellishment{
+			Type:  emb.Strike,
+			Pitch: common.B,
+		}: strikesExpander,
+		emb.Embellishment{
+			Type:  emb.Strike,
+			Pitch: common.C,
+		}: strikesExpander,
+		emb.Embellishment{
+			Type:  emb.Strike,
+			Pitch: common.D,
+		}: strikesExpander,
+		emb.Embellishment{
+			Type:  emb.Strike,
+			Pitch: common.E,
+		}: strikesExpander,
+		emb.Embellishment{
+			Type:  emb.Strike,
+			Pitch: common.F,
+		}: strikesExpander,
+		emb.Embellishment{
+			Type:  emb.Strike,
+			Pitch: common.HighG,
+		}: strikesExpander,
+		emb.Embellishment{
+			Type:    emb.Strike,
+			Variant: emb.G,
+		}: strikesExpander,
+		emb.Embellishment{
+			Type:    emb.Strike,
+			Variant: emb.G,
+			Weight:  emb.Light,
+		}: strikesExpander,
+		emb.Embellishment{
+			Type:    emb.Strike,
+			Variant: emb.Thumb,
+		}: strikesExpander,
+		emb.Embellishment{
+			Type:    emb.Strike,
+			Variant: emb.Thumb,
+			Weight:  emb.Light,
+		}: strikesExpander,
+		emb.Embellishment{
+			Type:    emb.Strike,
+			Variant: emb.Half,
+		}: strikesExpander,
 	}
 }
