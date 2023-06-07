@@ -581,7 +581,10 @@ func appendStaffSymbolToMeasureSymbols(
 		return handleEmbellishment(emb.ABirl)
 	}
 	if staffSym.Strike != nil {
-		return handleEmbellishment(emb.Strike)
+		sym, err := handleEmbellishment(emb.Strike)
+		pitch := pitchFromSuffix(*staffSym.Strike)
+		sym.Note.Embellishment.Pitch = pitch
+		return sym, err
 	}
 	if staffSym.GStrike != nil {
 		return handleEmbellishmentVariant(emb.Strike, emb.G, emb.NoWeight)

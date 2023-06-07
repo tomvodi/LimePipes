@@ -10,19 +10,25 @@
             length: Quarter
             embellishment:
                 type: Strike
+                pitch: LowG
         - note:
-            pitch: E
+            pitch: B
+            length: Quarter
+        - note:
+            pitch: B
+            length: Quarter
+            embellishment:
+                type: Strike
+                pitch: LowA
+        - note:
+            pitch: C
             length: Quarter
         - note:
             pitch: C
             length: Quarter
             embellishment:
                 type: Strike
-        - note:
-            pitch: C
-            length: Quarter
-            embellishment:
-                type: Strike
+                pitch: B
         - note:
             pitch: D
             length: Quarter
@@ -31,6 +37,7 @@
             length: Quarter
             embellishment:
                 type: Strike
+                pitch: C
         - note:
             pitch: E
             length: Quarter
@@ -39,6 +46,7 @@
             length: Quarter
             embellishment:
                 type: Strike
+                pitch: D
         - note:
             pitch: F
             length: Quarter
@@ -47,6 +55,7 @@
             length: Quarter
             embellishment:
                 type: Strike
+                pitch: E
         - note:
             pitch: HighG
             length: Quarter
@@ -55,6 +64,7 @@
             length: Quarter
             embellishment:
                 type: Strike
+                pitch: F
         - note:
             pitch: HighA
             length: Quarter
@@ -63,6 +73,7 @@
             length: Quarter
             embellishment:
                 type: Strike
+                pitch: HighG
     - symbols:
         - note:
             pitch: E
