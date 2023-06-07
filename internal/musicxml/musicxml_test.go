@@ -79,6 +79,20 @@ var _ = Describe("ScoreFromMusicModelTune", func() {
 		})
 	})
 
+	Context("having a file with single grace notes", func() {
+		BeforeEach(func() {
+			muMo := importFromYaml("../testfiles/single_graces.yaml")
+			score, err = ScoreFromMusicModelTune(muMo[0])
+			exportToMusicXml(score, "./testfiles/single_graces.musicxml")
+			//readScore = importFromMusicXml("./testfiles/single_graces.musicxml")
+		})
+
+		It("should succeed", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(readScore).Should(BeComparableTo(score))
+		})
+	})
+
 	Context("having a file with doublings", func() {
 		BeforeEach(func() {
 			muMo := importFromYaml("../testfiles/doublings.yaml")

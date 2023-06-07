@@ -22,6 +22,7 @@ func NotesFromMusicModel(note *symbols.Note, divisions uint8) []Note {
 	var notes []Note
 
 	if note.Embellishment != nil && note.ExpandedEmbellishment != nil {
+
 		for i, pitch := range note.ExpandedEmbellishment {
 			grace := Note{
 				XMLName: xml.Name{
@@ -32,7 +33,9 @@ func NotesFromMusicModel(note *symbols.Note, divisions uint8) []Note {
 				Voice: 1,
 				Type:  typeFromLength(common.Thirtysecond),
 				Stem:  "up",
-				Beams: embellishmentBeamsForPosition(i, len(note.ExpandedEmbellishment)),
+			}
+			if len(note.ExpandedEmbellishment) > 1 {
+				grace.Beams = embellishmentBeamsForPosition(i, len(note.ExpandedEmbellishment))
 			}
 			notes = append(notes, grace)
 		}
