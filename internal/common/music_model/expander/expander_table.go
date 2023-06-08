@@ -16,6 +16,7 @@ func newSymbolExpanderTable() ExpandTable {
 	taorExpander := NewTaorluathsExpander()
 	birlsExpander := NewBirlsExpander()
 	throwdExpander := NewThrowdsExpander()
+	pelesExpander := NewPelesExpander()
 
 	return map[emb.Embellishment]interfaces.SymbolExpander{
 		emb.Embellishment{
@@ -178,5 +179,30 @@ func newSymbolExpanderTable() ExpandTable {
 			Type:   emb.ThrowD,
 			Weight: emb.Heavy,
 		}: throwdExpander,
+		emb.Embellishment{
+			Type: emb.Pele,
+		}: pelesExpander,
+		emb.Embellishment{
+			Type:   emb.Pele,
+			Weight: emb.Light,
+		}: pelesExpander,
+		emb.Embellishment{
+			Type:    emb.Pele,
+			Variant: emb.Thumb,
+		}: pelesExpander,
+		emb.Embellishment{
+			Type:    emb.Pele,
+			Variant: emb.Thumb,
+			Weight:  emb.Light,
+		}: pelesExpander,
+		emb.Embellishment{
+			Type:    emb.Pele,
+			Variant: emb.Half,
+		}: pelesExpander,
+		emb.Embellishment{
+			Type:    emb.Pele,
+			Variant: emb.Half,
+			Weight:  emb.Light,
+		}: pelesExpander,
 	}
 }

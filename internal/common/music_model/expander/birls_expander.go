@@ -7,10 +7,10 @@ import (
 	"banduslib/internal/interfaces"
 )
 
-type birlsExpander struct {
+type birlsExp struct {
 }
 
-func (b *birlsExpander) ExpandSymbol(symbol *music_model.Symbol, prevSymPitch c.Pitch) {
+func (b *birlsExp) ExpandSymbol(symbol *music_model.Symbol, prevSymPitch c.Pitch) {
 	if symbol == nil || symbol.Note == nil || symbol.Note.Embellishment == nil {
 		return
 	}
@@ -35,5 +35,5 @@ func (b *birlsExpander) ExpandSymbol(symbol *music_model.Symbol, prevSymPitch c.
 }
 
 func NewBirlsExpander() interfaces.SymbolExpander {
-	return &birlsExpander{}
+	return &birlsExp{}
 }
