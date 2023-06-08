@@ -551,16 +551,32 @@ func appendStaffSymbolToMeasureSymbols(
 		return handleEmbellishmentVariant(emb.Doubling, emb.Thumb, emb.NoWeight)
 	}
 	if staffSym.Grip != nil {
-		return handleEmbellishment(emb.Grip)
+		sym, err := handleEmbellishment(emb.Grip)
+		if *staffSym.Grip == "grpb" {
+			sym.Note.Embellishment.Pitch = common.B
+		}
+		return sym, err
 	}
 	if staffSym.GGrip != nil {
-		return handleEmbellishmentVariant(emb.Grip, emb.G, emb.NoWeight)
+		sym, err := handleEmbellishmentVariant(emb.Grip, emb.G, emb.NoWeight)
+		if *staffSym.GGrip == "ggrpdb" {
+			sym.Note.Embellishment.Pitch = common.B
+		}
+		return sym, err
 	}
 	if staffSym.ThumbGrip != nil {
-		return handleEmbellishmentVariant(emb.Grip, emb.Thumb, emb.NoWeight)
+		sym, err := handleEmbellishmentVariant(emb.Grip, emb.Thumb, emb.NoWeight)
+		if *staffSym.ThumbGrip == "tgrpdb" {
+			sym.Note.Embellishment.Pitch = common.B
+		}
+		return sym, err
 	}
 	if staffSym.HalfGrip != nil {
-		return handleEmbellishmentVariant(emb.Grip, emb.Half, emb.NoWeight)
+		sym, err := handleEmbellishmentVariant(emb.Grip, emb.Half, emb.NoWeight)
+		if *staffSym.HalfGrip == "hgrpdb" {
+			sym.Note.Embellishment.Pitch = common.B
+		}
+		return sym, err
 	}
 	if staffSym.Taorluath != nil {
 		return handleEmbellishment(emb.Taorluath)

@@ -16,13 +16,14 @@
             embellishment:
                 type: Grip
         - note:
-              pitch: D
-              length: Quarter
+            pitch: D
+            length: Quarter
         - note:
             pitch: C
             length: Quarter
             embellishment:
                 type: Grip
+                pitch: B
     - symbols:
         - note:
             pitch: LowA
@@ -53,6 +54,7 @@
             length: Quarter
             embellishment:
                 type: Grip
+                pitch: B
                 variant: G
         - note:
             pitch: E
@@ -96,6 +98,7 @@
             length: Quarter
             embellishment:
                 type: Grip
+                pitch: B
                 variant: Thumb
         - note:
             pitch: E
@@ -145,6 +148,7 @@
             length: Quarter
             embellishment:
                 type: Grip
+                pitch: B
                 variant: Half
         - note:
             pitch: E

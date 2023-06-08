@@ -1,6 +1,7 @@
 package expander
 
 import (
+	"banduslib/internal/common"
 	"banduslib/internal/common/music_model"
 	"banduslib/internal/interfaces"
 	"github.com/rs/zerolog/log"
@@ -17,14 +18,21 @@ func (e *embExpander) ExpandModel(model music_model.MusicModel) {
 }
 
 func (e *embExpander) ExpandTune(tune *music_model.Tune) {
+	prevSymPitch := common.NoPitch
 	for _, measure := range tune.Measures {
 		for _, symbol := range measure.Symbols {
-			e.ExpandSymbol(symbol)
+			e.expandSymbol(symbol, prevSymPitch)
+
+			if symbol.IsValidNote() {
+				prevSymPitch = symbol.Note.Pitch
+			} else {
+				prevSymPitch = common.NoPitch
+			}
 		}
 	}
 }
 
-func (e *embExpander) ExpandSymbol(symbol *music_model.Symbol) {
+func (e *embExpander) expandSymbol(symbol *music_model.Symbol, prevSymPitch common.Pitch) {
 	if !symbol.IsValidNote() {
 		return
 	}
@@ -33,13 +41,13 @@ func (e *embExpander) ExpandSymbol(symbol *music_model.Symbol) {
 		return
 	}
 
-	packer, ok := e.table[*symbol.Note.Embellishment]
+	expander, ok := e.table[*symbol.Note.Embellishment]
 	if !ok {
 		log.Error().Msgf("no embellishment expander for %v", *symbol.Note.Embellishment)
 		return
 	}
 
-	packer.ExpandSymbol(symbol)
+	expander.ExpandSymbol(symbol, prevSymPitch)
 }
 
 func NewEmbellishmentExpander() interfaces.EmbellishmentExpander {

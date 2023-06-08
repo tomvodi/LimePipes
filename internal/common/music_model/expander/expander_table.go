@@ -12,6 +12,7 @@ func newSymbolExpanderTable() ExpandTable {
 	singleGraceExp := NewSingleGraceExpander()
 	dblExpander := NewDoublingsExpander()
 	strikesExpander := NewStrikesExpander()
+	gripsExpander := NewGripsExpander()
 
 	return map[emb.Embellishment]interfaces.SymbolExpander{
 		emb.Embellishment{
@@ -111,5 +112,39 @@ func newSymbolExpanderTable() ExpandTable {
 			Type:    emb.Strike,
 			Variant: emb.Half,
 		}: strikesExpander,
+		emb.Embellishment{
+			Type: emb.Grip,
+		}: gripsExpander,
+		emb.Embellishment{
+			Type:  emb.Grip,
+			Pitch: common.B,
+		}: gripsExpander,
+		emb.Embellishment{
+			Type:    emb.Grip,
+			Variant: emb.G,
+		}: gripsExpander,
+		emb.Embellishment{
+			Type:    emb.Grip,
+			Variant: emb.G,
+			Pitch:   common.B,
+		}: gripsExpander,
+		emb.Embellishment{
+			Type:    emb.Grip,
+			Variant: emb.Thumb,
+		}: gripsExpander,
+		emb.Embellishment{
+			Type:    emb.Grip,
+			Variant: emb.Thumb,
+			Pitch:   common.B,
+		}: gripsExpander,
+		emb.Embellishment{
+			Type:    emb.Grip,
+			Variant: emb.Half,
+		}: gripsExpander,
+		emb.Embellishment{
+			Type:    emb.Grip,
+			Variant: emb.Half,
+			Pitch:   common.B,
+		}: gripsExpander,
 	}
 }

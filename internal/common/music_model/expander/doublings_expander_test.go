@@ -134,7 +134,7 @@ func Test_dblExpander_regular_ExpandSymbol(t *testing.T) {
 			}
 
 			pack := NewDoublingsExpander()
-			pack.ExpandSymbol(f.symbol)
+			pack.ExpandSymbol(f.symbol, c.NoPitch)
 			want := fmt.Sprintf("%v", f.want)
 			got := fmt.Sprintf("%v", f.symbol.Note.ExpandedEmbellishment)
 			g.Expect(got).To(Equal(want))
@@ -213,7 +213,7 @@ func Test_dblUnapcker_thumb_ExpandSymbol(t *testing.T) {
 			}
 
 			pack := NewDoublingsExpander()
-			pack.ExpandSymbol(f.symbol)
+			pack.ExpandSymbol(f.symbol, c.NoPitch)
 			want := fmt.Sprintf("%v", f.want)
 			got := fmt.Sprintf("%v", f.symbol.Note.ExpandedEmbellishment)
 			g.Expect(got).To(Equal(want))
@@ -292,7 +292,7 @@ func Test_dblUnapcker_half_ExpandSymbol(t *testing.T) {
 			}
 
 			pack := NewDoublingsExpander()
-			pack.ExpandSymbol(f.symbol)
+			pack.ExpandSymbol(f.symbol, c.NoPitch)
 			want := fmt.Sprintf("%v", f.want)
 			got := fmt.Sprintf("%v", f.symbol.Note.ExpandedEmbellishment)
 			g.Expect(got).To(Equal(want))

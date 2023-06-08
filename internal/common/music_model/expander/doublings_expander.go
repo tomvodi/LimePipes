@@ -11,7 +11,7 @@ import (
 type dblExpand struct {
 }
 
-func (d *dblExpand) ExpandSymbol(symbol *music_model.Symbol) {
+func (d *dblExpand) ExpandSymbol(symbol *music_model.Symbol, _ common.Pitch) {
 	if symbol == nil || symbol.Note == nil || symbol.Note.Embellishment == nil {
 		return
 	}

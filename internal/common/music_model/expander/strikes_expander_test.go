@@ -127,7 +127,7 @@ func Test_strikesExpander_single_ExpandSymbol(t *testing.T) {
 			}
 
 			pack := NewStrikesExpander()
-			pack.ExpandSymbol(f.symbol)
+			pack.ExpandSymbol(f.symbol, c.NoPitch)
 			want := fmt.Sprintf("%v", f.want)
 			got := fmt.Sprintf("%v", f.symbol.Note.ExpandedEmbellishment)
 			g.Expect(got).To(Equal(want))
@@ -215,7 +215,7 @@ func Test_strikesExpander_half_ExpandSymbol(t *testing.T) {
 			}
 
 			pack := NewStrikesExpander()
-			pack.ExpandSymbol(f.symbol)
+			pack.ExpandSymbol(f.symbol, c.NoPitch)
 			want := fmt.Sprintf("%v", f.want)
 			got := fmt.Sprintf("%v", f.symbol.Note.ExpandedEmbellishment)
 			g.Expect(got).To(Equal(want))
@@ -303,7 +303,7 @@ func Test_strikesExpander_thumb_ExpandSymbol(t *testing.T) {
 			}
 
 			pack := NewStrikesExpander()
-			pack.ExpandSymbol(f.symbol)
+			pack.ExpandSymbol(f.symbol, c.NoPitch)
 			want := fmt.Sprintf("%v", f.want)
 			got := fmt.Sprintf("%v", f.symbol.Note.ExpandedEmbellishment)
 			g.Expect(got).To(Equal(want))
@@ -384,7 +384,7 @@ func Test_strikesExpander_g_ExpandSymbol(t *testing.T) {
 			}
 
 			pack := NewStrikesExpander()
-			pack.ExpandSymbol(f.symbol)
+			pack.ExpandSymbol(f.symbol, c.NoPitch)
 			want := fmt.Sprintf("%v", f.want)
 			got := fmt.Sprintf("%v", f.symbol.Note.ExpandedEmbellishment)
 			g.Expect(got).To(Equal(want))

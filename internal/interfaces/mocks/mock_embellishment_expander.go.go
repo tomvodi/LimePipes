@@ -5,6 +5,7 @@
 package mock_interfaces
 
 import (
+	common "banduslib/internal/common"
 	music_model "banduslib/internal/common/music_model"
 	reflect "reflect"
 
@@ -35,15 +36,15 @@ func (m *MockSymbolExpander) EXPECT() *MockSymbolExpanderMockRecorder {
 }
 
 // ExpandSymbol mocks base method.
-func (m *MockSymbolExpander) ExpandSymbol(symbol *music_model.Symbol) {
+func (m *MockSymbolExpander) ExpandSymbol(symbol *music_model.Symbol, prevSymPitch common.Pitch) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "ExpandSymbol", symbol)
+	m.ctrl.Call(m, "ExpandSymbol", symbol, prevSymPitch)
 }
 
 // ExpandSymbol indicates an expected call of ExpandSymbol.
-func (mr *MockSymbolExpanderMockRecorder) ExpandSymbol(symbol interface{}) *gomock.Call {
+func (mr *MockSymbolExpanderMockRecorder) ExpandSymbol(symbol, prevSymPitch interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExpandSymbol", reflect.TypeOf((*MockSymbolExpander)(nil).ExpandSymbol), symbol)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExpandSymbol", reflect.TypeOf((*MockSymbolExpander)(nil).ExpandSymbol), symbol, prevSymPitch)
 }
 
 // MockEmbellishmentExpander is a mock of EmbellishmentExpander interface.
@@ -79,18 +80,6 @@ func (m *MockEmbellishmentExpander) ExpandModel(model music_model.MusicModel) {
 func (mr *MockEmbellishmentExpanderMockRecorder) ExpandModel(model interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExpandModel", reflect.TypeOf((*MockEmbellishmentExpander)(nil).ExpandModel), model)
-}
-
-// ExpandSymbol mocks base method.
-func (m *MockEmbellishmentExpander) ExpandSymbol(symbol *music_model.Symbol) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "ExpandSymbol", symbol)
-}
-
-// ExpandSymbol indicates an expected call of ExpandSymbol.
-func (mr *MockEmbellishmentExpanderMockRecorder) ExpandSymbol(symbol interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExpandSymbol", reflect.TypeOf((*MockEmbellishmentExpander)(nil).ExpandSymbol), symbol)
 }
 
 // ExpandTune mocks base method.
