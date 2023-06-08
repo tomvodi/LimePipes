@@ -14,6 +14,7 @@ func newSymbolExpanderTable() ExpandTable {
 	strikesExpander := NewStrikesExpander()
 	gripsExpander := NewGripsExpander()
 	taorExpander := NewTaorluathsExpander()
+	birlsExpander := NewBirlsExpander()
 
 	return map[emb.Embellishment]interfaces.SymbolExpander{
 		emb.Embellishment{
@@ -157,5 +158,16 @@ func newSymbolExpanderTable() ExpandTable {
 		emb.Embellishment{
 			Type: emb.Bubbly,
 		}: NewBubblysExpander(),
+		emb.Embellishment{
+			Type: emb.Birl,
+		}: birlsExpander,
+		emb.Embellishment{
+			Type:    emb.Birl,
+			Variant: emb.G,
+		}: birlsExpander,
+		emb.Embellishment{
+			Type:    emb.Birl,
+			Variant: emb.Thumb,
+		}: birlsExpander,
 	}
 }

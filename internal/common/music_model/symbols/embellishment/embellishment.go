@@ -18,8 +18,6 @@ const (
 	Grip
 	Taorluath
 	Bubbly
-	GraceBirl
-	ABirl
 	Birl
 	ThrowD
 	Pele

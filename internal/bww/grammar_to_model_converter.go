@@ -594,11 +594,9 @@ func appendStaffSymbolToMeasureSymbols(
 	if staffSym.HeavyThrowD != nil {
 		return handleEmbellishment(emb.ThrowD)
 	}
-	if staffSym.Birl != nil {
-		return handleEmbellishment(emb.Birl)
-	}
-	if staffSym.ABirl != nil {
-		return handleEmbellishment(emb.ABirl)
+	if staffSym.Birl != nil ||
+		staffSym.ABirl != nil {
+		return handleEmbellishmentVariant(emb.Birl, emb.NoVariant, emb.NoWeight)
 	}
 	if staffSym.Strike != nil {
 		sym, err := handleEmbellishment(emb.Strike)
@@ -719,9 +717,11 @@ func appendStaffSymbolToMeasureSymbols(
 	if staffSym.LightHalfPele != nil {
 		return handleEmbellishmentVariant(emb.Pele, emb.Half, emb.Light)
 	}
-	if staffSym.GBirl != nil ||
-		staffSym.ThumbBirl != nil {
-		return handleEmbellishment(emb.GraceBirl)
+	if staffSym.ThumbBirl != nil {
+		return handleEmbellishmentVariant(emb.Birl, emb.Thumb, emb.NoWeight)
+	}
+	if staffSym.GBirl != nil {
+		return handleEmbellishmentVariant(emb.Birl, emb.G, emb.NoWeight)
 	}
 	if staffSym.Fermata != nil {
 		if lastSym != nil && lastSym.Note != nil && lastSym.Note.HasPitchAndLength() {

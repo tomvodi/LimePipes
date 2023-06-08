@@ -17,7 +17,7 @@
             pitch: LowA
             length: Quarter
             embellishment:
-                type: ABirl
+                type: Birl
         - note:
             pitch: E
             length: Quarter
@@ -25,7 +25,8 @@
             pitch: LowA
             length: Quarter
             embellishment:
-                type: GraceBirl
+                type: Birl
+                variant: G
         - note:
             pitch: HighG
             length: Quarter
@@ -33,4 +34,5 @@
             pitch: LowA
             length: Quarter
             embellishment:
-                type: GraceBirl
+                type: Birl
+                variant: Thumb

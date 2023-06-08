@@ -83,8 +83,8 @@ var _ = Describe("ScoreFromMusicModelTune", func() {
 		BeforeEach(func() {
 			muMo := importFromYaml("../testfiles/single_graces.yaml")
 			score, err = ScoreFromMusicModelTune(muMo[0])
-			exportToMusicXml(score, "./testfiles/single_graces.musicxml")
-			//readScore = importFromMusicXml("./testfiles/single_graces.musicxml")
+			//exportToMusicXml(score, "./testfiles/single_graces.musicxml")
+			readScore = importFromMusicXml("./testfiles/single_graces.musicxml")
 		})
 
 		It("should succeed", func() {
@@ -155,6 +155,20 @@ var _ = Describe("ScoreFromMusicModelTune", func() {
 			score, err = ScoreFromMusicModelTune(muMo[0])
 			//exportToMusicXml(score, "./testfiles/bubblys.musicxml")
 			readScore = importFromMusicXml("./testfiles/bubblys.musicxml")
+		})
+
+		It("should succeed", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(readScore).Should(BeComparableTo(score))
+		})
+	})
+
+	Context("having a file with birls", func() {
+		BeforeEach(func() {
+			muMo := importFromYaml("../testfiles/birls.yaml")
+			score, err = ScoreFromMusicModelTune(muMo[0])
+			//exportToMusicXml(score, "./testfiles/birls.musicxml")
+			readScore = importFromMusicXml("./testfiles/birls.musicxml")
 		})
 
 		It("should succeed", func() {
