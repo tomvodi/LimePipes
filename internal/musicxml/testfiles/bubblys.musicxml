@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 3.1 Partwise//EN"
+        "https://raw.githubusercontent.com/w3c/musicxml/v3.1/schema/partwise.dtd">
+ <score-partwise version="3.1">
+   <part-list>
+     <score-part id="P1">
+       <part-name>Bagpipe</part-name>
+       <score-instrument id="P1-I1">
+         <instrument-name>Bagpipe</instrument-name>
+       </score-instrument>
+       <midi-device id="P1-I1" port="1"></midi-device>
+       <midi-instrument id="P1-I1">
+         <midi-channel>1</midi-channel>
+         <midi-program>110</midi-program>
+         <volume>78.7402</volume>
+         <pan>0</pan>
+       </midi-instrument>
+     </score-part>
+   </part-list>
+   <part id="P1">
+     <measure number="1">
+       <attributes>
+         <divisions>32</divisions>
+         <key>
+           <fifths>2</fifths>
+         </key>
+       </attributes>
+       <note>
+         <pitch>
+           <step>C</step>
+           <alter>1</alter>
+           <octave>5</octave>
+         </pitch>
+         <duration>32</duration>
+         <voice>1</voice>
+         <type>quarter</type>
+         <stem>down</stem>
+       </note>
+       <note>
+         <grace/>
+         <pitch>
+           <step>G</step>
+           <octave>4</octave>
+         </pitch>
+         <voice>1</voice>
+         <type>32nd</type>
+         <stem>up</stem>
+         <beam number="1">begin</beam>
+         <beam number="2">begin</beam>
+         <beam number="3">begin</beam>
+       </note>
+       <note>
+         <grace/>
+         <pitch>
+           <step>D</step>
+           <octave>5</octave>
+         </pitch>
+         <voice>1</voice>
+         <type>32nd</type>
+         <stem>up</stem>
+         <beam number="1">continue</beam>
+         <beam number="2">continue</beam>
+         <beam number="3">continue</beam>
+       </note>
+       <note>
+         <grace/>
+         <pitch>
+           <step>G</step>
+           <octave>4</octave>
+         </pitch>
+         <voice>1</voice>
+         <type>32nd</type>
+         <stem>up</stem>
+         <beam number="1">continue</beam>
+         <beam number="2">continue</beam>
+         <beam number="3">continue</beam>
+       </note>
+       <note>
+         <grace/>
+         <pitch>
+           <step>C</step>
+           <alter>1</alter>
+           <octave>5</octave>
+         </pitch>
+         <voice>1</voice>
+         <type>32nd</type>
+         <stem>up</stem>
+         <beam number="1">continue</beam>
+         <beam number="2">continue</beam>
+         <beam number="3">continue</beam>
+       </note>
+       <note>
+         <grace/>
+         <pitch>
+           <step>G</step>
+           <octave>4</octave>
+         </pitch>
+         <voice>1</voice>
+         <type>32nd</type>
+         <stem>up</stem>
+         <beam number="1">end</beam>
+         <beam number="2">end</beam>
+         <beam number="3">end</beam>
+       </note>
+       <note>
+         <pitch>
+           <step>A</step>
+           <octave>4</octave>
+         </pitch>
+         <duration>32</duration>
+         <voice>1</voice>
+         <type>quarter</type>
+         <stem>down</stem>
+       </note>
+       <note>
+         <pitch>
+           <step>G</step>
+           <octave>4</octave>
+         </pitch>
+         <duration>32</duration>
+         <voice>1</voice>
+         <type>quarter</type>
+         <stem>down</stem>
+       </note>
+       <note>
+         <grace/>
+         <pitch>
+           <step>D</step>
+           <octave>5</octave>
+         </pitch>
+         <voice>1</voice>
+         <type>32nd</type>
+         <stem>up</stem>
+         <beam number="1">begin</beam>
+         <beam number="2">begin</beam>
+         <beam number="3">begin</beam>
+       </note>
+       <note>
+         <grace/>
+         <pitch>
+           <step>G</step>
+           <octave>4</octave>
+         </pitch>
+         <voice>1</voice>
+         <type>32nd</type>
+         <stem>up</stem>
+         <beam number="1">continue</beam>
+         <beam number="2">continue</beam>
+         <beam number="3">continue</beam>
+       </note>
+       <note>
+         <grace/>
+         <pitch>
+           <step>C</step>
+           <alter>1</alter>
+           <octave>5</octave>
+         </pitch>
+         <voice>1</voice>
+         <type>32nd</type>
+         <stem>up</stem>
+         <beam number="1">continue</beam>
+         <beam number="2">continue</beam>
+         <beam number="3">continue</beam>
+       </note>
+       <note>
+         <grace/>
+         <pitch>
+           <step>G</step>
+           <octave>4</octave>
+         </pitch>
+         <voice>1</voice>
+         <type>32nd</type>
+         <stem>up</stem>
+         <beam number="1">end</beam>
+         <beam number="2">end</beam>
+         <beam number="3">end</beam>
+       </note>
+       <note>
+         <pitch>
+           <step>A</step>
+           <octave>4</octave>
+         </pitch>
+         <duration>32</duration>
+         <voice>1</voice>
+         <type>quarter</type>
+         <stem>down</stem>
+       </note>
+     </measure>
+   </part>
+ </score-partwise>

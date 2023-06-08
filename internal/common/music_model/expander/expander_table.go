@@ -154,5 +154,8 @@ func newSymbolExpanderTable() ExpandTable {
 			Type:  emb.Taorluath,
 			Pitch: common.B,
 		}: taorExpander,
+		emb.Embellishment{
+			Type: emb.Bubbly,
+		}: NewBubblysExpander(),
 	}
 }
