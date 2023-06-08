@@ -592,7 +592,7 @@ func appendStaffSymbolToMeasureSymbols(
 		return handleEmbellishmentVariant(emb.ThrowD, emb.NoVariant, emb.Light)
 	}
 	if staffSym.HeavyThrowD != nil {
-		return handleEmbellishment(emb.ThrowD)
+		return handleEmbellishmentVariant(emb.ThrowD, emb.NoVariant, emb.Heavy)
 	}
 	if staffSym.Birl != nil ||
 		staffSym.ABirl != nil {
