@@ -18,6 +18,7 @@
             length: Quarter
             embellishment:
                 type: Taorluath
+                pitch: B
         - note:
             pitch: LowG
             length: Quarter

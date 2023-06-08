@@ -579,7 +579,11 @@ func appendStaffSymbolToMeasureSymbols(
 		return sym, err
 	}
 	if staffSym.Taorluath != nil {
-		return handleEmbellishment(emb.Taorluath)
+		sym, err := handleEmbellishment(emb.Taorluath)
+		if *staffSym.Taorluath == "tarb" {
+			sym.Note.Embellishment.Pitch = common.B
+		}
+		return sym, err
 	}
 	if staffSym.Bubbly != nil {
 		return handleEmbellishment(emb.Bubbly)

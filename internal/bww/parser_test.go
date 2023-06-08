@@ -234,7 +234,8 @@ var _ = Describe("BWW Parser", func() {
 		BeforeEach(func() {
 			bwwData := dataFromFile("./testfiles/taorluaths.bww")
 			musicTunesBww, err = parser.ParseBwwData(bwwData)
-			musicTunesExpect = importFromYaml("./testfiles/taorluaths.yaml")
+			musicTunesExpect = importFromYaml("../testfiles/taorluaths.yaml")
+			//exportToYaml(musicTunesBww, "../testfiles/taorluaths.yaml")
 		})
 
 		It("should have parsed file correctly", func() {
