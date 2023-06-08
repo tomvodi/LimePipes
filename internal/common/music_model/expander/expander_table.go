@@ -18,6 +18,7 @@ func newSymbolExpanderTable() ExpandTable {
 	throwdExpander := NewThrowdsExpander()
 	pelesExpander := NewPelesExpander()
 	doubleStrikesExpander := NewDoubleStrikesExpander()
+	tripleStrikesExpander := NewTripleStrikesExpander()
 
 	return map[emb.Embellishment]interfaces.SymbolExpander{
 		emb.Embellishment{
@@ -239,5 +240,39 @@ func newSymbolExpanderTable() ExpandTable {
 			Variant: emb.Half,
 			Weight:  emb.Light,
 		}: doubleStrikesExpander,
+		emb.Embellishment{
+			Type: emb.TripleStrike,
+		}: tripleStrikesExpander,
+		emb.Embellishment{
+			Type:   emb.TripleStrike,
+			Weight: emb.Light,
+		}: tripleStrikesExpander,
+		emb.Embellishment{
+			Type:    emb.TripleStrike,
+			Variant: emb.G,
+		}: tripleStrikesExpander,
+		emb.Embellishment{
+			Type:    emb.TripleStrike,
+			Variant: emb.G,
+			Weight:  emb.Light,
+		}: tripleStrikesExpander,
+		emb.Embellishment{
+			Type:    emb.TripleStrike,
+			Variant: emb.Thumb,
+		}: tripleStrikesExpander,
+		emb.Embellishment{
+			Type:    emb.TripleStrike,
+			Variant: emb.Thumb,
+			Weight:  emb.Light,
+		}: tripleStrikesExpander,
+		emb.Embellishment{
+			Type:    emb.TripleStrike,
+			Variant: emb.Half,
+		}: tripleStrikesExpander,
+		emb.Embellishment{
+			Type:    emb.TripleStrike,
+			Variant: emb.Half,
+			Weight:  emb.Light,
+		}: tripleStrikesExpander,
 	}
 }
