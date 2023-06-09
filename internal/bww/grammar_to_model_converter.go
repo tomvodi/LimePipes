@@ -127,7 +127,7 @@ func fillTunePartsFromStaves(
 			var rightBarline *barline.Barline
 			if stave.End == "''!I" {
 				rightBarline = &barline.Barline{
-					Type:     barline.Heavy,
+					Type:     barline.LightHeavy,
 					Timeline: barline.Repeat,
 				}
 			}
@@ -175,6 +175,7 @@ func getMeasuresFromStave(stave *Staff, ctx *staffContext) ([]*music_model.Measu
 				}
 				ps := *staffSym.PartStart
 				if ps == "I!''" {
+					leftBarline.Type = barline.HeavyLight
 					leftBarline.Timeline = barline.Repeat
 				}
 			}

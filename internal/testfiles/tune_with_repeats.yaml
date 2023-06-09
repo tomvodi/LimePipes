@@ -2,7 +2,7 @@
   tempo: 0
   measures:
     - leftBarline:
-        type: Heavy
+        type: HeavyLight
         timeline: Repeat
       time:
         beats: 4
@@ -16,7 +16,7 @@
             pitch: C
             length: Quarter
     - rightBarline:
-        type: Heavy
+        type: LightHeavy
         timeline: Repeat
       symbols:
         - note:

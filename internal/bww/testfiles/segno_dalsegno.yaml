@@ -15,7 +15,7 @@
         type: Regular
         segnoType: Segno
       rightBarline:
-        type: Heavy
+        type: LightHeavy
         timeline: Repeat
         segnoType: Dalsegno
       symbols:

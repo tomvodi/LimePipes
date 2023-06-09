@@ -23,7 +23,7 @@
             pitch: LowA
             length: Quarter
     - rightBarline:
-        type: Heavy
+        type: LightHeavy
         timeline: Repeat
         dacapoType: DacapoAlFine
       symbols:

@@ -24,6 +24,10 @@
          <key>
            <fifths>2</fifths>
          </key>
+         <time>
+           <beats>4</beats>
+           <beat-type>4</beat-type>
+         </time>
        </attributes>
      </measure>
      <measure number="2">
