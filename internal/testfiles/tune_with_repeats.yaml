@@ -1,22 +1,26 @@
 - title: Tune 1 Title
   tempo: 0
   measures:
-    - time:
-        beats: 4
-        beatType: 4
     - leftBarline:
         type: Heavy
         timeline: Repeat
+      time:
+        beats: 4
+        beatType: 4
       symbols:
         - note:
             pitch: LowA
+            length: Quarter
+    - symbols:
+        - note:
+            pitch: C
             length: Quarter
     - rightBarline:
         type: Heavy
         timeline: Repeat
       symbols:
         - note:
-            pitch: C
+            pitch: B
             length: Quarter
     - leftBarline:
         type: Heavy

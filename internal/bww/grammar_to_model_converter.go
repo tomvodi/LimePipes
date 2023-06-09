@@ -122,8 +122,6 @@ func fillTunePartsFromStaves(
 
 		measures = append(measures, staveMeasures...)
 		if stave.End != "" &&
-			stave.Dalsegno == nil &&
-			stave.DacapoAlFine == nil &&
 			len(measures) >= 1 {
 			lastMeasure := measures[len(measures)-1]
 			var rightBarline *barline.Barline
@@ -138,7 +136,12 @@ func fillTunePartsFromStaves(
 					Type: barline.Heavy,
 				}
 			}
-			lastMeasure.RightBarline = rightBarline
+			if lastMeasure.RightBarline != nil {
+				lastMeasure.RightBarline.Type = rightBarline.Type
+				lastMeasure.RightBarline.Timeline = rightBarline.Timeline
+			} else {
+				lastMeasure.RightBarline = rightBarline
+			}
 		}
 	}
 	tune.Measures = append(tune.Measures, measures...)
@@ -157,13 +160,16 @@ func getMeasuresFromStave(stave *Staff, ctx *staffContext) ([]*music_model.Measu
 	for _, staffSym := range stave.Symbols {
 		// if staffSym bar or part start => new measure
 		// currMeasure to return measures
-		if staffSym.Barline != nil ||
-			staffSym.PartStart != nil ||
-			staffSym.NextStaffStart != nil {
-			measures = cleanupAndAppendMeasure(measures, currMeasure)
+		isBarline := staffSym.Barline != nil
+		isPartStart := staffSym.PartStart != nil
+		isNextStaff := staffSym.NextStaffStart != nil
+		if isBarline || isPartStart || isNextStaff {
+			if isNextStaff || !currMeasure.HasOnlyAttributes() {
+				measures = cleanupAndAppendMeasure(measures, currMeasure)
+			}
 
 			var leftBarline *barline.Barline
-			if staffSym.PartStart != nil {
+			if isPartStart {
 				leftBarline = &barline.Barline{
 					Type: barline.Heavy,
 				}
@@ -173,8 +179,20 @@ func getMeasuresFromStave(stave *Staff, ctx *staffContext) ([]*music_model.Measu
 				}
 			}
 
-			currMeasure = &music_model.Measure{
-				LeftBarline: leftBarline,
+			if currMeasure.HasOnlyAttributes() {
+				if currMeasure.LeftBarline == nil {
+					currMeasure.LeftBarline = leftBarline
+				} else {
+					if leftBarline != nil {
+						currMeasure.LeftBarline.Type = leftBarline.Type
+						currMeasure.LeftBarline.Timeline = leftBarline.Timeline
+					}
+				}
+
+			} else {
+				currMeasure = &music_model.Measure{
+					LeftBarline: leftBarline,
+				}
 			}
 
 			continue
@@ -232,15 +250,21 @@ func getMeasuresFromStave(stave *Staff, ctx *staffContext) ([]*music_model.Measu
 		currMeasure.Symbols = append(currMeasure.Symbols, tl)
 	}
 	if stave.Dalsegno != nil {
-		currMeasure.RightBarline = &barline.Barline{
-			Type:     barline.Regular,
-			Timeline: barline.Dalsegno,
+		if currMeasure.RightBarline != nil {
+			currMeasure.RightBarline.SegnoType = barline.Dalsegno
+		} else {
+			currMeasure.RightBarline = &barline.Barline{
+				SegnoType: barline.Dalsegno,
+			}
 		}
 	}
 	if stave.DacapoAlFine != nil {
-		currMeasure.RightBarline = &barline.Barline{
-			Type:     barline.Regular,
-			Timeline: barline.DacapoAlFine,
+		if currMeasure.RightBarline != nil {
+			currMeasure.RightBarline.DacapoType = barline.DacapoAlFine
+		} else {
+			currMeasure.RightBarline = &barline.Barline{
+				DacapoType: barline.DacapoAlFine,
+			}
 		}
 	}
 
@@ -478,23 +502,21 @@ func appendStaffSymbolToMeasureSymbols(
 		}
 	}
 	if staffSym.Segno != nil {
-		if currentMeasure.LeftBarline == nil {
-			currentMeasure.LeftBarline = &barline.Barline{
-				Type:     barline.Regular,
-				Timeline: barline.Segno,
-			}
+		if currentMeasure.LeftBarline != nil {
+			currentMeasure.LeftBarline.SegnoType = barline.Segno
 		} else {
-			currentMeasure.LeftBarline.Timeline = barline.Segno
+			currentMeasure.LeftBarline = &barline.Barline{
+				SegnoType: barline.Segno,
+			}
 		}
 	}
 	if staffSym.Fine != nil {
-		if currentMeasure.RightBarline == nil {
-			currentMeasure.RightBarline = &barline.Barline{
-				Type:     barline.Regular,
-				Timeline: barline.Fine,
-			}
+		if currentMeasure.RightBarline != nil {
+			currentMeasure.RightBarline.DacapoType = barline.Fine
 		} else {
-			currentMeasure.LeftBarline.Timeline = barline.Fine
+			currentMeasure.RightBarline = &barline.Barline{
+				DacapoType: barline.Fine,
+			}
 		}
 	}
 
@@ -539,6 +561,9 @@ func appendStaffSymbolToMeasureSymbols(
 		return handleAccidential(accidental.Natural), nil
 	}
 	if staffSym.Sharp != nil {
+		if *staffSym.Sharp == "sharpf" || *staffSym.Sharp == "sharpc" {
+			return nil, nil
+		}
 		return handleAccidential(accidental.Sharp), nil
 	}
 	if staffSym.Doubling != nil {

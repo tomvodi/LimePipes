@@ -24,12 +24,12 @@ func TestMusicModelTune(title string) *music_model.Tune {
 		Measures: []*music_model.Measure{
 			{
 				LeftBarline: &barline.Barline{
-					Type:     barline.Heavy,
-					Timeline: barline.Segno,
+					Type:      barline.Heavy,
+					SegnoType: barline.Segno,
 				},
 				RightBarline: &barline.Barline{
-					Type:     barline.Heavy,
-					Timeline: barline.DacapoAlFine,
+					Type:       barline.Heavy,
+					DacapoType: barline.DacapoAlFine,
 				},
 				Time: &music_model.TimeSignature{
 					Beats:    2,

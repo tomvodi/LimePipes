@@ -105,7 +105,16 @@ func xmlMeasureFromMusicModelMeasure(measure *music_model.Measure, idx int, divi
 		Number: idx + 1,
 	}
 	if idx == 0 {
-		xmlMeasure.Attributes = model.NewAttributes(divisions)
+		xmlMeasure.Attributes = model.NewAttributesWithKey(divisions)
+	}
+	if measure.Time != nil {
+		xmlTime := model.NewTime(measure.Time)
+		if xmlMeasure.Attributes != nil {
+			xmlMeasure.Attributes.Time = xmlTime
+		} else {
+			xmlMeasure.Attributes = model.NewAttributesMinimal()
+			xmlMeasure.Attributes.Time = xmlTime
+		}
 	}
 	var measureNotes []model.Note
 	for _, symbol := range measure.Symbols {

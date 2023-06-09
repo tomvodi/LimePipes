@@ -2,6 +2,8 @@ package barline
 
 //go:generate go run github.com/dmarkham/enumer -json -yaml -type=BarlineType
 //go:generate go run github.com/dmarkham/enumer -json -yaml -type=TimelineType
+//go:generate go run github.com/dmarkham/enumer -json -yaml -type=SegnoType
+//go:generate go run github.com/dmarkham/enumer -json -yaml -type=DacapoType
 
 type BarlineType uint
 
@@ -17,14 +19,28 @@ type TimelineType uint
 
 const (
 	NoTimeline TimelineType = iota
+	Repeat                  // a normal |: ... :| repeat lines
+)
+
+type SegnoType uint
+
+const (
+	NoSegnoType SegnoType = iota
 	Segno
 	Dalsegno
+)
+
+type DacapoType uint
+
+const (
+	NoDacapoType DacapoType = iota
 	Fine
 	DacapoAlFine
-	Repeat // a normal |: ... :| repeat lines
 )
 
 type Barline struct {
-	Type     BarlineType  `yaml:"type"`
-	Timeline TimelineType `yaml:"timeline,omitempty"`
+	Type       BarlineType  `yaml:"type"`
+	Timeline   TimelineType `yaml:"timeline,omitempty"`
+	SegnoType  SegnoType    `yaml:"segnoType,omitempty"`
+	DacapoType DacapoType   `yaml:"dacapoType,omitempty"`
 }

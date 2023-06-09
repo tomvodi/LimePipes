@@ -27,3 +27,16 @@ func (m *Measure) AddMessage(msg *import_message.ImportMessage) {
 func (m *Measure) IsNil() bool {
 	return reflect.DeepEqual(m, &Measure{})
 }
+
+func (m *Measure) HasOnlyAttributes() bool {
+	onlyAttributes := true
+	for _, symbol := range m.Symbols {
+		if symbol.IsNote() && symbol.IsValidNote() {
+			onlyAttributes = false
+		}
+		if symbol.Rest != nil || symbol.Tuplet != nil {
+			onlyAttributes = false
+		}
+	}
+	return onlyAttributes
+}

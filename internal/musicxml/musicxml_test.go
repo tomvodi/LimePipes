@@ -232,4 +232,18 @@ var _ = Describe("ScoreFromMusicModelTune", func() {
 			Expect(readScore).Should(BeComparableTo(score))
 		})
 	})
+
+	Context("having a file with repeats", func() {
+		BeforeEach(func() {
+			muMo := importFromYaml("../testfiles/tune_with_repeats.yaml")
+			score, err = ScoreFromMusicModelTune(muMo[0])
+			exportToMusicXml(score, "./testfiles/tune_with_repeats.musicxml")
+			//readScore = importFromMusicXml("./testfiles/tune_with_repeats.musicxml")
+		})
+
+		It("should succeed", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(readScore).Should(BeComparableTo(score))
+		})
+	})
 })

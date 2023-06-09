@@ -6,13 +6,13 @@
     - time:
         beats: 4
         beatType: 4
-    - symbols:
+      symbols:
         - note:
             pitch: LowA
             length: Quarter
     - symbols:
         - note:
-            pitch: LowA
+            pitch: B
             length: Quarter
       inLineText:
         - 'B:'

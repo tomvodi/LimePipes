@@ -3,20 +3,21 @@
   measures:
     - leftBarline:
         type: Regular
-        timeline: Segno
-    - rightBarline:
-        type: Regular
-        timeline: Dalsegno
+        segnoType: Segno
+      rightBarline:
+        type: Heavy
+        segnoType: Dalsegno
       symbols:
         - note:
             pitch: LowA
             length: Quarter
     - leftBarline:
         type: Regular
-        timeline: Segno
-    - rightBarline:
-        type: Regular
-        timeline: Dalsegno
+        segnoType: Segno
+      rightBarline:
+        type: Heavy
+        timeline: Repeat
+        segnoType: Dalsegno
       symbols:
         - note:
             pitch: LowA

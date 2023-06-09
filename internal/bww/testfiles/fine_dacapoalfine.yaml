@@ -3,28 +3,29 @@
   measures:
     - rightBarline:
         type: Regular
-        timeline: Fine
+        dacapoType: Fine
       symbols:
         - note:
             pitch: LowA
             length: Quarter
     - rightBarline:
-        type: Regular
-        timeline: DacapoAlFine
+        type: Heavy
+        dacapoType: DacapoAlFine
       symbols:
         - note:
             pitch: B
             length: Quarter
     - rightBarline:
         type: Regular
-        timeline: Fine
+        dacapoType: Fine
       symbols:
         - note:
             pitch: LowA
             length: Quarter
     - rightBarline:
-        type: Regular
-        timeline: DacapoAlFine
+        type: Heavy
+        timeline: Repeat
+        dacapoType: DacapoAlFine
       symbols:
         - note:
             pitch: B
