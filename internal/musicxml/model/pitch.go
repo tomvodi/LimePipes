@@ -13,7 +13,7 @@ type Pitch struct {
 	Octave  uint8    `xml:"octave"`
 }
 
-func PitchFromMusicModel(pitch common.Pitch, acc accidental.Accidental) Pitch {
+func PitchFromMusicModel(pitch common.Pitch, acc accidental.Accidental) *Pitch {
 	switch pitch {
 	case common.LowG:
 		return createPitch("G", 4, 0, acc)
@@ -35,7 +35,7 @@ func PitchFromMusicModel(pitch common.Pitch, acc accidental.Accidental) Pitch {
 		return createPitch("A", 5, 0, acc)
 	}
 
-	return Pitch{}
+	return &Pitch{}
 }
 
 func createPitch(
@@ -43,8 +43,8 @@ func createPitch(
 	octave uint8,
 	alter int8,
 	acc accidental.Accidental,
-) Pitch {
-	retPitch := Pitch{
+) *Pitch {
+	retPitch := &Pitch{
 		XMLName: xml.Name{Local: "pitch"},
 		Step:    step,
 		Octave:  octave,

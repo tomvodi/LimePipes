@@ -8,15 +8,19 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+var stemUp = "up"
+var stemDown = "down"
+
 type Note struct {
 	XMLName    xml.Name    `xml:"note"`
+	Rest       *Rest       `xml:"rest,omitempty"`
 	Grace      *Grace      `xml:"grace,omitempty"`
-	Pitch      Pitch       `xml:"pitch"`
+	Pitch      *Pitch      `xml:"pitch,omitempty"`
 	Duration   uint8       `xml:"duration,omitempty"`
 	Voice      uint8       `xml:"voice,omitempty"`
 	Type       string      `xml:"type"`
 	Accidental *Accidental `xml:"accidental,omitempty"`
-	Stem       string      `xml:"stem,omitempty"`
+	Stem       *string     `xml:"stem,omitempty"`
 	Beams      []Beam      `xml:"beam,omitempty"`
 }
 
@@ -34,7 +38,7 @@ func NotesFromMusicModel(note *symbols.Note, divisions uint8) []Note {
 				Pitch: PitchFromMusicModel(pitch, accidental.NoAccidental),
 				Voice: 1,
 				Type:  typeFromLength(common.Thirtysecond),
-				Stem:  "up",
+				Stem:  &stemUp,
 			}
 			if len(note.ExpandedEmbellishment) > 1 {
 				grace.Beams = embellishmentBeamsForPosition(i, len(note.ExpandedEmbellishment))
@@ -57,6 +61,20 @@ func NotesFromMusicModel(note *symbols.Note, divisions uint8) []Note {
 	notes = append(notes, xmlNote)
 
 	return notes
+}
+
+func RestFromMusicModel(rest *symbols.Rest, divisions uint8) Note {
+	xmlNote := Note{
+		XMLName: xml.Name{
+			Local: "note",
+		},
+		Rest:     NewRest(),
+		Duration: durationFromLength(rest.Length, divisions),
+		Voice:    1,
+		Type:     typeFromLength(rest.Length),
+	}
+
+	return xmlNote
 }
 
 func embellishmentBeamsForPosition(idx int, len int) []Beam {
@@ -96,12 +114,12 @@ func typeFromLength(length common.Length) string {
 	return ""
 }
 
-func stemFromLength(length common.Length) string {
+func stemFromLength(length common.Length) *string {
 	if length == common.Whole {
-		return ""
+		return nil
 	}
 
-	return "down"
+	return &stemDown
 }
 
 func durationFromLength(length common.Length, divisions uint8) uint8 {
