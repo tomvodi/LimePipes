@@ -3,19 +3,21 @@ package model
 import (
 	"banduslib/internal/common"
 	"banduslib/internal/common/music_model/symbols"
+	"banduslib/internal/common/music_model/symbols/accidental"
 	"encoding/xml"
 	"github.com/rs/zerolog/log"
 )
 
 type Note struct {
-	XMLName  xml.Name `xml:"note"`
-	Grace    *Grace   `xml:"grace,omitempty"`
-	Pitch    Pitch    `xml:"pitch"`
-	Duration uint8    `xml:"duration,omitempty"`
-	Voice    uint8    `xml:"voice,omitempty"`
-	Type     string   `xml:"type"`
-	Stem     string   `xml:"stem,omitempty"`
-	Beams    []Beam   `xml:"beam,omitempty"`
+	XMLName    xml.Name    `xml:"note"`
+	Grace      *Grace      `xml:"grace,omitempty"`
+	Pitch      Pitch       `xml:"pitch"`
+	Duration   uint8       `xml:"duration,omitempty"`
+	Voice      uint8       `xml:"voice,omitempty"`
+	Type       string      `xml:"type"`
+	Accidental *Accidental `xml:"accidental,omitempty"`
+	Stem       string      `xml:"stem,omitempty"`
+	Beams      []Beam      `xml:"beam,omitempty"`
 }
 
 func NotesFromMusicModel(note *symbols.Note, divisions uint8) []Note {
@@ -29,7 +31,7 @@ func NotesFromMusicModel(note *symbols.Note, divisions uint8) []Note {
 					Local: "note",
 				},
 				Grace: NewGrace(),
-				Pitch: PitchFromMusicModel(pitch),
+				Pitch: PitchFromMusicModel(pitch, accidental.NoAccidental),
 				Voice: 1,
 				Type:  typeFromLength(common.Thirtysecond),
 				Stem:  "up",
@@ -45,11 +47,12 @@ func NotesFromMusicModel(note *symbols.Note, divisions uint8) []Note {
 		XMLName: xml.Name{
 			Local: "note",
 		},
-		Pitch:    PitchFromMusicModel(note.Pitch),
-		Duration: durationFromLength(note.Length, divisions),
-		Voice:    1,
-		Type:     typeFromLength(note.Length),
-		Stem:     stemFromLength(note.Length),
+		Pitch:      PitchFromMusicModel(note.Pitch, note.Accidental),
+		Duration:   durationFromLength(note.Length, divisions),
+		Voice:      1,
+		Type:       typeFromLength(note.Length),
+		Stem:       stemFromLength(note.Length),
+		Accidental: NewAccidentalFromMusicModel(note.Accidental),
 	}
 	notes = append(notes, xmlNote)
 

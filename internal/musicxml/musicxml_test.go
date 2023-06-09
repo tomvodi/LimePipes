@@ -246,4 +246,18 @@ var _ = Describe("ScoreFromMusicModelTune", func() {
 			Expect(readScore).Should(BeComparableTo(score))
 		})
 	})
+
+	Context("having a file with accidentals", func() {
+		BeforeEach(func() {
+			muMo := importFromYaml("../testfiles/accidentals.yaml")
+			score, err = ScoreFromMusicModelTune(muMo[0])
+			//exportToMusicXml(score, "./testfiles/accidentals.musicxml")
+			readScore = importFromMusicXml("./testfiles/accidentals.musicxml")
+		})
+
+		It("should succeed", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(readScore).Should(BeComparableTo(score))
+		})
+	})
 })
