@@ -19,6 +19,7 @@ type Note struct {
 	Duration   uint8       `xml:"duration,omitempty"`
 	Voice      uint8       `xml:"voice,omitempty"`
 	Type       string      `xml:"type"`
+	Dots       []Dot       `xml:"dot,omitempty"`
 	Accidental *Accidental `xml:"accidental,omitempty"`
 	Stem       *string     `xml:"stem,omitempty"`
 	Beams      []Beam      `xml:"beam,omitempty"`
@@ -57,6 +58,11 @@ func NotesFromMusicModel(note *symbols.Note, divisions uint8) []Note {
 		Type:       typeFromLength(note.Length),
 		Stem:       stemFromLength(note.Length),
 		Accidental: NewAccidentalFromMusicModel(note.Accidental),
+	}
+	if note.Dots > 0 {
+		for i := uint8(0); i < note.Dots; i++ {
+			xmlNote.Dots = append(xmlNote.Dots, NewDot())
+		}
 	}
 	notes = append(notes, xmlNote)
 
