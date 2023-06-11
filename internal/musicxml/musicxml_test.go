@@ -288,4 +288,18 @@ var _ = Describe("ScoreFromMusicModelTune", func() {
 			Expect(readScore).Should(BeComparableTo(score))
 		})
 	})
+
+	Context("having a file with fermatas", func() {
+		BeforeEach(func() {
+			muMo := importFromYaml("../testfiles/fermatas.yaml")
+			score, err = ScoreFromMusicModelTune(muMo[0])
+			//exportToMusicXml(score, "./testfiles/fermatas.musicxml")
+			readScore = importFromMusicXml("./testfiles/fermatas.musicxml")
+		})
+
+		It("should succeed", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(readScore).Should(BeComparableTo(score))
+		})
+	})
 })

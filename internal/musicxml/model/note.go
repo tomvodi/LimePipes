@@ -4,6 +4,7 @@ import (
 	"banduslib/internal/common"
 	"banduslib/internal/common/music_model/symbols"
 	"banduslib/internal/common/music_model/symbols/accidental"
+	"banduslib/internal/musicxml/model/fermata"
 	"encoding/xml"
 	"github.com/rs/zerolog/log"
 )
@@ -22,6 +23,7 @@ type Note struct {
 	Dots       []Dot       `xml:"dot,omitempty"`
 	Accidental *Accidental `xml:"accidental,omitempty"`
 	Stem       *string     `xml:"stem,omitempty"`
+	Notations  *Notations  `xml:"notations,omitempty"`
 	Beams      []Beam      `xml:"beam,omitempty"`
 }
 
@@ -63,6 +65,17 @@ func NotesFromMusicModel(note *symbols.Note, divisions uint8) []Note {
 		for i := uint8(0); i < note.Dots; i++ {
 			xmlNote.Dots = append(xmlNote.Dots, NewDot())
 		}
+	}
+	var notations *Notations
+	if note.Fermata {
+		if notations == nil {
+			notations = NewNotations()
+		}
+
+		notations.Fermata = fermata.NewFermata(fermata.Upright)
+	}
+	if notations != nil {
+		xmlNote.Notations = notations
 	}
 	notes = append(notes, xmlNote)
 
