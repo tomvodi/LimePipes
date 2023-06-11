@@ -21,6 +21,7 @@ func WriteScore(score *model.Score, writer io.Writer) error {
 	data = bytes.ReplaceAll(data, []byte("></rest>"), []byte("/>"))
 	data = bytes.ReplaceAll(data, []byte("></dot>"), []byte("/>"))
 	data = bytes.ReplaceAll(data, []byte("></fermata>"), []byte("/>"))
+	data = bytes.ReplaceAll(data, []byte("></tied>"), []byte("/>"))
 	if _, err := writer.Write(data); err != nil {
 		return err
 	}

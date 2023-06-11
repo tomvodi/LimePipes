@@ -302,4 +302,18 @@ var _ = Describe("ScoreFromMusicModelTune", func() {
 			Expect(readScore).Should(BeComparableTo(score))
 		})
 	})
+
+	Context("having a file with ties", func() {
+		BeforeEach(func() {
+			muMo := importFromYaml("../testfiles/ties.yaml")
+			score, err = ScoreFromMusicModelTune(muMo[0])
+			//exportToMusicXml(score, "./testfiles/ties.musicxml")
+			readScore = importFromMusicXml("./testfiles/ties.musicxml")
+		})
+
+		It("should succeed", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(readScore).Should(BeComparableTo(score))
+		})
+	})
 })

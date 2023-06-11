@@ -4,7 +4,9 @@ import (
 	"banduslib/internal/common"
 	"banduslib/internal/common/music_model/symbols"
 	"banduslib/internal/common/music_model/symbols/accidental"
+	"banduslib/internal/common/music_model/symbols/tie"
 	"banduslib/internal/musicxml/model/fermata"
+	"banduslib/internal/musicxml/model/tied"
 	"encoding/xml"
 	"github.com/rs/zerolog/log"
 )
@@ -74,9 +76,22 @@ func NotesFromMusicModel(note *symbols.Note, divisions uint8) []Note {
 
 		notations.Fermata = fermata.NewFermata(fermata.Upright)
 	}
+	if note.Tie != tie.NoTie {
+		if notations == nil {
+			notations = NewNotations()
+		}
+
+		switch note.Tie {
+		case tie.Start:
+			notations.Tied = tied.NewTied(tied.Start)
+		case tie.End:
+			notations.Tied = tied.NewTied(tied.Stop)
+		}
+	}
 	if notations != nil {
 		xmlNote.Notations = notations
 	}
+
 	notes = append(notes, xmlNote)
 
 	return notes
