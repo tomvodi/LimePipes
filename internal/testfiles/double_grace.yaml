@@ -3,12 +3,6 @@
   measures:
     - symbols:
         - note:
-            pitch: LowG
-            length: Quarter
-            embellishment:
-                type: DoubleGrace
-                pitch: D
-        - note:
             pitch: LowA
             length: Quarter
             embellishment:
@@ -26,13 +20,13 @@
             embellishment:
                 type: DoubleGrace
                 pitch: D
-    - symbols:
         - note:
-            pitch: LowG
+            pitch: D
             length: Quarter
             embellishment:
                 type: DoubleGrace
-                pitch: E
+                pitch: D
+    - symbols:
         - note:
             pitch: LowA
             length: Quarter
@@ -57,13 +51,13 @@
             embellishment:
                 type: DoubleGrace
                 pitch: E
-    - symbols:
         - note:
-            pitch: LowG
+            pitch: E
             length: Quarter
             embellishment:
                 type: DoubleGrace
-                pitch: F
+                pitch: E
+    - symbols:
         - note:
             pitch: LowA
             length: Quarter
@@ -94,13 +88,13 @@
             embellishment:
                 type: DoubleGrace
                 pitch: F
-    - symbols:
         - note:
-            pitch: LowG
+            pitch: F
             length: Quarter
             embellishment:
                 type: DoubleGrace
-                pitch: HighG
+                pitch: F
+    - symbols:
         - note:
             pitch: LowA
             length: Quarter
@@ -137,13 +131,13 @@
             embellishment:
                 type: DoubleGrace
                 pitch: HighG
-    - symbols:
         - note:
-            pitch: LowG
+            pitch: HighG
             length: Quarter
             embellishment:
                 type: DoubleGrace
-                pitch: HighA
+                pitch: HighG
+    - symbols:
         - note:
             pitch: LowA
             length: Quarter
@@ -182,6 +176,12 @@
                 pitch: HighA
         - note:
             pitch: HighG
+            length: Quarter
+            embellishment:
+                type: DoubleGrace
+                pitch: HighA
+        - note:
+            pitch: HighA
             length: Quarter
             embellishment:
                 type: DoubleGrace

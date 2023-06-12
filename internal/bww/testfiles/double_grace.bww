@@ -2,8 +2,8 @@ Bagpipe Reader:1.0
 
 "Tune Title",(T,L,0,0,Times New Roman,15,700,0,1,2,0,0,32768)
 
-& dlg LG_4 dla LA_4 db B_4 dc C_4 !t
-& elg LG_4 ela LA_4 eb B_4 ec C_4 ed D_4 !t
-& flg LG_4 fla LA_4 fb B_4 fc C_4 fd D_4 fe E_4  !t
-& glg LG_4 gla LA_4 gb B_4 gc C_4 gd D_4 ge E_4 gf F_4 !t
-& tlg LG_4 tla LA_4 tb B_4 tc C_4 td D_4 te E_4 tf F_4 thg HG_4 !t
+& dlg LA_4 dla B_4 db C_4 dc D_4 !t
+& elg LA_4 ela B_4 eb C_4 ec D_4 ed E_4 !t
+& flg LA_4 fla B_4 fb C_4 fc D_4 fd E_4 fe F_4  !t
+& glg LA_4 gla B_4 gb C_4 gc D_4 gd E_4 ge F_4 gf HG_4 !t
+& tlg LA_4 tla B_4 tb C_4 tc D_4 td E_4 te F_4 tf HG_4 thg HA_4 !t
