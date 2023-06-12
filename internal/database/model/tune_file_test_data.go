@@ -54,7 +54,6 @@ func TestMusicModelTune(title string) *music_model.Tune {
 							Comment:  "",
 						},
 						Rest:        nil,
-						Tuplet:      nil,
 						TimeLine:    nil,
 						TempoChange: 0,
 					},

@@ -311,25 +311,16 @@ func handleTriplet(measure *music_model.Measure, sym string) error {
 	}
 
 	tripletStartIdx := lastIndex - 2
-	hasSymbolsBeforeTriplet := tripletStartIdx > 0
-	tupletHasAlreadyAStartSymbol := false
-	if hasSymbolsBeforeTriplet {
-		symBeforeTriplet := measure.Symbols[tripletStartIdx-1]
-		if symBeforeTriplet.Tuplet != nil &&
-			symBeforeTriplet.Tuplet.BoundaryType == tuplet.Start {
-			tupletHasAlreadyAStartSymbol = true
-		}
+	firstTripletSym := measure.Symbols[tripletStartIdx]
+	if firstTripletSym.Note.Tuplet == nil {
+		tpl := tuplet.NewTuplet(tuplet.Start, tuplet.Type32)
+		firstTripletSym.Note.Tuplet = tpl
 	}
-	if !tupletHasAlreadyAStartSymbol {
-		tripletStartSym := newIrregularGroup(tuplet.Start, tuplet.Type32)
-		measure.Symbols = append(
-			measure.Symbols[:tripletStartIdx+1],
-			measure.Symbols[tripletStartIdx:]...,
-		)
-		measure.Symbols[tripletStartIdx] = tripletStartSym
+	lastTripletSym := measure.Symbols[lastIndex]
+	if lastTripletSym.Note.Tuplet == nil {
+		tpl := tuplet.NewTuplet(tuplet.End, tuplet.Type32)
+		lastTripletSym.Note.Tuplet = tpl
 	}
-
-	measure.Symbols = append(measure.Symbols, newIrregularGroup(tuplet.End, tuplet.Type32))
 
 	return nil
 }
@@ -728,7 +719,7 @@ func appendStaffSymbolToMeasureSymbols(
 	}
 	if staffSym.IrregularGroupStart != nil {
 		ttype := tupletTypeFromSymbol(staffSym.IrregularGroupStart)
-		return handleIrregularGroup(tuplet.Start, ttype)
+		return handleIrregularGroupStart(ttype)
 	}
 	if staffSym.IrregularGroupEnd != nil {
 		ttype := tupletTypeFromSymbol(staffSym.IrregularGroupEnd)
@@ -737,7 +728,11 @@ func appendStaffSymbolToMeasureSymbols(
 			_ = handleTriplet(currentMeasure, "^3e")
 			return nil, nil
 		} else {
-			return handleIrregularGroup(tuplet.End, ttype)
+			if lastSym == nil || !lastSym.IsValidNote() {
+				return nil, fmt.Errorf("irregular group end %s must follow a note", *staffSym.IrregularGroupEnd)
+			}
+			tpl := tuplet.NewTuplet(tuplet.End, ttype)
+			lastSym.Note.Tuplet = tpl
 		}
 	}
 	if staffSym.LightHalfPele != nil {
@@ -1146,19 +1141,20 @@ func handleEmbellishmentVariant(
 	}, nil
 }
 
-func handleIrregularGroup(
-	boundary tuplet.TupletBoundary,
+func handleIrregularGroupStart(
 	ttype tuplet.TupletType,
 ) (*music_model.Symbol, error) {
-	return newIrregularGroup(boundary, ttype), nil
+	return newIrregularGroupSymbol(tuplet.Start, ttype), nil
 }
 
-func newIrregularGroup(boundary tuplet.TupletBoundary,
+func newIrregularGroupSymbol(boundary tuplet.TupletBoundary,
 	ttype tuplet.TupletType,
 ) *music_model.Symbol {
 	tpl := tuplet.NewTuplet(boundary, ttype)
 	return &music_model.Symbol{
-		Tuplet: tpl,
+		Note: &symbols.Note{
+			Tuplet: tpl,
+		},
 	}
 }
 

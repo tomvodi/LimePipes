@@ -74,13 +74,13 @@ func Test_handleTriplet(t *testing.T) {
 				f.wantErr = false
 			},
 			after: func(f *fields) {
-				g.Expect(f.measure.Symbols).To(HaveLen(5))
-				g.Expect(f.measure.Symbols[0].Tuplet).To(Equal(&tuplet.Tuplet{
+				g.Expect(f.measure.Symbols).To(HaveLen(3))
+				g.Expect(f.measure.Symbols[0].Note.Tuplet).To(Equal(&tuplet.Tuplet{
 					BoundaryType: tuplet.Start,
 					VisibleNotes: 3,
 					PlayedNotes:  2,
 				}))
-				g.Expect(f.measure.Symbols[4].Tuplet).To(Equal(&tuplet.Tuplet{
+				g.Expect(f.measure.Symbols[2].Note.Tuplet).To(Equal(&tuplet.Tuplet{
 					BoundaryType: tuplet.End,
 					VisibleNotes: 3,
 					PlayedNotes:  2,
@@ -88,19 +88,20 @@ func Test_handleTriplet(t *testing.T) {
 			},
 		},
 		{
-			name: "if there is already a tuplet start, don't add another one",
+			name: "if there is already a tuplet start, do nothing",
 			prepare: func(f *fields) {
 				f.measure = &music_model.Measure{
 					Time: nil,
 					Symbols: []*music_model.Symbol{
-						{
+						{Note: &symbols.Note{
+							Pitch:  common.LowA,
+							Length: common.Eighth,
 							Tuplet: &tuplet.Tuplet{
 								BoundaryType: tuplet.Start,
 								VisibleNotes: 3,
 								PlayedNotes:  2,
 							},
-						},
-						{Note: &symbols.Note{Pitch: common.LowA, Length: common.Eighth}},
+						}},
 						{Note: &symbols.Note{Pitch: common.LowA, Length: common.Eighth}},
 						{Note: &symbols.Note{Pitch: common.LowA, Length: common.Eighth}},
 					},
@@ -108,13 +109,13 @@ func Test_handleTriplet(t *testing.T) {
 				f.wantErr = false
 			},
 			after: func(f *fields) {
-				g.Expect(f.measure.Symbols).To(HaveLen(5))
-				g.Expect(f.measure.Symbols[0].Tuplet).To(Equal(&tuplet.Tuplet{
+				g.Expect(f.measure.Symbols).To(HaveLen(3))
+				g.Expect(f.measure.Symbols[0].Note.Tuplet).To(Equal(&tuplet.Tuplet{
 					BoundaryType: tuplet.Start,
 					VisibleNotes: 3,
 					PlayedNotes:  2,
 				}))
-				g.Expect(f.measure.Symbols[4].Tuplet).To(Equal(&tuplet.Tuplet{
+				g.Expect(f.measure.Symbols[2].Note.Tuplet).To(Equal(&tuplet.Tuplet{
 					BoundaryType: tuplet.End,
 					VisibleNotes: 3,
 					PlayedNotes:  2,
@@ -122,18 +123,20 @@ func Test_handleTriplet(t *testing.T) {
 			},
 		},
 		{
-			name: "if there is a tuplet end, a start mus be added",
+			name: "if there is a tuplet end, a start must be added",
 			prepare: func(f *fields) {
 				f.measure = &music_model.Measure{
 					Time: nil,
 					Symbols: []*music_model.Symbol{
-						{
+						{Note: &symbols.Note{
+							Pitch:  common.LowA,
+							Length: common.Eighth,
 							Tuplet: &tuplet.Tuplet{
 								BoundaryType: tuplet.End,
 								VisibleNotes: 7,
 								PlayedNotes:  6,
 							},
-						},
+						}},
 						{Note: &symbols.Note{Pitch: common.LowA, Length: common.Eighth}},
 						{Note: &symbols.Note{Pitch: common.LowA, Length: common.Eighth}},
 						{Note: &symbols.Note{Pitch: common.LowA, Length: common.Eighth}},
@@ -142,18 +145,18 @@ func Test_handleTriplet(t *testing.T) {
 				f.wantErr = false
 			},
 			after: func(f *fields) {
-				g.Expect(f.measure.Symbols).To(HaveLen(6))
-				g.Expect(f.measure.Symbols[0].Tuplet).To(Equal(&tuplet.Tuplet{
+				g.Expect(f.measure.Symbols).To(HaveLen(4))
+				g.Expect(f.measure.Symbols[0].Note.Tuplet).To(Equal(&tuplet.Tuplet{
 					BoundaryType: tuplet.End,
 					VisibleNotes: 7,
 					PlayedNotes:  6,
 				}))
-				g.Expect(f.measure.Symbols[1].Tuplet).To(Equal(&tuplet.Tuplet{
+				g.Expect(f.measure.Symbols[1].Note.Tuplet).To(Equal(&tuplet.Tuplet{
 					BoundaryType: tuplet.Start,
 					VisibleNotes: 3,
 					PlayedNotes:  2,
 				}))
-				g.Expect(f.measure.Symbols[5].Tuplet).To(Equal(&tuplet.Tuplet{
+				g.Expect(f.measure.Symbols[3].Note.Tuplet).To(Equal(&tuplet.Tuplet{
 					BoundaryType: tuplet.End,
 					VisibleNotes: 3,
 					PlayedNotes:  2,

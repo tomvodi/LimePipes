@@ -6,6 +6,7 @@ import (
 	"banduslib/internal/common/music_model/symbols/embellishment"
 	"banduslib/internal/common/music_model/symbols/movement"
 	"banduslib/internal/common/music_model/symbols/tie"
+	"banduslib/internal/common/music_model/symbols/tuplet"
 )
 
 type Note struct {
@@ -15,6 +16,7 @@ type Note struct {
 	Accidental    accidental.Accidental        `yaml:"accidental,omitempty"`
 	Fermata       bool                         `yaml:"fermata,omitempty"`
 	Tie           tie.Tie                      `yaml:"tie,omitempty"`
+	Tuplet        *tuplet.Tuplet               `yaml:"tuplet,omitempty"`
 	Embellishment *embellishment.Embellishment `yaml:"embellishment,omitempty"`
 	// ExpandedEmbellishment is a list of pitches that makes up the embellishment
 	ExpandedEmbellishment []common.Pitch     `yaml:"-"`
@@ -45,6 +47,9 @@ func (n *Note) IsIncomplete() bool {
 			return true
 		}
 		if n.Tie != tie.NoTie {
+			return true
+		}
+		if n.Tuplet != nil {
 			return true
 		}
 	}

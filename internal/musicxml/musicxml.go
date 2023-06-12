@@ -22,6 +22,7 @@ func WriteScore(score *model.Score, writer io.Writer) error {
 	data = bytes.ReplaceAll(data, []byte("></dot>"), []byte("/>"))
 	data = bytes.ReplaceAll(data, []byte("></fermata>"), []byte("/>"))
 	data = bytes.ReplaceAll(data, []byte("></tied>"), []byte("/>"))
+	data = bytes.ReplaceAll(data, []byte("></tuplet>"), []byte("/>"))
 	if _, err := writer.Write(data); err != nil {
 		return err
 	}
@@ -131,9 +132,10 @@ func xmlMeasureFromMusicModelMeasure(measure *music_model.Measure, idx int, divi
 		xmlMeasure.Barlines = append(xmlMeasure.Barlines, bar)
 	}
 	var measureNotes []model.Note
+	noteCtx := &model.NoteContext{}
 	for _, symbol := range measure.Symbols {
 		if symbol.IsNote() {
-			symbolNotes := model.NotesFromMusicModel(symbol.Note, divisions)
+			symbolNotes := model.NotesFromMusicModel(symbol.Note, noteCtx, divisions)
 			measureNotes = append(measureNotes, symbolNotes...)
 		}
 		if symbol.Rest != nil {

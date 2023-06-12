@@ -34,7 +34,7 @@ func (m *Measure) HasOnlyAttributes() bool {
 		if symbol.IsNote() && symbol.IsValidNote() {
 			onlyAttributes = false
 		}
-		if symbol.Rest != nil || symbol.Tuplet != nil {
+		if symbol.Rest != nil {
 			onlyAttributes = false
 		}
 	}

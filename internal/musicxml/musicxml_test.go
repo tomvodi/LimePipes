@@ -316,4 +316,18 @@ var _ = Describe("ScoreFromMusicModelTune", func() {
 			Expect(readScore).Should(BeComparableTo(score))
 		})
 	})
+
+	Context("having a file with irregular groups", func() {
+		BeforeEach(func() {
+			muMo := importFromYaml("../testfiles/irregular_groups.yaml")
+			score, err = ScoreFromMusicModelTune(muMo[0])
+			//exportToMusicXml(score, "./testfiles/irregular_groups.musicxml")
+			readScore = importFromMusicXml("./testfiles/irregular_groups.musicxml")
+		})
+
+		It("should succeed", func() {
+			Expect(err).ShouldNot(HaveOccurred())
+			Expect(readScore).Should(BeComparableTo(score))
+		})
+	})
 })

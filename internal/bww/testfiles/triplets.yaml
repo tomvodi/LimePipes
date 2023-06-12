@@ -4,164 +4,164 @@
   tempo: 0
   measures:
     - symbols:
-        - tuplet:
-            boundaryType: Start
-            visibleNotes: 3
-            playedNotes: 2
         - note:
             pitch: LowG
             length: Eighth
+            tuplet:
+                boundaryType: Start
+                visibleNotes: 3
+                playedNotes: 2
         - note:
             pitch: B
             length: Eighth
         - note:
             pitch: C
             length: Eighth
-        - tuplet:
-            boundaryType: End
-            visibleNotes: 3
-            playedNotes: 2
+            tuplet:
+                boundaryType: End
+                visibleNotes: 3
+                playedNotes: 2
     - symbols:
-        - tuplet:
-            boundaryType: Start
-            visibleNotes: 3
-            playedNotes: 2
         - note:
             pitch: LowA
             length: Eighth
+            tuplet:
+                boundaryType: Start
+                visibleNotes: 3
+                playedNotes: 2
         - note:
             pitch: B
             length: Eighth
         - note:
             pitch: C
             length: Eighth
-        - tuplet:
-            boundaryType: End
-            visibleNotes: 3
-            playedNotes: 2
+            tuplet:
+                boundaryType: End
+                visibleNotes: 3
+                playedNotes: 2
     - symbols:
-        - tuplet:
-            boundaryType: Start
-            visibleNotes: 3
-            playedNotes: 2
         - note:
             pitch: B
             length: Eighth
+            tuplet:
+                boundaryType: Start
+                visibleNotes: 3
+                playedNotes: 2
         - note:
             pitch: B
             length: Eighth
         - note:
             pitch: C
             length: Eighth
-        - tuplet:
-            boundaryType: End
-            visibleNotes: 3
-            playedNotes: 2
+            tuplet:
+                boundaryType: End
+                visibleNotes: 3
+                playedNotes: 2
     - symbols:
-        - tuplet:
-            boundaryType: Start
-            visibleNotes: 3
-            playedNotes: 2
         - note:
             pitch: C
             length: Eighth
+            tuplet:
+                boundaryType: Start
+                visibleNotes: 3
+                playedNotes: 2
         - note:
             pitch: B
             length: Eighth
         - note:
             pitch: C
             length: Eighth
-        - tuplet:
-            boundaryType: End
-            visibleNotes: 3
-            playedNotes: 2
+            tuplet:
+                boundaryType: End
+                visibleNotes: 3
+                playedNotes: 2
     - symbols:
-        - tuplet:
-            boundaryType: Start
-            visibleNotes: 3
-            playedNotes: 2
         - note:
             pitch: D
             length: Eighth
+            tuplet:
+                boundaryType: Start
+                visibleNotes: 3
+                playedNotes: 2
         - note:
             pitch: B
             length: Eighth
         - note:
             pitch: C
             length: Eighth
-        - tuplet:
-            boundaryType: End
-            visibleNotes: 3
-            playedNotes: 2
+            tuplet:
+                boundaryType: End
+                visibleNotes: 3
+                playedNotes: 2
     - symbols:
-        - tuplet:
-            boundaryType: Start
-            visibleNotes: 3
-            playedNotes: 2
         - note:
             pitch: E
             length: Eighth
+            tuplet:
+                boundaryType: Start
+                visibleNotes: 3
+                playedNotes: 2
         - note:
             pitch: B
             length: Eighth
         - note:
             pitch: C
             length: Eighth
-        - tuplet:
-            boundaryType: End
-            visibleNotes: 3
-            playedNotes: 2
+            tuplet:
+                boundaryType: End
+                visibleNotes: 3
+                playedNotes: 2
     - symbols:
-        - tuplet:
-            boundaryType: Start
-            visibleNotes: 3
-            playedNotes: 2
         - note:
             pitch: F
             length: Eighth
+            tuplet:
+                boundaryType: Start
+                visibleNotes: 3
+                playedNotes: 2
         - note:
             pitch: B
             length: Eighth
         - note:
             pitch: C
             length: Eighth
-        - tuplet:
-            boundaryType: End
-            visibleNotes: 3
-            playedNotes: 2
+            tuplet:
+                boundaryType: End
+                visibleNotes: 3
+                playedNotes: 2
     - symbols:
-        - tuplet:
-            boundaryType: Start
-            visibleNotes: 3
-            playedNotes: 2
         - note:
             pitch: HighG
             length: Eighth
+            tuplet:
+                boundaryType: Start
+                visibleNotes: 3
+                playedNotes: 2
         - note:
             pitch: B
             length: Eighth
         - note:
             pitch: C
             length: Eighth
-        - tuplet:
-            boundaryType: End
-            visibleNotes: 3
-            playedNotes: 2
+            tuplet:
+                boundaryType: End
+                visibleNotes: 3
+                playedNotes: 2
     - symbols:
-        - tuplet:
-            boundaryType: Start
-            visibleNotes: 3
-            playedNotes: 2
         - note:
             pitch: HighA
             length: Eighth
+            tuplet:
+                boundaryType: Start
+                visibleNotes: 3
+                playedNotes: 2
         - note:
             pitch: B
             length: Eighth
         - note:
             pitch: C
             length: Eighth
-        - tuplet:
-            boundaryType: End
-            visibleNotes: 3
-            playedNotes: 2
+            tuplet:
+                boundaryType: End
+                visibleNotes: 3
+                playedNotes: 2

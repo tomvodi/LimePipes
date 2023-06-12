@@ -79,7 +79,7 @@ TuneTempo,50
 & LG_4 ^tlg LG_4   LA_4 ^tla LA_4   B_4 ^tb B_4
   C_4 ^tc C_4    D_4 ^td D_4   E_4 ^te E_4   F_4 ^tf F_4
   HG_4 ^thg HG_4   HA_4 ^tha HA_4 !t
-& ^2s ^2e ^3s ^3e ^43s ^43e ^46s ^46e ^53s ^53e ^54s ^54e ^64s ^64e ^74s ^74e ^76s ^76e !t
+& ^2s LA_4 ^2e ^3s ^3e ^43s LA_4 ^43e ^46s LA_4 ^46e ^53s LA_4 ^53e ^54s LA_4 ^54e ^64s LA_4 ^64e ^74s LA_4 ^74e ^76s LA_4 ^76e !t
 & LG_8 B_8 C_8 ^3lg
 ! LA_8 B_8 C_8 ^3la
 ! B_8 B_8 C_8 ^3b

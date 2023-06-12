@@ -5,8 +5,10 @@ import (
 	"banduslib/internal/common/music_model/symbols"
 	"banduslib/internal/common/music_model/symbols/accidental"
 	"banduslib/internal/common/music_model/symbols/tie"
+	mumo_tuplet "banduslib/internal/common/music_model/symbols/tuplet"
 	"banduslib/internal/musicxml/model/fermata"
 	"banduslib/internal/musicxml/model/tied"
+	"banduslib/internal/musicxml/model/tuplet"
 	"encoding/xml"
 	"github.com/rs/zerolog/log"
 )
@@ -14,22 +16,31 @@ import (
 var stemUp = "up"
 var stemDown = "down"
 
-type Note struct {
-	XMLName    xml.Name    `xml:"note"`
-	Rest       *Rest       `xml:"rest,omitempty"`
-	Grace      *Grace      `xml:"grace,omitempty"`
-	Pitch      *Pitch      `xml:"pitch,omitempty"`
-	Duration   uint8       `xml:"duration,omitempty"`
-	Voice      uint8       `xml:"voice,omitempty"`
-	Type       string      `xml:"type"`
-	Dots       []Dot       `xml:"dot,omitempty"`
-	Accidental *Accidental `xml:"accidental,omitempty"`
-	Stem       *string     `xml:"stem,omitempty"`
-	Notations  *Notations  `xml:"notations,omitempty"`
-	Beams      []Beam      `xml:"beam,omitempty"`
+type NoteContext struct {
+	CurrentTuplet *mumo_tuplet.Tuplet
 }
 
-func NotesFromMusicModel(note *symbols.Note, divisions uint8) []Note {
+type Note struct {
+	XMLName          xml.Name          `xml:"note"`
+	Rest             *Rest             `xml:"rest,omitempty"`
+	Grace            *Grace            `xml:"grace,omitempty"`
+	Pitch            *Pitch            `xml:"pitch,omitempty"`
+	Duration         uint8             `xml:"duration,omitempty"`
+	Voice            uint8             `xml:"voice,omitempty"`
+	Type             string            `xml:"type"`
+	TimeModification *TimeModification `xml:"time-modification,omitempty"`
+	Dots             []Dot             `xml:"dot,omitempty"`
+	Accidental       *Accidental       `xml:"accidental,omitempty"`
+	Stem             *string           `xml:"stem,omitempty"`
+	Beams            []Beam            `xml:"beam,omitempty"`
+	Notations        *Notations        `xml:"notations,omitempty"`
+}
+
+func NotesFromMusicModel(
+	note *symbols.Note,
+	noteCtx *NoteContext,
+	divisions uint8,
+) []Note {
 	var notes []Note
 
 	if note.Embellishment != nil && note.ExpandedEmbellishment != nil {
@@ -68,24 +79,35 @@ func NotesFromMusicModel(note *symbols.Note, divisions uint8) []Note {
 			xmlNote.Dots = append(xmlNote.Dots, NewDot())
 		}
 	}
+	if note.Tuplet != nil {
+		xmlNote.TimeModification = NewTimeModification(note.Tuplet)
+	}
+	if noteCtx.CurrentTuplet != nil {
+		xmlNote.TimeModification = NewTimeModification(noteCtx.CurrentTuplet)
+	}
 	var notations *Notations
-	if note.Fermata {
-		if notations == nil {
-			notations = NewNotations()
-		}
+	if note.Fermata || note.Tie != tie.NoTie || note.Tuplet != nil {
+		notations = NewNotations()
+	}
 
+	if note.Fermata {
 		notations.Fermata = fermata.NewFermata(fermata.Upright)
 	}
 	if note.Tie != tie.NoTie {
-		if notations == nil {
-			notations = NewNotations()
-		}
-
 		switch note.Tie {
 		case tie.Start:
 			notations.Tied = tied.NewTied(tied.Start)
 		case tie.End:
 			notations.Tied = tied.NewTied(tied.Stop)
+		}
+	}
+	if note.Tuplet != nil {
+		notations.Tuplet = tuplet.FromMusicModel(note.Tuplet)
+		if note.Tuplet.BoundaryType == mumo_tuplet.Start {
+			noteCtx.CurrentTuplet = note.Tuplet
+		}
+		if note.Tuplet.BoundaryType == mumo_tuplet.End {
+			noteCtx.CurrentTuplet = nil
 		}
 	}
 	if notations != nil {
@@ -120,7 +142,10 @@ func embellishmentBeamsForPosition(idx int, len int) []Beam {
 	} else {
 		bType = Continue
 	}
-	const beamCnt = 3
+	return getBeams(3, bType)
+}
+
+func getBeams(beamCnt uint8, bType BeamType) []Beam {
 	beams := make([]Beam, beamCnt)
 	for i := uint8(0); i < beamCnt; i++ {
 		beams[i] = NewBeam(i+1, bType)
