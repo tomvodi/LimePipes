@@ -1,0 +1,33 @@
+- title: Tune Title
+  tempo: 0
+  measures:
+    - leftBarline:
+        type: HeavyLight
+        timeline: Repeat
+      symbols:
+        - note:
+            pitch: LowA
+            length: Quarter
+    - rightBarline:
+        type: LightHeavy
+        timeline: Repeat
+      symbols:
+        - note:
+            pitch: B
+            length: Quarter
+        - timeLine:
+            boundaryType: Start
+            type: First
+        - note:
+            pitch: D
+            length: Quarter
+        - timeLine:
+            boundaryType: End
+        - timeLine:
+            boundaryType: Start
+            type: Second
+        - note:
+            pitch: E
+            length: Quarter
+        - timeLine:
+            boundaryType: End
