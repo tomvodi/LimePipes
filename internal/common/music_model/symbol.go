@@ -23,3 +23,7 @@ func (s *Symbol) IsValidNote() bool {
 
 	return false
 }
+
+func (s *Symbol) IsTimeline() bool {
+	return s.TimeLine != nil
+}

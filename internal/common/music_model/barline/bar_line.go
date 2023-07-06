@@ -44,3 +44,14 @@ type Barline struct {
 	SegnoType  SegnoType    `yaml:"segnoType,omitempty"`
 	DacapoType DacapoType   `yaml:"dacapoType,omitempty"`
 }
+
+func (b *Barline) IsHeavy() bool {
+	if b.Type == Heavy ||
+		b.Type == HeavyLight ||
+		b.Type == LightHeavy ||
+		b.Type == HeavyHeavy {
+		return true
+	}
+
+	return false
+}

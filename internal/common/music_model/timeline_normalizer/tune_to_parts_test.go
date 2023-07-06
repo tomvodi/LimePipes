@@ -29,7 +29,38 @@ func createYamlFromBww(fpath string, parser interfaces.BwwParser) {
 	test.ExportToYaml(musicTunesBww, yamlFilePath)
 }
 
-var _ = Describe("TuneToParts", func() {
+var _ = Describe("tuneToParts", func() {
+	var tune *music_model.Tune
+	var partedTune PartedTune
+	var parser interfaces.BwwParser
+	var musicModel music_model.MusicModel
+
+	BeforeEach(func() {
+		parser = bww.NewBwwParser(embExpander)
+	})
+
+	JustBeforeEach(func() {
+		partedTune = tuneToParts(tune)
+	})
+
+	Context("splitting a tune with to parts", func() {
+		BeforeEach(func() {
+			//createYamlFromBww("./testfiles/tune_with_two_parts.bww", parser)
+			musicModel = test.ImportFromYaml("./testfiles/tune_with_two_parts.yaml", embExpander)
+			Expect(musicModel).To(HaveLen(1))
+			tune = musicModel[0]
+		})
+
+		It("should have two parts", func() {
+			Expect(parser).ShouldNot(BeNil())
+			Expect(partedTune.Parts).To(HaveLen(2))
+			Expect(partedTune.Parts[0].WithRepeat).To(BeTrue())
+			Expect(partedTune.Parts[1].WithRepeat).To(BeFalse())
+		})
+	})
+})
+
+var _ = Describe("NormalizeTimeline", func() {
 	utils.SetupConsoleLogger()
 	var err error
 	var musicModelBefore music_model.MusicModel
