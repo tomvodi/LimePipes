@@ -42,7 +42,6 @@ func (m *Measure) HasOnlyAttributes() bool {
 }
 
 // HasTimeline return true if measure contains at least one timeline symbol
-// returns the index of the first timeline symbol or -1 if there is no timeline symbol
 func (m *Measure) HasTimeline() bool {
 	for _, sym := range m.Symbols {
 		if sym.IsTimeline() {
