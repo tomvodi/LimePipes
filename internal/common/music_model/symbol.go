@@ -27,3 +27,20 @@ func (s *Symbol) IsValidNote() bool {
 func (s *Symbol) IsTimeline() bool {
 	return s.TimeLine != nil
 }
+
+func (s *Symbol) IsTimelineStart() bool {
+	return s.isTimelineBoundary(time_line.Start)
+}
+
+func (s *Symbol) IsTimelineEnd() bool {
+	return s.isTimelineBoundary(time_line.End)
+}
+
+func (s *Symbol) isTimelineBoundary(boundary time_line.TimeLineBoundary) bool {
+	if s.TimeLine != nil &&
+		s.TimeLine.BoundaryType == boundary {
+		return true
+	}
+
+	return false
+}

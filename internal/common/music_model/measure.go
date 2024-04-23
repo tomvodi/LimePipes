@@ -41,12 +41,43 @@ func (m *Measure) HasOnlyAttributes() bool {
 	return onlyAttributes
 }
 
-// HasTimeline return true if measure contains at least one timeline symbol
-func (m *Measure) HasTimeline() bool {
+func (m *Measure) HasSymbols() bool {
+	return len(m.Symbols) > 0
+}
+
+// ContainsTimelineSymbols return true if measure contains at least one timeline symbol
+func (m *Measure) ContainsTimelineSymbols() bool {
 	for _, sym := range m.Symbols {
 		if sym.IsTimeline() {
 			return true
 		}
+	}
+
+	return false
+}
+
+// IsOneTimeline returns true, if measure begins and ens with timeline and
+// there are no timeline symbol in between
+func (m *Measure) IsOneTimeline() bool {
+	if len(m.Symbols) < 2 {
+		return false
+	}
+
+	timelineSymCnt := 0
+	for _, symbol := range m.Symbols {
+		if symbol.IsTimeline() {
+			timelineSymCnt++
+		}
+	}
+	if timelineSymCnt != 2 {
+		return false
+	}
+
+	firstSym := m.Symbols[0]
+	lastSym := m.Symbols[len(m.Symbols)-1]
+	if firstSym.IsTimelineStart() &&
+		lastSym.IsTimelineEnd() {
+		return true
 	}
 
 	return false

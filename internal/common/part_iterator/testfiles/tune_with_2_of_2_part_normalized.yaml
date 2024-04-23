@@ -54,3 +54,6 @@
             length: Quarter
         - timeLine:
             boundaryType: End
+        - note:
+            pitch: LowG
+            length: Quarter

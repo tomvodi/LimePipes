@@ -3,6 +3,7 @@ package part_iterator_test
 import (
 	"banduslib/internal/common/music_model"
 	"banduslib/internal/common/music_model/expander"
+	"banduslib/internal/common/music_model/symbols/time_line"
 	"banduslib/internal/common/test"
 	"banduslib/internal/interfaces"
 	. "github.com/onsi/ginkgo/v2"
@@ -100,8 +101,61 @@ var _ = Describe("PartIterator", func() {
 		})
 
 		It("should have split up the measure with 1-2 time line", func() {
-			Expect(parts.Count()).To(Equal(1))
-			Expect(parts.Nr(1).Measures).Should(HaveLen(4))
+			Expect(parts.Nr(1).Measures).Should(HaveLen(3))
+		})
+
+		It("should have set the barlines for the split up measures correctly", func() {
+			sourceMeasure := tune.Measures[0]
+			splitMeasures := parts.Nr(1).Measures
+			Expect(splitMeasures[0].LeftBarline).To(Equal(sourceMeasure.LeftBarline))
+			Expect(splitMeasures[len(splitMeasures)-1].RightBarline).To(Equal(sourceMeasure.RightBarline))
+		})
+
+		It("should have added the symbols from the source measure", func() {
+			sourceMeasure := tune.Measures[0]
+			splitMeasures := parts.Nr(1).Measures
+			Expect(splitMeasures[0].Symbols).NotTo(BeNil())
+			Expect(splitMeasures[0].Symbols[0]).To(Equal(sourceMeasure.Symbols[0]))
+
+			Expect(splitMeasures[1].Symbols).NotTo(BeNil())
+			Expect(splitMeasures[1].Symbols[0]).To(Equal(sourceMeasure.Symbols[2]))
+
+			Expect(splitMeasures[2].Symbols).NotTo(BeNil())
+			Expect(splitMeasures[2].Symbols[0]).To(Equal(sourceMeasure.Symbols[5]))
+		})
+	})
+
+	Context("having a tune with 2-2 time line", func() {
+		BeforeEach(func() {
+			//createYamlFromBww("./testfiles/tune_with_2_of_2_part.bww", parser)
+			//createYamlFromBww("./testfiles/tune_with_2_of_2_part_normalized.bww", parser)
+			musicModel = test.ImportFromYaml("./testfiles/tune_with_2_of_2_part.yaml", embExpander)
+			Expect(musicModel).To(HaveLen(1))
+			tune = musicModel[0]
+		})
+
+		It("should have two parts", func() {
+			Expect(parts.Count()).To(Equal(2))
+		})
+
+		It("should have added the second time to part 2", func() {
+			Expect(parts.Nr(2).Measures).Should(HaveLen(5))
+			Expect(parts.Nr(1).Measures[2]).
+				To(Equal(parts.Nr(2).Measures[3]))
+		})
+
+		It("should have modified the time line type to 'second'", func() {
+			Expect(parts.Nr(2).Measures[3].Symbols).ShouldNot(BeEmpty())
+			Expect(parts.Nr(2).Measures[3].Symbols[0].TimeLine).To(Equal(
+				time_line.TimeLine{
+					BoundaryType: time_line.Start,
+					Type:         time_line.Second,
+				}))
+		})
+
+		It("should not have modified the time line in part 1", func() {
+			Expect(parts.Nr(1).Measures[2].Symbols[0].TimeLine.Type).
+				To(Equal(time_line.SecondOf2))
 		})
 	})
 })

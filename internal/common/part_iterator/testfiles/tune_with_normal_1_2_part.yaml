@@ -4,11 +4,7 @@
     - leftBarline:
         type: HeavyLight
         timeline: Repeat
-      symbols:
-        - note:
-            pitch: LowA
-            length: Quarter
-    - rightBarline:
+      rightBarline:
         type: LightHeavy
         timeline: Repeat
       symbols:

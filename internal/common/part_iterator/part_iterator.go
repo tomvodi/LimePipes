@@ -3,8 +3,8 @@ package part_iterator
 import (
 	"banduslib/internal/common/music_model"
 	"banduslib/internal/common/music_model/barline"
-	"banduslib/internal/common/music_model/symbols/time_line"
 	"banduslib/internal/interfaces"
+	"github.com/jinzhu/copier"
 )
 
 type partIterator struct {
@@ -43,11 +43,15 @@ func (p *partIterator) GetNext() *music_model.MusicPart {
 	return p.parts[p.currentIdx]
 }
 
-func tuneToParts(tune *music_model.Tune) (parts []*music_model.MusicPart) {
+func splitTuneIntoParts(tune *music_model.Tune) (parts []*music_model.MusicPart) {
 	currPart := &music_model.MusicPart{}
 	var partMeasures []*music_model.Measure
 	for i, measure := range tune.Measures {
-		partMeasures = append(partMeasures, measure)
+
+		timelineMeasures := splitMeasureWithTimeline(measure)
+		for _, timelineMeasure := range timelineMeasures {
+			partMeasures = append(partMeasures, timelineMeasure)
+		}
 
 		if measure.LeftBarline != nil && measure.LeftBarline.IsHeavy() {
 			if measure.LeftBarline.Timeline == barline.Repeat {
@@ -69,19 +73,63 @@ func tuneToParts(tune *music_model.Tune) (parts []*music_model.MusicPart) {
 	return parts
 }
 
-func splitMeasureWithTimeline(measure *music_model.Measure) (measures []*music_model.Measure) {
-	if !measure.HasTimeline() {
+// splitMeasureWithTimeline splits a given measure into multiple measures when there is more
+// than one timeline in it or the timeline is surrounded by other symbols.
+func splitMeasureWithTimeline(
+	measure *music_model.Measure,
+) (measures []*music_model.Measure) {
+	if !measure.ContainsTimelineSymbols() ||
+		measure.IsOneTimeline() {
 		measures = append(measures, measure)
 		return measures
 	}
 
 	currentMeasure := &music_model.Measure{}
-	for _, symbol := range measure.Symbols {
-		if symbol.IsTimeline() &&
-			symbol.TimeLine.BoundaryType == time_line.End {
 
+	// first measure is like the original one
+	// but without symbols and no right barline
+	copier.Copy(currentMeasure, measure)
+	currentMeasure.Symbols = []*music_model.Symbol{}
+	currentMeasure.RightBarline = nil
+
+	for _, symbol := range measure.Symbols {
+
+		// When time line start comes after some other symbols
+		if symbol.IsTimelineStart() {
+			if currentMeasure.HasSymbols() {
+				measures = append(measures, currentMeasure)
+				currentMeasure = &music_model.Measure{}
+			}
+
+			currentMeasure.Symbols = append(currentMeasure.Symbols, symbol)
+			continue
 		}
- 	}
+
+		// When other symbols come after time line end
+		if symbol.IsTimelineEnd() {
+			currentMeasure.Symbols = append(currentMeasure.Symbols, symbol)
+			if currentMeasure.HasSymbols() {
+				measures = append(measures, currentMeasure)
+				currentMeasure = &music_model.Measure{}
+			}
+			continue
+		}
+
+		currentMeasure.Symbols = append(currentMeasure.Symbols, symbol)
+	}
+	measures = append(measures, currentMeasure)
+
+	// last measure has the same right barline as the original one
+	lastMeasure := measures[len(measures)-1]
+	lastMeasure.RightBarline = measure.RightBarline
+
+	return measures
+}
+
+// distributeTimelines takes timelines that are noted in one part but affect another one
+// e.g. second of part 2 which may be located in part 1 and copies this measure time line into
+// the right part
+func (p *partIterator) distributeTimelines() {
 
 }
 
@@ -89,6 +137,8 @@ func New(tune *music_model.Tune) interfaces.MusicPartIterator {
 	pi := &partIterator{
 		currentIdx: -1,
 	}
-	pi.parts = tuneToParts(tune)
+	pi.parts = splitTuneIntoParts(tune)
+	pi.distributeTimelines()
+
 	return pi
 }
