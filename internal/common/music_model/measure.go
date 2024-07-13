@@ -1,8 +1,8 @@
 package music_model
 
 import (
-	"banduslib/internal/common/music_model/barline"
-	"banduslib/internal/common/music_model/import_message"
+	"github.com/tomvodi/limepipes/internal/common/music_model/barline"
+	"github.com/tomvodi/limepipes/internal/common/music_model/import_message"
 	"reflect"
 )
 

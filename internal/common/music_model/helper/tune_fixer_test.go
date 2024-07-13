@@ -1,9 +1,9 @@
 package helper
 
 import (
-	"banduslib/internal/common/music_model"
-	"banduslib/internal/utils"
 	. "github.com/onsi/gomega"
+	"github.com/tomvodi/limepipes/internal/common/music_model"
+	"github.com/tomvodi/limepipes/internal/utils"
 	"testing"
 )
 

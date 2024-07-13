@@ -1,11 +1,11 @@
 package bww
 
 import (
-	"banduslib/internal/common"
-	"banduslib/internal/interfaces"
 	"bytes"
 	"fmt"
 	"github.com/rs/zerolog/log"
+	"github.com/tomvodi/limepipes/internal/common"
+	"github.com/tomvodi/limepipes/internal/interfaces"
 	"regexp"
 )
 

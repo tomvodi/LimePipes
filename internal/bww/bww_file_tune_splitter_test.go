@@ -1,9 +1,9 @@
 package bww
 
 import (
-	"banduslib/internal/common"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"github.com/tomvodi/limepipes/internal/common"
 	"os"
 )
 

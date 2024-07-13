@@ -1,7 +1,7 @@
 package embellishment
 
 import (
-	"banduslib/internal/common"
+	"github.com/tomvodi/limepipes/internal/common"
 )
 
 //go:generate go run github.com/dmarkham/enumer -json -yaml -type=EmbellishmentType

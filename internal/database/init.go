@@ -1,7 +1,7 @@
 package database
 
 import (
-	"banduslib/internal/database/model"
+	"github.com/tomvodi/limepipes/internal/database/model"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )

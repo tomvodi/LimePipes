@@ -1,7 +1,7 @@
 package symbols
 
 import (
-	"banduslib/internal/common"
+	"github.com/tomvodi/limepipes/internal/common"
 )
 
 type Rest struct {

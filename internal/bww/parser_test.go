@@ -1,12 +1,12 @@
 package bww
 
 import (
-	"banduslib/internal/common/music_model"
-	"banduslib/internal/common/music_model/import_message"
-	"banduslib/internal/interfaces"
-	"banduslib/internal/utils"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"github.com/tomvodi/limepipes/internal/common/music_model"
+	"github.com/tomvodi/limepipes/internal/common/music_model/import_message"
+	"github.com/tomvodi/limepipes/internal/interfaces"
+	"github.com/tomvodi/limepipes/internal/utils"
 	"gopkg.in/yaml.v3"
 	"io"
 	"os"

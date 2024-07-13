@@ -4,7 +4,7 @@ import "github.com/spf13/viper"
 
 func Init() (*Config, error) {
 	viper.AddConfigPath(".")
-	viper.SetConfigName("banduslib")
+	viper.SetConfigName("limepipes")
 	viper.SetConfigType("env")
 	viper.AutomaticEnv()
 

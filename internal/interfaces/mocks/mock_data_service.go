@@ -5,11 +5,11 @@
 package mock_interfaces
 
 import (
-	apimodel "banduslib/internal/api/apimodel"
-	common "banduslib/internal/common"
-	music_model "banduslib/internal/common/music_model"
-	model "banduslib/internal/database/model"
-	file_type "banduslib/internal/database/model/file_type"
+	apimodel "github.com/tomvodi/limepipes/internal/api/apimodel"
+	common "github.com/tomvodi/limepipes/internal/common"
+	music_model "github.com/tomvodi/limepipes/internal/common/music_model"
+	model "github.com/tomvodi/limepipes/internal/database/model"
+	file_type "github.com/tomvodi/limepipes/internal/database/model/file_type"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"

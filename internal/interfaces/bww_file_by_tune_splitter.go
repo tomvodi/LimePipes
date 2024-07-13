@@ -1,6 +1,6 @@
 package interfaces
 
-import "banduslib/internal/common"
+import "github.com/tomvodi/limepipes/internal/common"
 
 //go:generate mockgen -source bww_file_by_tune_splitter.go -destination ./mocks/mock_bww_file_by_tune_splitter.go
 

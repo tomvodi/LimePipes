@@ -1,11 +1,11 @@
 package model
 
 import (
-	"banduslib/internal/common/music_model"
-	"banduslib/internal/database/model/file_type"
 	"bytes"
 	"encoding/gob"
 	"fmt"
+	"github.com/tomvodi/limepipes/internal/common/music_model"
+	"github.com/tomvodi/limepipes/internal/database/model/file_type"
 )
 
 type TuneFile struct {

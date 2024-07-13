@@ -1,7 +1,7 @@
 package musicxml
 
 import (
-	"banduslib/internal/musicxml/model"
+	"github.com/tomvodi/limepipes/internal/musicxml/model"
 	"os"
 	"testing"
 )

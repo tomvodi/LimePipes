@@ -5,7 +5,7 @@
 package mock_interfaces
 
 import (
-	music_model "banduslib/internal/common/music_model"
+	music_model "github.com/tomvodi/limepipes/internal/common/music_model"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"

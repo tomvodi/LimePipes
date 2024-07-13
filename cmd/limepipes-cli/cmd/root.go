@@ -11,7 +11,7 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "banduslib-cli",
+	Use:   "limepipes-cli",
 	Short: "A command line tool managing bagpipe tunes",
 	Long: `Some things are cumbersome doing with the REST API like importing many tunes in 
 one run. With this command line tool it is possible to things like that.`,

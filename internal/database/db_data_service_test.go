@@ -1,9 +1,9 @@
 package database
 
 import (
-	"banduslib/internal/api/apimodel"
-	"banduslib/internal/utils"
 	. "github.com/onsi/gomega"
+	"github.com/tomvodi/limepipes/internal/api/apimodel"
+	"github.com/tomvodi/limepipes/internal/utils"
 	"testing"
 )
 

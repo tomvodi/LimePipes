@@ -1,17 +1,17 @@
 package database
 
 import (
-	"banduslib/internal/api/apimodel"
-	"banduslib/internal/common"
-	"banduslib/internal/common/music_model"
-	"banduslib/internal/common/music_model/import_message"
-	"banduslib/internal/database/model"
-	"banduslib/internal/database/model/file_type"
-	"banduslib/internal/interfaces"
 	"fmt"
 	"github.com/jinzhu/copier"
 	"github.com/mitchellh/mapstructure"
 	"github.com/rs/zerolog/log"
+	"github.com/tomvodi/limepipes/internal/api/apimodel"
+	"github.com/tomvodi/limepipes/internal/common"
+	"github.com/tomvodi/limepipes/internal/common/music_model"
+	"github.com/tomvodi/limepipes/internal/common/music_model/import_message"
+	"github.com/tomvodi/limepipes/internal/database/model"
+	"github.com/tomvodi/limepipes/internal/database/model/file_type"
+	"github.com/tomvodi/limepipes/internal/interfaces"
 	"gorm.io/gorm"
 	"strings"
 )

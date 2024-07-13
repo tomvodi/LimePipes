@@ -1,8 +1,8 @@
 package musicxml
 
 import (
-	"banduslib/internal/musicxml/model"
 	"encoding/xml"
+	"github.com/tomvodi/limepipes/internal/musicxml/model"
 	"io"
 )
 

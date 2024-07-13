@@ -1,8 +1,8 @@
 package common
 
 import (
-	"banduslib/internal/utils"
 	. "github.com/onsi/gomega"
+	"github.com/tomvodi/limepipes/internal/utils"
 	"testing"
 )
 

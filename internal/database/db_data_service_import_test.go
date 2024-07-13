@@ -1,13 +1,13 @@
 package database
 
 import (
-	"banduslib/internal/api/apimodel"
-	"banduslib/internal/common"
-	"banduslib/internal/common/music_model"
-	"banduslib/internal/database/model"
-	"banduslib/internal/database/model/file_type"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"github.com/tomvodi/limepipes/internal/api/apimodel"
+	"github.com/tomvodi/limepipes/internal/common"
+	"github.com/tomvodi/limepipes/internal/common/music_model"
+	"github.com/tomvodi/limepipes/internal/database/model"
+	"github.com/tomvodi/limepipes/internal/database/model/file_type"
 	"gorm.io/gorm"
 	"os"
 )

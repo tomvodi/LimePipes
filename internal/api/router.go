@@ -1,9 +1,9 @@
 package api
 
 import (
-	"banduslib/internal/interfaces"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/tomvodi/limepipes/internal/interfaces"
 	"net/http"
 )
 

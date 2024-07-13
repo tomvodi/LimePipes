@@ -1,9 +1,9 @@
 package music_model
 
 import (
-	"banduslib/internal/common/music_model/symbols"
-	"banduslib/internal/common/music_model/symbols/time_line"
-	"banduslib/internal/common/music_model/symbols/tuplet"
+	"github.com/tomvodi/limepipes/internal/common/music_model/symbols"
+	"github.com/tomvodi/limepipes/internal/common/music_model/symbols/time_line"
+	"github.com/tomvodi/limepipes/internal/common/music_model/symbols/tuplet"
 )
 
 type Symbol struct {

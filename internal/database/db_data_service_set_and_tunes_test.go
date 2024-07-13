@@ -1,9 +1,9 @@
 package database
 
 import (
-	"banduslib/internal/api/apimodel"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"github.com/tomvodi/limepipes/internal/api/apimodel"
 	"gorm.io/gorm"
 	"os"
 )

@@ -1,10 +1,9 @@
 /*
 Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-
 */
 package main
 
-import "banduslib/cmd/banduslib-cli/cmd"
+import "github.com/tomvodi/limepipes/cmd/limepipes-cli/cmd"
 
 func main() {
 	cmd.Execute()

@@ -5,7 +5,7 @@
 package mock_interfaces
 
 import (
-	common "banduslib/internal/common"
+	common "github.com/tomvodi/limepipes/internal/common"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"

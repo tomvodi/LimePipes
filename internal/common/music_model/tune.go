@@ -1,6 +1,6 @@
 package music_model
 
-import "banduslib/internal/common/music_model/import_message"
+import "github.com/tomvodi/limepipes/internal/common/music_model/import_message"
 
 type Tune struct {
 	Title      string     `yaml:"title"`

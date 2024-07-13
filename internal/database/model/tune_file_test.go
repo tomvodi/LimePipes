@@ -1,10 +1,10 @@
 package model
 
 import (
-	"banduslib/internal/common/music_model"
-	"banduslib/internal/database/model/file_type"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"github.com/tomvodi/limepipes/internal/common/music_model"
+	"github.com/tomvodi/limepipes/internal/database/model/file_type"
 )
 
 var _ = Describe("TuneFile", func() {

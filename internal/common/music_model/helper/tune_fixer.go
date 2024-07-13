@@ -1,8 +1,8 @@
 package helper
 
 import (
-	"banduslib/internal/common/music_model"
-	"banduslib/internal/interfaces"
+	"github.com/tomvodi/limepipes/internal/common/music_model"
+	"github.com/tomvodi/limepipes/internal/interfaces"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
 	"regexp"

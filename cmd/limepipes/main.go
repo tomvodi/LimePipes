@@ -1,14 +1,14 @@
 package main
 
 import (
-	"banduslib/internal/api"
-	"banduslib/internal/bww"
-	"banduslib/internal/common/music_model/helper"
-	"banduslib/internal/config"
-	"banduslib/internal/database"
-	"banduslib/internal/utils"
 	"fmt"
 	"github.com/rs/zerolog/log"
+	"github.com/tomvodi/limepipes/internal/api"
+	"github.com/tomvodi/limepipes/internal/bww"
+	"github.com/tomvodi/limepipes/internal/common/music_model/helper"
+	"github.com/tomvodi/limepipes/internal/config"
+	"github.com/tomvodi/limepipes/internal/database"
+	"github.com/tomvodi/limepipes/internal/utils"
 	"gorm.io/gorm"
 )
 

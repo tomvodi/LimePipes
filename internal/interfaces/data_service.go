@@ -1,11 +1,11 @@
 package interfaces
 
 import (
-	"banduslib/internal/api/apimodel"
-	"banduslib/internal/common"
-	"banduslib/internal/common/music_model"
-	"banduslib/internal/database/model"
-	"banduslib/internal/database/model/file_type"
+	"github.com/tomvodi/limepipes/internal/api/apimodel"
+	"github.com/tomvodi/limepipes/internal/common"
+	"github.com/tomvodi/limepipes/internal/common/music_model"
+	"github.com/tomvodi/limepipes/internal/database/model"
+	"github.com/tomvodi/limepipes/internal/database/model/file_type"
 )
 
 //go:generate mockgen -source data_service.go -destination ./mocks/mock_data_service.go

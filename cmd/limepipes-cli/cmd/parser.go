@@ -4,12 +4,12 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	"banduslib/internal/bww"
-	"banduslib/internal/common/music_model"
-	"banduslib/internal/utils"
 	"fmt"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
+	"github.com/tomvodi/limepipes/internal/bww"
+	"github.com/tomvodi/limepipes/internal/common/music_model"
+	"github.com/tomvodi/limepipes/internal/utils"
 	"os"
 	"path/filepath"
 )

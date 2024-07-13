@@ -1,9 +1,6 @@
 package api
 
 import (
-	"banduslib/internal/api/apimodel"
-	mock_interfaces "banduslib/internal/interfaces/mocks"
-	"banduslib/internal/utils"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -12,6 +9,9 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/rs/zerolog/log"
+	"github.com/tomvodi/limepipes/internal/api/apimodel"
+	mock_interfaces "github.com/tomvodi/limepipes/internal/interfaces/mocks"
+	"github.com/tomvodi/limepipes/internal/utils"
 	"io"
 	"net/http"
 	"net/http/httptest"

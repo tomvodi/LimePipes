@@ -1,12 +1,12 @@
 package api
 
 import (
-	"banduslib/internal/api/apimodel"
-	"banduslib/internal/common"
-	"banduslib/internal/common/music_model"
-	"banduslib/internal/interfaces"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/tomvodi/limepipes/internal/api/apimodel"
+	"github.com/tomvodi/limepipes/internal/common"
+	"github.com/tomvodi/limepipes/internal/common/music_model"
+	"github.com/tomvodi/limepipes/internal/interfaces"
 	"io"
 	"mime/multipart"
 	"net/http"

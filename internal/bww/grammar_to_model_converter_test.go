@@ -1,13 +1,13 @@
 package bww
 
 import (
-	"banduslib/internal/common"
-	"banduslib/internal/common/music_model"
-	"banduslib/internal/common/music_model/symbols"
-	"banduslib/internal/common/music_model/symbols/embellishment"
-	"banduslib/internal/common/music_model/symbols/tuplet"
-	"banduslib/internal/utils"
 	. "github.com/onsi/gomega"
+	"github.com/tomvodi/limepipes/internal/common"
+	"github.com/tomvodi/limepipes/internal/common/music_model"
+	"github.com/tomvodi/limepipes/internal/common/music_model/symbols"
+	"github.com/tomvodi/limepipes/internal/common/music_model/symbols/embellishment"
+	"github.com/tomvodi/limepipes/internal/common/music_model/symbols/tuplet"
+	"github.com/tomvodi/limepipes/internal/utils"
 	"testing"
 )
 

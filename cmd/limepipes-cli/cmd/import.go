@@ -1,16 +1,16 @@
 package cmd
 
 import (
-	"banduslib/internal/bww"
-	"banduslib/internal/common"
-	"banduslib/internal/common/music_model"
-	"banduslib/internal/common/music_model/helper"
-	"banduslib/internal/config"
-	"banduslib/internal/database"
-	"banduslib/internal/utils"
 	"fmt"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
+	"github.com/tomvodi/limepipes/internal/bww"
+	"github.com/tomvodi/limepipes/internal/common"
+	"github.com/tomvodi/limepipes/internal/common/music_model"
+	"github.com/tomvodi/limepipes/internal/common/music_model/helper"
+	"github.com/tomvodi/limepipes/internal/config"
+	"github.com/tomvodi/limepipes/internal/database"
+	"github.com/tomvodi/limepipes/internal/utils"
 	"gorm.io/gorm"
 	"os"
 )
