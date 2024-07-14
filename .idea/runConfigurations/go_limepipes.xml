@@ -1,9 +1,9 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="go banduslib" type="GoApplicationRunConfiguration" factoryName="Go Application">
-    <module name="banduslib" />
+  <configuration default="false" name="go limepipes" type="GoApplicationRunConfiguration" factoryName="Go Application">
+    <module name="limepipes" />
     <working_directory value="$PROJECT_DIR$" />
     <kind value="PACKAGE" />
-    <package value="banduslib/cmd/banduslib" />
+    <package value="github.com/tomvodi/limepipes/cmd/limepipes" />
     <directory value="$PROJECT_DIR$" />
     <filePath value="$PROJECT_DIR$/cmd/banduslib/main.go" />
     <method v="2" />

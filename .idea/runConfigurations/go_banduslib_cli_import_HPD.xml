@@ -1,10 +1,10 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="go banduslib-cli import HPD" type="GoApplicationRunConfiguration" factoryName="Go Application">
-    <module name="banduslib" />
+    <module name="limepipes" />
     <working_directory value="$PROJECT_DIR$" />
     <parameters value="import -r -d -s -v $PROJECT_DIR$/../bwwfiles/HPD_Repertoire" />
     <kind value="PACKAGE" />
-    <package value="banduslib/cmd/banduslib-cli" />
+    <package value="github.com/tomvodi/limepipes/cmd/limepipes-cli" />
     <directory value="$PROJECT_DIR$" />
     <filePath value="$PROJECT_DIR$/cmd/banduslib-cli/main.go" />
     <method v="2" />

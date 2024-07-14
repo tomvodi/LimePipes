@@ -1,6 +1,6 @@
 
 ###
-POST http://{{host}}/v1/tunes
+POST https://{{host}}/tunes
 Content-Type: application/json
 
 {
@@ -23,7 +23,7 @@ Content-Type: application/json
 <> 2023-04-08T154656.200.json
 
 ###
-POST http://{{host}}/v1/tunes
+POST https://{{host}}/tunes
 Content-Type: application/json
 
 {
@@ -45,7 +45,7 @@ Content-Type: application/json
 <> 2023-04-29T185427.200.json
 
 ###
-POST http://{{host}}/v1/tunes
+POST https://{{host}}/tunes
 Content-Type: application/json
 
 {
@@ -63,7 +63,7 @@ Content-Type: application/json
 <> 2023-04-29T185427-1.200.json
 
 ###
-POST http://{{host}}/v1/tunes
+POST https://{{host}}/tunes
 Content-Type: application/json
 
 {
@@ -86,7 +86,7 @@ Content-Type: application/json
 <> 2023-04-29T184153-1.200.json
 
 ###
-POST http://{{host}}/v1/sets
+POST https://{{host}}/sets
 Content-Type: application/json
 
 {
@@ -107,7 +107,7 @@ Content-Type: application/json
 <> 2023-04-29T184153-2.200.json
 
 ###
-POST http://{{host}}/v1/sets
+POST https://{{host}}/sets
 Content-Type: application/json
 
 {
@@ -128,7 +128,7 @@ Content-Type: application/json
 <> 2023-04-29T184154.200.json
 
 ###
-PUT http://{{host}}/v1/sets/1/tunes
+PUT https://{{host}}/sets/1/tunes
 Content-Type: application/json
 
 < ./set1_tune_ids.json
@@ -142,7 +142,7 @@ Content-Type: application/json
 
 
 ###
-PUT http://{{host}}/v1/sets/2/tunes
+PUT https://{{host}}/sets/2/tunes
 Content-Type: application/json
 
 < ./set2_tune_ids.json

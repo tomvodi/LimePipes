@@ -1,16 +1,16 @@
 ###
-GET http://{{host}}/v1/
+GET https://{{host}}/
 
 
 ### List tunes
-GET http://{{host}}/v1/tunes
+GET https://{{host}}/tunes
 
 ### Show tune 2
-GET http://{{host}}/v1/tunes/2
+GET https://{{host}}/tunes/2
 
 
 ### Update tune 2
-PUT http://{{host}}/v1/tunes/2
+PUT https://{{host}}/tunes/2
 Content-Type: application/json
 
 {
@@ -22,7 +22,7 @@ Content-Type: application/json
 }
 
 ### Add files to tune
-POST http://{{host}}/v1/imports/bww
+POST https://{{host}}/imports/bww
 Content-Type: multipart/form-data; boundary=boundary
 
 --boundary
@@ -37,17 +37,17 @@ Content-Disposition: form-data; name="upload[]"; filename="the_high_road_to_lint
 
 
 ### Delete tune 2
-DELETE http://{{host}}/v1/tunes/2
+DELETE https://{{host}}/tunes/2
 
 ### List sets
-GET http://{{host}}/v1/sets
+GET https://{{host}}/sets
 
 ### Show set 2
-GET http://{{host}}/v1/sets/1
+GET https://{{host}}/sets/1
 
 
 ### Update set 2
-PUT http://{{host}}/v1/sets/2
+PUT https://{{host}}/sets/2
 Content-Type: application/json
 
 {
@@ -60,7 +60,7 @@ Content-Type: application/json
 }
 
 ### Change tunes of set 2
-PUT http://{{host}}/v1/sets/2/tunes
+PUT https://{{host}}/sets/2/tunes
 Content-Type: application/json
 
 [
@@ -71,7 +71,7 @@ Content-Type: application/json
 
 <> 2023-05-10T062838.200.json
 ###
-DELETE http://{{host}}/v1/sets/1
+DELETE https://{{host}}/sets/1
 
 <> 2023-05-02T151022.200.txt
 <> 2023-05-02T150957.200.txt

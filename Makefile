@@ -21,10 +21,18 @@ lint:
 cover-html: test-cover
 	go tool cover -html=cover.out
 
-# TODO: Add openAPI spec from external repo limepipes-api
 server:
 	openapi-generator-cli generate \
 		-i ./limepipes-api/openapi.yaml \
 		-g go-gin-server \
 		-o ${API_GEN_DIR} \
 		--additional-properties=packageName=api_gen
+
+create_test_certificates:
+	mkdir -p build && \
+	cd build && \
+	pwd && \
+	openssl req -new -subj "/C=US/ST=Utah/CN=localhost" -newkey rsa:2048 -nodes -keyout localhost.key -out localhost.csr && \
+	openssl x509 -req -days 365 -in localhost.csr -signkey localhost.key -out localhost.crt
+
+
