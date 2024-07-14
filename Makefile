@@ -24,7 +24,7 @@ cover-html: test-cover
 # TODO: Add openAPI spec from external repo limepipes-api
 server:
 	openapi-generator-cli generate \
-		-i ./api/openapi-spec/openapi.yaml \
+		-i ./limepipes-api/openapi.yaml \
 		-g go-gin-server \
 		-o ${API_GEN_DIR} \
 		--additional-properties=packageName=api_gen
