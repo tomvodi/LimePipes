@@ -39,6 +39,11 @@ Everything used to export the internal music model to a MusicXML file.
 
 `go build -o ./limepipes github.com/tomvodi/limepipes/cmd/limepipes` builds the executable
 
+## Run
+
+The limepipes application needs a configuration file called `limepipes.env` beside the executable or the environment
+variables from this file directly set to the environment of the application. 
+
 ## Develop
 
 As previously mentioned, the application uses an intermediate music model for storing the parsed `.bww` tunes. 

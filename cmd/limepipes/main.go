@@ -36,5 +36,5 @@ func main() {
 	router := apiRouter.GetEngine()
 
 	log.Info().Msgf("listening on %s", cfg.ServerUrl)
-	log.Fatal().Err(router.Run(cfg.ServerUrl))
+	log.Fatal().Err(router.RunTLS(cfg.ServerUrl, cfg.TlsCertPath, cfg.TlsCertKeyPath))
 }

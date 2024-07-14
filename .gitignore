@@ -8,3 +8,4 @@ cover.out
 limepipes-cli
 !cmd/limepipes-cli
 limepipes
+build

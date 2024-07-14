@@ -29,22 +29,21 @@ type apiRouter struct {
 func (a *apiRouter) GetEngine() *gin.Engine {
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"http://localhost:3000"},
+		AllowOrigins: []string{"https://localhost:3000"},
 		AllowMethods: []string{"PUT", "PATCH", "POST", "GET"},
 		AllowHeaders: []string{"Origin", "Content-type"},
 	}))
 
-	v1 := router.Group("v1")
 	for _, route := range a.getRoutes() {
 		switch route.Method {
 		case http.MethodGet:
-			v1.GET(route.Pattern, route.HandlerFunc)
+			router.GET(route.Pattern, route.HandlerFunc)
 		case http.MethodPost:
-			v1.POST(route.Pattern, route.HandlerFunc)
+			router.POST(route.Pattern, route.HandlerFunc)
 		case http.MethodPut:
-			v1.PUT(route.Pattern, route.HandlerFunc)
+			router.PUT(route.Pattern, route.HandlerFunc)
 		case http.MethodDelete:
-			v1.DELETE(route.Pattern, route.HandlerFunc)
+			router.DELETE(route.Pattern, route.HandlerFunc)
 		}
 	}
 
