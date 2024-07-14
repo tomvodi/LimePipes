@@ -1,0 +1,3 @@
+[submodule "limepipes-api"]
+	path = limepipes-api
+	url = https://github.com/tomvodi/limepipes-api.git
