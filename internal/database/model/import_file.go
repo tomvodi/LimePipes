@@ -5,7 +5,7 @@ import (
 )
 
 type ImportFile struct {
-	ID           uint64 `gorm:"primaryKey"`
+	ID           int64 `gorm:"primaryKey"`
 	Name         string
 	OriginalPath string
 	Hash         string

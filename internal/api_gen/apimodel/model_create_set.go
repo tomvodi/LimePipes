@@ -12,7 +12,7 @@ package apimodel
 type CreateSet struct {
 
 	// The name of the Set
-	Title string `json:"title" binding:"required"`
+	Title string `json:"title"`
 
 	// A description of the Set
 	Description string `json:"description,omitempty"`
@@ -20,5 +20,5 @@ type CreateSet struct {
 	// The name of the creator of the set
 	Creator string `json:"creator,omitempty"`
 
-	Tunes []uint64 `json:"tunes,omitempty"`
+	Tunes []int64 `json:"tunes,omitempty"`
 }

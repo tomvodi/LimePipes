@@ -9,10 +9,7 @@
 
 package apimodel
 
-type SetProperties struct {
-
-	// The IDs of the Tunes in the Set
-	Tunes []Tune `json:"tunes,omitempty"`
+type UpdateSet struct {
 
 	// The name of the Set
 	Title string `json:"title"`
@@ -22,4 +19,6 @@ type SetProperties struct {
 
 	// The name of the creator of the set
 	Creator string `json:"creator,omitempty"`
+
+	Tunes []int64 `json:"tunes,omitempty"`
 }

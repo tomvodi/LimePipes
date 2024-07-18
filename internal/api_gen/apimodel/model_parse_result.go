@@ -9,6 +9,9 @@
 
 package apimodel
 
-type ImportFileResult struct {
+type ParseResult struct {
+
+	Success bool `json:"success,omitempty"`
+
 	Message string `json:"message,omitempty"`
 }

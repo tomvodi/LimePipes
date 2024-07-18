@@ -12,7 +12,7 @@ package apimodel
 type ImportTune struct {
 
 	// Unique identifier for an object
-	ID uint64 `json:"id"`
+	Id int64 `json:"id"`
 
 	Title string `json:"title"`
 
@@ -26,7 +26,8 @@ type ImportTune struct {
 
 	Set *BasicMusicSet `json:"set,omitempty"`
 
-	ImportedToDatabase bool `json:"importedToDatabase"`
+	// true, if tune was imported into database, false if a tune with this title was already there
+	ImportedToDatabase bool `json:"importedToDatabase,omitempty"`
 
 	Warnings []string `json:"warnings,omitempty"`
 
