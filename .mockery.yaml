@@ -1,0 +1,10 @@
+testonly: False
+with-expecter: True
+packages:
+  github.com/tomvodi/limepipes/internal/interfaces:
+  github.com/tomvodi/limepipes/internal/api_gen/interfaces:
+all: True
+dir: "{{.InterfaceDir}}/mocks"
+outpkg: "mocks"
+mockname: "{{.InterfaceName}}"
+
