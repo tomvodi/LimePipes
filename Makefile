@@ -22,11 +22,7 @@ cover-html: test-cover
 	go tool cover -html=cover.out
 
 server:
-	openapi-generator-cli generate \
-		-i ./limepipes-api/openapi.yaml \
-		-g go-gin-server \
-		-o ${API_GEN_DIR} \
-		--additional-properties=packageName=api_gen
+	./scripts/generate_server.sh
 
 create_test_certificates:
 	mkdir -p build && \
