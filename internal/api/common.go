@@ -1,8 +1,8 @@
-package apimodel
+package api
 
 import "github.com/go-playground/validator/v10"
 
-func NewApimodelValidator() *validator.Validate {
+func NewGinValidator() *validator.Validate {
 	validate := validator.New()
 	validate.SetTagName("binding")
 	return validate

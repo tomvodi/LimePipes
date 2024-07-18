@@ -9,10 +9,10 @@
 
 package apimodel
 
-type UpdateSet struct {
+type SetProperties struct {
 
 	// The name of the Set
-	Title string `json:"title" binding:"required"`
+	Title string `json:"title"`
 
 	// A description of the Set
 	Description string `json:"description,omitempty"`
@@ -20,10 +20,5 @@ type UpdateSet struct {
 	// The name of the creator of the set
 	Creator string `json:"creator,omitempty"`
 
-	Tunes []uint64 `json:"tunes,omitempty"`
-}
-
-func (u UpdateSet) Validate() error {
-	v := NewApimodelValidator()
-	return v.Struct(u)
+	Tunes []Tune `json:"tunes,omitempty"`
 }

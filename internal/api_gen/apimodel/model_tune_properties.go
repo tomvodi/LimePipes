@@ -10,6 +10,7 @@
 package apimodel
 
 type TuneProperties struct {
+
 	Title string `json:"title"`
 
 	Type string `json:"type,omitempty"`

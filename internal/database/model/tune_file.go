@@ -9,7 +9,7 @@ import (
 )
 
 type TuneFile struct {
-	TuneID uint64         `gorm:"primaryKey"`
+	TuneID int64          `gorm:"primaryKey"`
 	Type   file_type.Type `gorm:"primaryKey"`
 	Data   []byte
 }

@@ -10,6 +10,7 @@
 package apimodel
 
 type ImportFile struct {
+
 	Name string `json:"name"`
 
 	Result ParseResult `json:"result,omitempty"`

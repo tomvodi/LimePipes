@@ -1,10 +1,10 @@
 package model
 
 type MusicSetTunes struct {
-	ID         uint64 `gorm:"primaryKey"`
-	MusicSetID uint64
+	ID         int64 `gorm:"primaryKey"`
+	MusicSetID int64
 	MusicSet   MusicSet
-	TuneID     uint64
+	TuneID     int64
 	Tune       Tune
 	Order      uint `gorm:"not null"`
 }

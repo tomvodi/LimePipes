@@ -9,10 +9,7 @@
 
 package apimodel
 
-type BasicMusicSet struct {
-
-	// Unique identifier for an object
-	ID uint64 `json:"id"`
+type CreateUpdateSetProperties struct {
 
 	// The name of the Set
 	Title string `json:"title"`
@@ -22,4 +19,6 @@ type BasicMusicSet struct {
 
 	// The name of the creator of the set
 	Creator string `json:"creator,omitempty"`
+
+	Tunes []int64 `json:"tunes,omitempty"`
 }

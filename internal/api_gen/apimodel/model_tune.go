@@ -12,7 +12,7 @@ package apimodel
 type Tune struct {
 
 	// Unique identifier for an object
-	ID uint64 `json:"id"`
+	Id int64 `json:"id"`
 
 	Title string `json:"title"`
 
