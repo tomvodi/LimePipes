@@ -5,7 +5,7 @@ import (
 )
 
 type MusicSet struct {
-	ID           int64 `gorm:"primaryKey"`
+	ID           int64 `gorm:"primaryKey" copier:"Id"`
 	Title        string
 	Description  string
 	Creator      string

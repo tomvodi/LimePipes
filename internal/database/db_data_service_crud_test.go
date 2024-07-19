@@ -1,13 +1,15 @@
 package database
 
 import (
+	"fmt"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.com/tomvodi/limepipes/internal/api/apimodel"
+	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
 	"github.com/tomvodi/limepipes/internal/common"
 	"github.com/tomvodi/limepipes/internal/common/music_model"
 	"github.com/tomvodi/limepipes/internal/database/model"
 	"github.com/tomvodi/limepipes/internal/database/model/file_type"
+	"github.com/tomvodi/limepipes/internal/interfaces/mocks"
 	"gorm.io/gorm"
 	"os"
 )
@@ -16,12 +18,17 @@ var _ = Describe("DbDataService", func() {
 	var err error
 	var service *dbService
 	var gormDb *gorm.DB
+	var validator *mocks.ApiModelValidator
 
 	BeforeEach(func() {
 		gormDb, err = GetInitSqliteDb("testing.db")
+		validator = mocks.NewApiModelValidator(GinkgoT())
 		Expect(err).ShouldNot(HaveOccurred())
 
-		service = &dbService{db: gormDb}
+		service = &dbService{
+			db:        gormDb,
+			validator: validator,
+		}
 	})
 
 	AfterEach(func() {
@@ -107,7 +114,7 @@ var _ = Describe("DbDataService", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 			Expect(tune).Should(Equal(
 				&apimodel.Tune{
-					ID:    1,
+					Id:    1,
 					Title: "title",
 				}))
 		})
@@ -141,7 +148,7 @@ var _ = Describe("DbDataService", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 			Expect(tune).Should(Equal(
 				&apimodel.Tune{
-					ID:       1,
+					Id:       1,
 					Title:    "title",
 					Type:     "march",
 					TimeSig:  "2/4",
@@ -153,7 +160,7 @@ var _ = Describe("DbDataService", func() {
 		When("getting it again from service", func() {
 			var returnedTune *apimodel.Tune
 			BeforeEach(func() {
-				returnedTune, err = service.GetTune(tune.ID)
+				returnedTune, err = service.GetTune(tune.Id)
 			})
 
 			It("should return the same tune", func() {
@@ -183,13 +190,14 @@ var _ = Describe("DbDataService", func() {
 					Composer: "new composer",
 					Arranger: "new arranger",
 				}
-				tune, err = service.UpdateTune(tune.ID, update)
+				validator.EXPECT().ValidateUpdateTune(update).Return(nil)
+				tune, err = service.UpdateTune(tune.Id, update)
 			})
 
 			It("should succeed", func() {
 				Expect(err).ShouldNot(HaveOccurred())
 				Expect(tune).To(Equal(&apimodel.Tune{
-					ID:       1,
+					Id:       1,
 					Title:    "new title",
 					Type:     "new type",
 					TimeSig:  "new time signature",
@@ -200,13 +208,13 @@ var _ = Describe("DbDataService", func() {
 
 			When("retrieving that updated tune", func() {
 				BeforeEach(func() {
-					tune, err = service.GetTune(tune.ID)
+					tune, err = service.GetTune(tune.Id)
 				})
 
 				It("should return the same updated tune", func() {
 					Expect(err).ShouldNot(HaveOccurred())
 					Expect(tune).To(Equal(&apimodel.Tune{
-						ID:       1,
+						Id:       1,
 						Title:    "new title",
 						Type:     "new type",
 						TimeSig:  "new time signature",
@@ -226,7 +234,9 @@ var _ = Describe("DbDataService", func() {
 					Composer: "new composer",
 					Arranger: "new arranger",
 				}
-				tune, err = service.UpdateTune(tune.ID, update)
+				validator.EXPECT().ValidateUpdateTune(update).
+					Return(fmt.Errorf("missing title"))
+				tune, err = service.UpdateTune(tune.Id, update)
 			})
 
 			It("should fail", func() {
@@ -244,7 +254,7 @@ var _ = Describe("DbDataService", func() {
 				testTune = model.TestMusicModelTune("test tune")
 				tuneFile, err = model.TuneFileFromTune(testTune)
 				Expect(err).ShouldNot(HaveOccurred())
-				err = service.AddFileToTune(tune.ID, tuneFile)
+				err = service.AddFileToTune(tune.Id, tuneFile)
 			})
 
 			It("should add that file", func() {
@@ -253,7 +263,7 @@ var _ = Describe("DbDataService", func() {
 
 			When("retrieving that tune file again", func() {
 				BeforeEach(func() {
-					returnTuneFile, err = service.GetTuneFile(tune.ID, file_type.MusicModelTune)
+					returnTuneFile, err = service.GetTuneFile(tune.Id, file_type.MusicModelTune)
 				})
 
 				It("should contain that same music model tune", func() {
@@ -265,7 +275,7 @@ var _ = Describe("DbDataService", func() {
 
 			When("deleting that file", func() {
 				BeforeEach(func() {
-					err = service.DeleteFileFromTune(tune.ID, file_type.MusicModelTune)
+					err = service.DeleteFileFromTune(tune.Id, file_type.MusicModelTune)
 				})
 
 				It("should succeed", func() {
@@ -274,7 +284,7 @@ var _ = Describe("DbDataService", func() {
 
 				When("retrieving all tune files", func() {
 					BeforeEach(func() {
-						tuneFiles, err = service.GetTuneFiles(tune.ID)
+						tuneFiles, err = service.GetTuneFiles(tune.Id)
 					})
 
 					It("should have no tune files again", func() {
@@ -286,7 +296,7 @@ var _ = Describe("DbDataService", func() {
 
 			When("deleting that tune", func() {
 				BeforeEach(func() {
-					err = service.DeleteTune(tune.ID)
+					err = service.DeleteTune(tune.Id)
 				})
 
 				It("should have deleted that tune", func() {
@@ -295,7 +305,7 @@ var _ = Describe("DbDataService", func() {
 
 				When("retrieving all tune files", func() {
 					BeforeEach(func() {
-						tuneFiles, err = service.GetTuneFiles(tune.ID)
+						tuneFiles, err = service.GetTuneFiles(tune.Id)
 					})
 
 					It("should have removed all tune files", func() {
@@ -307,7 +317,7 @@ var _ = Describe("DbDataService", func() {
 
 		When("deleting that tune", func() {
 			BeforeEach(func() {
-				err = service.DeleteTune(tune.ID)
+				err = service.DeleteTune(tune.Id)
 			})
 
 			It("should have removed that tune", func() {
@@ -316,7 +326,7 @@ var _ = Describe("DbDataService", func() {
 
 			When("retrieving that tune again", func() {
 				BeforeEach(func() {
-					tune, err = service.GetTune(tune.ID)
+					tune, err = service.GetTune(tune.Id)
 				})
 
 				It("should return a not found error", func() {
@@ -343,8 +353,8 @@ var _ = Describe("DbDataService", func() {
 		It("should return both tunes", func() {
 			tunes, err = service.Tunes()
 			Expect(err).ShouldNot(HaveOccurred())
-			tune1.ID = 1
-			tune2.ID = 2
+			tune1.Id = 1
+			tune2.Id = 2
 			Expect(tunes).To(Equal([]*apimodel.Tune{
 				tune1,
 				tune2,
@@ -379,7 +389,7 @@ var _ = Describe("DbDataService", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 			Expect(musicSet).Should(Equal(
 				&apimodel.MusicSet{
-					ID:          1,
+					Id:          1,
 					Title:       "title",
 					Description: "desc",
 					Creator:     "creator",
@@ -389,7 +399,7 @@ var _ = Describe("DbDataService", func() {
 		When("getting it again from service", func() {
 			var returnedSet *apimodel.MusicSet
 			BeforeEach(func() {
-				returnedSet, err = service.GetMusicSet(musicSet.ID)
+				returnedSet, err = service.GetMusicSet(musicSet.Id)
 			})
 
 			It("should return the same musicSet", func() {
@@ -405,13 +415,14 @@ var _ = Describe("DbDataService", func() {
 					Description: "new desc",
 					Creator:     "new creator",
 				}
-				musicSet, err = service.UpdateMusicSet(musicSet.ID, update)
+				validator.EXPECT().ValidateUpdateSet(update).Return(nil)
+				musicSet, err = service.UpdateMusicSet(musicSet.Id, update)
 			})
 
 			It("should succeed", func() {
 				Expect(err).ShouldNot(HaveOccurred())
 				Expect(musicSet).To(Equal(&apimodel.MusicSet{
-					ID:          1,
+					Id:          1,
 					Title:       "new title",
 					Description: "new desc",
 					Creator:     "new creator",
@@ -420,13 +431,13 @@ var _ = Describe("DbDataService", func() {
 
 			When("retrieving that updated set", func() {
 				BeforeEach(func() {
-					musicSet, err = service.GetMusicSet(musicSet.ID)
+					musicSet, err = service.GetMusicSet(musicSet.Id)
 				})
 
 				It("should return the same updated tune", func() {
 					Expect(err).ShouldNot(HaveOccurred())
 					Expect(musicSet).To(Equal(&apimodel.MusicSet{
-						ID:          1,
+						Id:          1,
 						Title:       "new title",
 						Description: "new desc",
 						Creator:     "new creator",
@@ -442,7 +453,9 @@ var _ = Describe("DbDataService", func() {
 					Description: "new desc",
 					Creator:     "new creator",
 				}
-				musicSet, err = service.UpdateMusicSet(musicSet.ID, update)
+				validator.EXPECT().ValidateUpdateSet(update).
+					Return(fmt.Errorf("missing title"))
+				musicSet, err = service.UpdateMusicSet(musicSet.Id, update)
 			})
 
 			It("should fail", func() {
@@ -452,7 +465,7 @@ var _ = Describe("DbDataService", func() {
 
 		When("deleting that music set", func() {
 			BeforeEach(func() {
-				err = service.DeleteMusicSet(musicSet.ID)
+				err = service.DeleteMusicSet(musicSet.Id)
 			})
 
 			It("should have removed that music set", func() {
@@ -461,7 +474,7 @@ var _ = Describe("DbDataService", func() {
 
 			When("retrieving that music set again", func() {
 				BeforeEach(func() {
-					musicSet, err = service.GetMusicSet(musicSet.ID)
+					musicSet, err = service.GetMusicSet(musicSet.Id)
 				})
 
 				It("should return a not found error", func() {
@@ -488,8 +501,8 @@ var _ = Describe("DbDataService", func() {
 		It("should return both sets", func() {
 			sets, err = service.MusicSets()
 			Expect(err).ShouldNot(HaveOccurred())
-			set1.ID = 1
-			set2.ID = 2
+			set1.Id = 1
+			set2.Id = 2
 			Expect(sets).To(Equal([]*apimodel.MusicSet{
 				set1,
 				set2,

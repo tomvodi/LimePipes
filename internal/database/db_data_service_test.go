@@ -2,7 +2,7 @@ package database
 
 import (
 	. "github.com/onsi/gomega"
-	"github.com/tomvodi/limepipes/internal/api/apimodel"
+	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
 	"github.com/tomvodi/limepipes/internal/utils"
 	"testing"
 )

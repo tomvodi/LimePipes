@@ -5,7 +5,7 @@ import (
 )
 
 type Tune struct {
-	ID           int64 `gorm:"primaryKey"`
+	ID           int64 `gorm:"primaryKey" copier:"Id"`
 	Title        string
 	TuneTypeId   *int64
 	TuneType     *TuneType

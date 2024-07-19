@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/rs/zerolog/log"
-	"github.com/tomvodi/limepipes/internal/api/apimodel"
-	mock_interfaces "github.com/tomvodi/limepipes/internal/interfaces/mocks"
+	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
+	"github.com/tomvodi/limepipes/internal/database/model"
+	"github.com/tomvodi/limepipes/internal/interfaces/mocks"
 	"github.com/tomvodi/limepipes/internal/utils"
 	"io"
 	"net/http"
@@ -22,10 +22,9 @@ var _ = Describe("CreateTune", func() {
 	var c *gin.Context
 	var httpRec *httptest.ResponseRecorder
 	var api *apiHandler
-	var mockCtrl *gomock.Controller
 	var tune apimodel.CreateTune
 
-	var dataService *mock_interfaces.MockDataService
+	var dataService *mocks.DataService
 
 	JustBeforeEach(func() {
 		api.CreateTune(c)
@@ -34,8 +33,7 @@ var _ = Describe("CreateTune", func() {
 	BeforeEach(func() {
 		httpRec = httptest.NewRecorder()
 		c, _ = gin.CreateTestContext(httpRec)
-		mockCtrl = gomock.NewController(GinkgoT())
-		dataService = mock_interfaces.NewMockDataService(mockCtrl)
+		dataService = mocks.NewDataService(GinkgoT())
 		api = &apiHandler{
 			service: dataService,
 		}
@@ -61,7 +59,7 @@ var _ = Describe("CreateTune", func() {
 
 		When("service returns an error on creation", func() {
 			BeforeEach(func() {
-				dataService.EXPECT().CreateTune(tune, nil).
+				dataService.EXPECT().CreateTune(tune, (*model.ImportFile)(nil)).
 					Return(nil, fmt.Errorf("xxx"))
 			})
 
@@ -72,9 +70,9 @@ var _ = Describe("CreateTune", func() {
 
 		When("service successfully creates tune", func() {
 			BeforeEach(func() {
-				dataService.EXPECT().CreateTune(tune, nil).
+				dataService.EXPECT().CreateTune(tune, (*model.ImportFile)(nil)).
 					Return(&apimodel.Tune{
-						ID:    1,
+						Id:    1,
 						Title: tune.Title,
 					}, nil)
 			})

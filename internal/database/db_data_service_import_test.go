@@ -3,7 +3,7 @@ package database
 import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.com/tomvodi/limepipes/internal/api/apimodel"
+	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
 	"github.com/tomvodi/limepipes/internal/common"
 	"github.com/tomvodi/limepipes/internal/common/music_model"
 	"github.com/tomvodi/limepipes/internal/database/model"
@@ -60,8 +60,8 @@ var _ = Describe("DbDataService Import", func() {
 				Expect(returnTunes).Should(HaveLen(2))
 				Expect(returnTunes[0].Set).ShouldNot(BeNil())
 				Expect(returnTunes[1].Set).ShouldNot(BeNil())
-				setId := returnTunes[0].Set.ID
-				Expect(setId).To(Equal(returnTunes[1].Set.ID))
+				setId := returnTunes[0].Set.Id
+				Expect(setId).To(Equal(returnTunes[1].Set.Id))
 			})
 
 			It("should have imported both tunes into database", func() {
@@ -72,7 +72,7 @@ var _ = Describe("DbDataService Import", func() {
 			When("retrieving tune file for music model", func() {
 				BeforeEach(func() {
 					tuneFile, err = service.GetTuneFile(
-						returnTunes[0].ID,
+						returnTunes[0].Id,
 						file_type.MusicModelTune,
 					)
 				})
@@ -91,8 +91,8 @@ var _ = Describe("DbDataService Import", func() {
 						Expect(tuneFileTune).Should(Equal(muMo[0]))
 						Expect(returnTunes[0].Set).ShouldNot(BeNil())
 						Expect(returnTunes[1].Set).ShouldNot(BeNil())
-						setId := returnTunes[0].Set.ID
-						Expect(setId).To(Equal(returnTunes[1].Set.ID))
+						setId := returnTunes[0].Set.Id
+						Expect(setId).To(Equal(returnTunes[1].Set.Id))
 					})
 				})
 			})
@@ -157,15 +157,15 @@ var _ = Describe("DbDataService Import", func() {
 					Expect(returnTunes).Should(HaveLen(2))
 					Expect(returnTunes[0].Set).ShouldNot(BeNil())
 					Expect(returnTunes[1].Set).ShouldNot(BeNil())
-					setId := returnTunes[0].Set.ID
-					Expect(setId).To(Equal(returnTunes[1].Set.ID))
+					setId := returnTunes[0].Set.Id
+					Expect(setId).To(Equal(returnTunes[1].Set.Id))
 				})
 
 				When("retrieving the tune file for bww", func() {
 					var getTuneFileErr error
 					BeforeEach(func() {
 						tuneFile, getTuneFileErr = service.GetTuneFile(
-							returnTunes[0].ID,
+							returnTunes[0].Id,
 							file_type.Bww,
 						)
 					})
@@ -209,7 +209,7 @@ var _ = Describe("DbDataService Import", func() {
 
 			When("I retrieve the set", func() {
 				BeforeEach(func() {
-					setId := returnTunes[0].Set.ID
+					setId := returnTunes[0].Set.Id
 					musicSet, err = service.GetMusicSet(setId)
 				})
 

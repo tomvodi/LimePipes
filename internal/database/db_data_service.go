@@ -66,7 +66,7 @@ func (d *dbService) CreateTune(tune apimodel.CreateTune, importFile *model.Impor
 	}
 
 	apiTune := &apimodel.Tune{}
-	if err := copier.Copy(apiTune, dbTune); err != nil {
+	if err := copier.Copy(apiTune, &dbTune); err != nil {
 		return nil, err
 	}
 	if tuneType != nil {

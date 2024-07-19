@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
+	"github.com/tomvodi/limepipes/internal/api"
 	"github.com/tomvodi/limepipes/internal/bww"
 	"github.com/tomvodi/limepipes/internal/common"
 	"github.com/tomvodi/limepipes/internal/common/music_model"
@@ -41,7 +42,9 @@ If a given file that has an extension which is not in the import-file-types, it 
 		if err != nil {
 			return fmt.Errorf("failed initializing database: %s", err.Error())
 		}
-		dbService := database.NewDbDataService(db)
+		ginValidator := api.NewGinValidator()
+		apiModelValidator := api.NewApiModelValidator(ginValidator)
+		dbService := database.NewDbDataService(db, apiModelValidator)
 		bwwFileTuneSplitter := bww.NewBwwFileTuneSplitter()
 		tuneFixer := helper.NewTuneFixer()
 

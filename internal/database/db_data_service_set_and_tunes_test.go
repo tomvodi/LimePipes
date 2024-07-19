@@ -3,7 +3,8 @@ package database
 import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.com/tomvodi/limepipes/internal/api/apimodel"
+	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
+	"github.com/tomvodi/limepipes/internal/interfaces/mocks"
 	"gorm.io/gorm"
 	"os"
 )
@@ -12,6 +13,7 @@ var _ = Describe("DbDataService", func() {
 	var err error
 	var service *dbService
 	var gormDb *gorm.DB
+	var validator *mocks.ApiModelValidator
 	var tune1 *apimodel.Tune
 	var tune2 *apimodel.Tune
 	var tune3 *apimodel.Tune
@@ -19,9 +21,13 @@ var _ = Describe("DbDataService", func() {
 
 	BeforeEach(func() {
 		gormDb, err = GetInitSqliteDb("testing.db")
+		validator = mocks.NewApiModelValidator(GinkgoT())
 		Expect(err).ShouldNot(HaveOccurred())
 
-		service = &dbService{db: gormDb}
+		service = &dbService{
+			db:        gormDb,
+			validator: validator,
+		}
 	})
 
 	AfterEach(func() {
@@ -52,9 +58,9 @@ var _ = Describe("DbDataService", func() {
 					*tune3,
 					*tune1,
 				}
-				var tuneIds []uint64
+				var tuneIds []int64
 				for _, tune := range expectedTuneOrder {
-					tuneIds = append(tuneIds, tune.ID)
+					tuneIds = append(tuneIds, tune.Id)
 				}
 
 				musicSet, err = service.CreateMusicSet(
@@ -73,7 +79,7 @@ var _ = Describe("DbDataService", func() {
 
 			When("retrieving that music set from database", func() {
 				BeforeEach(func() {
-					musicSet, err = service.GetMusicSet(musicSet.ID)
+					musicSet, err = service.GetMusicSet(musicSet.Id)
 				})
 
 				It("should have the tunes in correct order", func() {
@@ -85,10 +91,10 @@ var _ = Describe("DbDataService", func() {
 			When("retrieving the music set by tune ids", func() {
 				var foundMusicSet *apimodel.MusicSet
 				BeforeEach(func() {
-					foundMusicSet, err = service.getMusicSetByTuneIds([]uint64{
-						expectedTuneOrder[0].ID,
-						expectedTuneOrder[1].ID,
-						expectedTuneOrder[2].ID,
+					foundMusicSet, err = service.getMusicSetByTuneIds([]int64{
+						expectedTuneOrder[0].Id,
+						expectedTuneOrder[1].Id,
+						expectedTuneOrder[2].Id,
 					})
 				})
 
@@ -104,17 +110,20 @@ var _ = Describe("DbDataService", func() {
 						*tune2,
 						*tune1,
 					}
-					var tuneIds []uint64
+					var tuneIds []int64
 					for _, tune := range expectedTuneOrder {
-						tuneIds = append(tuneIds, tune.ID)
+						tuneIds = append(tuneIds, tune.Id)
 					}
 
+					updateSet := apimodel.UpdateSet{
+						Title: "test music set",
+						Tunes: tuneIds,
+					}
+					validator.EXPECT().ValidateUpdateSet(updateSet).Return(nil)
+
 					musicSet, err = service.UpdateMusicSet(
-						musicSet.ID,
-						apimodel.UpdateSet{
-							Title: "test music set",
-							Tunes: tuneIds,
-						},
+						musicSet.Id,
+						updateSet,
 					)
 					Expect(err).ShouldNot(HaveOccurred())
 				})
@@ -141,8 +150,8 @@ var _ = Describe("DbDataService", func() {
 				"to the music set", func() {
 				BeforeEach(func() {
 					musicSetAfterAssignment, err = service.AssignTunesToMusicSet(
-						musicSet.ID,
-						[]uint64{tune2.ID, tune1.ID, tune3.ID},
+						musicSet.Id,
+						[]int64{tune2.Id, tune1.Id, tune3.Id},
 					)
 				})
 
@@ -161,7 +170,7 @@ var _ = Describe("DbDataService", func() {
 
 				When("getting the same set from service", func() {
 					BeforeEach(func() {
-						musicSetAfterAssignment, err = service.GetMusicSet(musicSetAfterAssignment.ID)
+						musicSetAfterAssignment, err = service.GetMusicSet(musicSetAfterAssignment.Id)
 						Expect(err).ShouldNot(HaveOccurred())
 					})
 
@@ -193,7 +202,7 @@ var _ = Describe("DbDataService", func() {
 
 				When("trying to delete a tune that is assigned to the set", func() {
 					BeforeEach(func() {
-						err = service.DeleteTune(musicSetAfterAssignment.Tunes[0].ID)
+						err = service.DeleteTune(musicSetAfterAssignment.Tunes[0].Id)
 					})
 
 					It("should not be possible", func() {
@@ -203,7 +212,7 @@ var _ = Describe("DbDataService", func() {
 
 				When("deleting that set", func() {
 					BeforeEach(func() {
-						err = service.DeleteMusicSet(musicSetAfterAssignment.ID)
+						err = service.DeleteMusicSet(musicSetAfterAssignment.Id)
 					})
 
 					It("should get deleted", func() {
