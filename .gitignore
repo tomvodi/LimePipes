@@ -9,3 +9,5 @@ limepipes-cli
 !cmd/limepipes-cli
 limepipes
 build
+
+openapitools.json
