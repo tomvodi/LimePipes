@@ -1,19 +1,30 @@
 package database
 
 import (
+	"fmt"
+	"github.com/tomvodi/limepipes/internal/config"
 	"github.com/tomvodi/limepipes/internal/database/model"
-	"gorm.io/driver/sqlite"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-func GetInitSqliteDb(name string) (*gorm.DB, error) {
-	dialect := sqlite.Open(name)
-	db, err := gorm.Open(dialect, &gorm.Config{})
+func GetInitPostgreSQLDB(
+	dbConf config.DbConfig,
+) (*gorm.DB, error) {
+	dsnTpl := "postgres://%s:%s@%s:%s/%s?sslmode=%s"
+	dsn := fmt.Sprintf(dsnTpl,
+		dbConf.User,
+		dbConf.Password,
+		dbConf.Host,
+		dbConf.Port,
+		dbConf.DbName,
+		dbConf.SslMode,
+	)
+	db, err := gorm.Open(postgres.New(postgres.Config{
+		DSN: dsn,
+	}), &gorm.Config{})
 	if err != nil {
 		return nil, err
-	}
-	if res := db.Exec("PRAGMA foreign_keys = ON", nil); res.Error != nil {
-		return nil, res.Error
 	}
 
 	if err = db.AutoMigrate(
@@ -28,4 +39,5 @@ func GetInitSqliteDb(name string) (*gorm.DB, error) {
 	}
 
 	return db, nil
+
 }

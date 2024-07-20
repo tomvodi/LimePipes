@@ -38,7 +38,7 @@ If a given file that has an extension which is not in the import-file-types, it 
 		}
 
 		var db *gorm.DB
-		db, err = database.GetInitSqliteDb(cfg.SqliteDbPath)
+		db, err = database.GetInitPostgreSQLDB(cfg.DbConfig())
 		if err != nil {
 			return fmt.Errorf("failed initializing database: %s", err.Error())
 		}

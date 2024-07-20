@@ -35,7 +35,7 @@ func main() {
 	}
 
 	var db *gorm.DB
-	db, err = database.GetInitSqliteDb(cfg.SqliteDbPath)
+	db, err = database.GetInitPostgreSQLDB(cfg.DbConfig())
 	if err != nil {
 		panic(fmt.Sprintf("failed initializing database: %s", err.Error()))
 	}
