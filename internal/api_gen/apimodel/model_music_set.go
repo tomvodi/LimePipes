@@ -8,12 +8,13 @@
  */
 
 package apimodel
+import "github.com/google/uuid"
 
 // MusicSet - Called MusicSet and not only Set because of name clash in e.g. typescript
 type MusicSet struct {
 
 	// Unique identifier for an object
-	Id int64 `json:"id"`
+	Id uuid.UUID `json:"id"`
 
 	// The name of the Set
 	Title string `json:"title"`

@@ -36,9 +36,22 @@ sed -i "s/ApiHandler ApiHandler/ApiHandler interfaces.ApiHandler/g" "${API_ROUTE
 sed -i '/import (/a\\t"'"github.com/tomvodi/limepipes/internal/${GEN_PKG_NAME}/interfaces"'"' "${API_ROUTER_FILE}"
 
 # Modify data types in model
+
 # Change types to pointer where necessary
 sed -i 's/Tunes \[\]ImportTune/Tunes \[\]\*ImportTune/g' ${API_MODEL_DIR}/model_import_file.go
 sed -i 's/Set BasicMusicSet/Set \*BasicMusicSet/g' ${API_MODEL_DIR}/model_import_tune.go
+
+# Change string Ids to uuid.UUID
+for model_file in "${API_MODEL_DIR}"/*.go; do
+  sed -i "s/Id string/Id uuid.UUID/g" "$model_file"
+  sed -i "s/Tunes \[\]string/Tunes \[\]uuid.UUID/g" "$model_file"
+
+  # add uuid import if necessary
+  if grep -q uuid\.UUID "$model_file"; then
+    sed -i '/package apimodel/a import "github.com/google/uuid"' "$model_file"
+  fi
+done
+
 
 # Remove unnecessary files and directories
 rm  ${API_GEN_DIR}/go.mod  ${API_GEN_DIR}/main.go \

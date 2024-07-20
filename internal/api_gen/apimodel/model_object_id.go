@@ -8,9 +8,10 @@
  */
 
 package apimodel
+import "github.com/google/uuid"
 
 type ObjectId struct {
 
 	// Unique identifier for an object
-	Id int64 `json:"id"`
+	Id uuid.UUID `json:"id"`
 }
