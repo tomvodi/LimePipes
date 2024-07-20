@@ -1,7 +1,7 @@
 package model
 
 type MusicSetTunes struct {
-	ID         int64 `gorm:"primaryKey"`
+	BaseModel
 	MusicSetID int64
 	MusicSet   MusicSet
 	TuneID     int64
