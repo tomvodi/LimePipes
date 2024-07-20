@@ -4,9 +4,9 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
+	"github.com/tomvodi/limepipes/internal/config"
 	"github.com/tomvodi/limepipes/internal/interfaces/mocks"
 	"gorm.io/gorm"
-	"os"
 )
 
 var _ = Describe("DbDataService", func() {
@@ -20,7 +20,9 @@ var _ = Describe("DbDataService", func() {
 	var musicSet *apimodel.MusicSet
 
 	BeforeEach(func() {
-		gormDb, err = GetInitSqliteDb("testing.db")
+		cfg, err := config.InitTest()
+		Expect(err).ShouldNot(HaveOccurred())
+		gormDb, err = GetInitTestPostgreSQLDB(cfg.DbConfig(), "testdb")
 		validator = mocks.NewApiModelValidator(GinkgoT())
 		Expect(err).ShouldNot(HaveOccurred())
 
@@ -34,8 +36,6 @@ var _ = Describe("DbDataService", func() {
 		db, err := gormDb.DB()
 		Expect(err).ShouldNot(HaveOccurred())
 		err = db.Close()
-		Expect(err).ShouldNot(HaveOccurred())
-		err = os.Remove("testing.db")
 		Expect(err).ShouldNot(HaveOccurred())
 	})
 

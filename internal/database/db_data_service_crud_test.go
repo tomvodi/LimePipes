@@ -7,11 +7,11 @@ import (
 	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
 	"github.com/tomvodi/limepipes/internal/common"
 	"github.com/tomvodi/limepipes/internal/common/music_model"
+	"github.com/tomvodi/limepipes/internal/config"
 	"github.com/tomvodi/limepipes/internal/database/model"
 	"github.com/tomvodi/limepipes/internal/database/model/file_type"
 	"github.com/tomvodi/limepipes/internal/interfaces/mocks"
 	"gorm.io/gorm"
-	"os"
 )
 
 var _ = Describe("DbDataService", func() {
@@ -21,7 +21,9 @@ var _ = Describe("DbDataService", func() {
 	var validator *mocks.ApiModelValidator
 
 	BeforeEach(func() {
-		gormDb, err = GetInitSqliteDb("testing.db")
+		cfg, err := config.InitTest()
+		Expect(err).ShouldNot(HaveOccurred())
+		gormDb, err = GetInitTestPostgreSQLDB(cfg.DbConfig(), "testdb")
 		validator = mocks.NewApiModelValidator(GinkgoT())
 		Expect(err).ShouldNot(HaveOccurred())
 
@@ -35,8 +37,6 @@ var _ = Describe("DbDataService", func() {
 		db, err := gormDb.DB()
 		Expect(err).ShouldNot(HaveOccurred())
 		err = db.Close()
-		Expect(err).ShouldNot(HaveOccurred())
-		err = os.Remove("testing.db")
 		Expect(err).ShouldNot(HaveOccurred())
 	})
 
