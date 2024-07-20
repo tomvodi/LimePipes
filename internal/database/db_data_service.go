@@ -1,6 +1,7 @@
 package database
 
 import (
+	"errors"
 	"fmt"
 	"github.com/jinzhu/copier"
 	"github.com/mitchellh/mapstructure"
@@ -227,7 +228,7 @@ func (d *dbService) getOrCreateTuneType(
 	var tuneType = &model.TuneType{}
 	var err error
 	tuneType, err = d.getTuneTypeByName(name)
-	if err == common.NotFound {
+	if errors.Is(err, common.NotFound) {
 		return d.createTuneType(name)
 	}
 
