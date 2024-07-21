@@ -1,13 +1,11 @@
 
-API_GEN_DIR=./internal/api_gen
-
 .PHONY: test test-cover lint cover-html server
 
 cli:
 	go build -o ./limepipes-cli limepipes/cmd/limepipes-cli
 
 mocks:
-	go generate mockgen ./...
+	mockery
 
 test:
 	go test ./...

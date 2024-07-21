@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="go banduslib-cli parser" type="GoApplicationRunConfiguration" factoryName="Go Application">
+  <configuration default="false" name="go limepipes-cli parser" type="GoApplicationRunConfiguration" factoryName="Go Application">
     <module name="limepipes" />
     <working_directory value="$PROJECT_DIR$" />
     <parameters value="parser -r -d -s -v -o $PROJECT_DIR$/../bwwfiles/parser_success $PROJECT_DIR$/../bwwfiles/parser_errors  " />
