@@ -11,6 +11,7 @@ import (
 	"github.com/tomvodi/limepipes/internal/common/music_model/helper"
 	"github.com/tomvodi/limepipes/internal/config"
 	"github.com/tomvodi/limepipes/internal/database"
+	"github.com/tomvodi/limepipes/internal/health"
 	"github.com/tomvodi/limepipes/internal/utils"
 	"gorm.io/gorm"
 )
@@ -46,7 +47,17 @@ func main() {
 	apiModelValidator := api.NewApiModelValidator(ginValidator)
 	dbService := database.NewDbDataService(db, apiModelValidator)
 	tuneFixer := helper.NewTuneFixer()
-	apiHandler := api.NewApiHandler(dbService, bwwParser, bwwFileTuneSplitter, tuneFixer)
+	healthChecker, err := health.NewHealthCheck(cfg.HealthConfig(), db)
+	if err != nil {
+		panic(fmt.Sprintf("failed initializing health check: %s", err.Error()))
+	}
+	apiHandler := api.NewApiHandler(
+		dbService,
+		bwwParser,
+		bwwFileTuneSplitter,
+		tuneFixer,
+		healthChecker,
+	)
 	engine := setupGinEngine()
 	router := api_gen.NewRouterWithGinEngine(
 		engine,

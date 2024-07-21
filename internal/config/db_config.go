@@ -9,3 +9,10 @@ type DbConfig struct {
 	SslMode  string
 	TimeZone string
 }
+
+type HealthConfig struct {
+	CacheDurationSeconds uint32
+	GlobalTimeoutSeconds uint32
+	RefreshPeriodSeconds uint32
+	InitialDelaySeconds  uint32
+}
