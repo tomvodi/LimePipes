@@ -20,6 +20,18 @@ type apiHandler struct {
 	bwwParser           interfaces.BwwParser
 	bwwFileTuneSplitter interfaces.BwwFileByTuneSplitter
 	tuneFixer           interfaces.TuneFixer
+	healthChecker       interfaces.HealthChecker
+}
+
+func (a *apiHandler) Health(c *gin.Context) {
+	handler, err := a.healthChecker.GetCheckHandler()
+	if err != nil {
+		httpErrorResponse(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	handleFunc := gin.WrapH(handler)
+	handleFunc(c)
 }
 
 func (a *apiHandler) ImportBww(c *gin.Context) {
@@ -300,11 +312,13 @@ func NewApiHandler(
 	bwwParser interfaces.BwwParser,
 	bwwFileTuneSplitter interfaces.BwwFileByTuneSplitter,
 	tuneFixer interfaces.TuneFixer,
+	healthChecker interfaces.HealthChecker,
 ) api_interfaces.ApiHandler {
 	return &apiHandler{
 		service:             service,
 		bwwParser:           bwwParser,
 		bwwFileTuneSplitter: bwwFileTuneSplitter,
 		tuneFixer:           tuneFixer,
+		healthChecker:       healthChecker,
 	}
 }

@@ -78,3 +78,5 @@ DELETE https://{{host}}/sets/1
 <> 2023-05-02T150928.200.txt
 <> 2023-05-02T145810.404.txt
 
+###
+GET https://{{host}}/health
