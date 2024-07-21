@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
@@ -112,9 +113,10 @@ var _ = Describe("DbDataService", func() {
 
 		It("should succeed", func() {
 			Expect(err).ShouldNot(HaveOccurred())
+			Expect(tune.Id).ShouldNot(Equal(uuid.Nil))
 			Expect(tune).Should(Equal(
 				&apimodel.Tune{
-					Id:    1,
+					Id:    tune.Id,
 					Title: "title",
 				}))
 		})
@@ -127,7 +129,7 @@ var _ = Describe("DbDataService", func() {
 
 			It("should return the same tune", func() {
 				Expect(err).ShouldNot(HaveOccurred())
-				Expect(returnedTune).To(Equal(tune))
+				Expect(returnedTune).Should(Equal(tune))
 			})
 		})
 	})
@@ -146,9 +148,10 @@ var _ = Describe("DbDataService", func() {
 
 		It("should succeed", func() {
 			Expect(err).ShouldNot(HaveOccurred())
+			Expect(tune.Id).ShouldNot(Equal(uuid.Nil))
 			Expect(tune).Should(Equal(
 				&apimodel.Tune{
-					Id:       1,
+					Id:       tune.Id,
 					Title:    "title",
 					Type:     "march",
 					TimeSig:  "2/4",
@@ -196,8 +199,9 @@ var _ = Describe("DbDataService", func() {
 
 			It("should succeed", func() {
 				Expect(err).ShouldNot(HaveOccurred())
+				Expect(tune.Id).ShouldNot(Equal(uuid.Nil))
 				Expect(tune).To(Equal(&apimodel.Tune{
-					Id:       1,
+					Id:       tune.Id,
 					Title:    "new title",
 					Type:     "new type",
 					TimeSig:  "new time signature",
@@ -213,8 +217,9 @@ var _ = Describe("DbDataService", func() {
 
 				It("should return the same updated tune", func() {
 					Expect(err).ShouldNot(HaveOccurred())
+					Expect(tune.Id).ShouldNot(Equal(uuid.Nil))
 					Expect(tune).To(Equal(&apimodel.Tune{
-						Id:       1,
+						Id:       tune.Id,
 						Title:    "new title",
 						Type:     "new type",
 						TimeSig:  "new time signature",
@@ -353,8 +358,11 @@ var _ = Describe("DbDataService", func() {
 		It("should return both tunes", func() {
 			tunes, err = service.Tunes()
 			Expect(err).ShouldNot(HaveOccurred())
-			tune1.Id = 1
-			tune2.Id = 2
+			Expect(tunes).To(HaveLen(2))
+			Expect(tunes[0].Id).ShouldNot(Equal(uuid.Nil))
+			Expect(tunes[1].Id).ShouldNot(Equal(uuid.Nil))
+			tune1.Id = tunes[0].Id
+			tune2.Id = tunes[1].Id
 			Expect(tunes).To(Equal([]*apimodel.Tune{
 				tune1,
 				tune2,
@@ -387,9 +395,10 @@ var _ = Describe("DbDataService", func() {
 
 		It("should succeed", func() {
 			Expect(err).ShouldNot(HaveOccurred())
+			Expect(musicSet.Id).ShouldNot(Equal(uuid.Nil))
 			Expect(musicSet).Should(Equal(
 				&apimodel.MusicSet{
-					Id:          1,
+					Id:          musicSet.Id,
 					Title:       "title",
 					Description: "desc",
 					Creator:     "creator",
@@ -421,8 +430,9 @@ var _ = Describe("DbDataService", func() {
 
 			It("should succeed", func() {
 				Expect(err).ShouldNot(HaveOccurred())
+				Expect(musicSet.Id).ShouldNot(Equal(uuid.Nil))
 				Expect(musicSet).To(Equal(&apimodel.MusicSet{
-					Id:          1,
+					Id:          musicSet.Id,
 					Title:       "new title",
 					Description: "new desc",
 					Creator:     "new creator",
@@ -436,8 +446,9 @@ var _ = Describe("DbDataService", func() {
 
 				It("should return the same updated tune", func() {
 					Expect(err).ShouldNot(HaveOccurred())
+					Expect(musicSet.Id).ShouldNot(Equal(uuid.Nil))
 					Expect(musicSet).To(Equal(&apimodel.MusicSet{
-						Id:          1,
+						Id:          musicSet.Id,
 						Title:       "new title",
 						Description: "new desc",
 						Creator:     "new creator",
@@ -501,8 +512,12 @@ var _ = Describe("DbDataService", func() {
 		It("should return both sets", func() {
 			sets, err = service.MusicSets()
 			Expect(err).ShouldNot(HaveOccurred())
-			set1.Id = 1
-			set2.Id = 2
+			Expect(sets).To(HaveLen(2))
+			Expect(sets[0].Id).ShouldNot(Equal(uuid.Nil))
+			Expect(sets[1].Id).ShouldNot(Equal(uuid.Nil))
+
+			set1.Id = sets[0].Id
+			set2.Id = sets[1].Id
 			Expect(sets).To(Equal([]*apimodel.MusicSet{
 				set1,
 				set2,
