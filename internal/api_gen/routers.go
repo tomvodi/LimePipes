@@ -112,6 +112,12 @@ func getRoutes(handleFunctions ApiHandleFunctions) []Route {
 			handleFunctions.ApiHandler.GetTune,
 		},
 		{
+			"Health",
+			http.MethodGet,
+			"/health",
+			handleFunctions.ApiHandler.Health,
+		},
+		{
 			"ImportBww",
 			http.MethodPost,
 			"/imports/bww",

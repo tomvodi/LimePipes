@@ -44,6 +44,10 @@ type ApiHandler interface {
     // Get a tune by ID 
      GetTune(c *gin.Context)
 
+    // Health Get /health
+    // Check the health of the service 
+     Health(c *gin.Context)
+
     // ImportBww Post /imports/bww
     // Import tunes/sets from one or more bww files 
      ImportBww(c *gin.Context)
