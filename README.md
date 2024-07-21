@@ -33,6 +33,10 @@ Currently, the parsed tunes are stored in a SQlite database but can be changed t
 
 Everything used to export the internal music model to a MusicXML file.
 
+`limepipes-api`
+
+The git submodule that contains the OpenAPI spec for the REST API.
+
 ## Build
 
 `go mod download` downloads all required dependencies
@@ -46,18 +50,45 @@ variables from this file directly set to the environment of the application.
 
 ## Develop
 
+### Prerequisites
+
+In order to build the server code from the OpenAPI spec, you need to have the [OpenAPI Generator installed](https://openapi-generator.tech/docs/installation/) 
+and in your PATH. You also have to run `git submodule init` and `git submodule update` to get the OpenAPI spec.
+the `scripts` directory contains a script `generate_server.sh` to generate the server code from the OpenAPI spec.
+
+Mocks are generated with `[vektra/mockery](https://vektra.github.io/mockery/latest/installation)` this also has to 
+be in your PATH.
+
+### Configuration and Environment
+
+The application uses a PostgreSQL database to store data. To setup a local database, you can use the
+`docker-compose.yml` file in the project directory. This will start a PostgreSQL database in a Docker container and uses
+the `db.env` file for configuration. This file also has a template `db.env.default` which can copied and renamed to `db.env`.
+
+The REST API is served over HTTPS and needs a certificate and key file. The `Makefile` has a target `create_test_certificates` 
+which generates these files in the `build` directory for development and test purposes and must not be used in production.
+
+The application gets its configuration from an `limepipes.env` file which needs to be in the same directory as the executable.
+There is a `limepipes.env.default` which can be used as a template. In this file, you can set variables for database connection,
+the paths to the certificate and key files and some other application relevant settings.
+
+
+### Build
+
+The `Makefile` contains targets for many build and test tasks. Some of the Makefile targets also have a 
+corresponding run configuration for Intellij IDEs like GoLand in the `.idea/runConfigurations` directory.
+The `test` directory contains `.http` test files used by GoLand from JetBrains to test the REST API manually.
+
+### Source Code
+
 As previously mentioned, the application uses an intermediate music model for storing the parsed `.bww` tunes. 
 This model is defined in the `common/music_model` directory and has struct tags to be exported to `.yaml` files. This 
 is used by many tests to compare the parsed tunes with the expected output.
 
-All enums that must be serialized and deserialized to and from yaml, are handled with [Enumer](https://github.com/dmarkham/enumer)
+All enums that have to be serialized and deserialized to and from yaml, are handled with [Enumer](https://github.com/dmarkham/enumer)
 generate the necessary code.
 
-The `test` directory contains `.http` test files used by GoLand from JetBrains to test the REST API manually.
-
-The `Makefile` contains targets for many build and test tasks.
-
-### Used libraries
+### Used libraries and tools
 
 - [GORM](https://gorm.io) for database access
 - [OpenAPI Generator](https://openapi-generator.tech) for the REST API
@@ -65,6 +96,9 @@ The `Makefile` contains targets for many build and test tasks.
 - [Cobra](https://github.com/spf13/cobra) for command line argument parsing
 - [Viper](https://github.com/spf13/viper) for configuration handling
 - [Gin](https://github.com/gin-gonic/gin) for the REST API server
+- [Enumer](https://github.com/dmarkham/enumer) for enum serializing and deserializing
+- [Mockery](https://vektra.github.io/mockery/latest/installation) for mocking interfaces
+- [Docker and Docker Compose](https://docs.docker.com/compose/) for running the application in a container
 
 
 

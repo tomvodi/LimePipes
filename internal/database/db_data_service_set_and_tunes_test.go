@@ -1,6 +1,7 @@
 package database
 
 import (
+	"github.com/google/uuid"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
@@ -58,7 +59,7 @@ var _ = Describe("DbDataService", func() {
 					*tune3,
 					*tune1,
 				}
-				var tuneIds []int64
+				var tuneIds []uuid.UUID
 				for _, tune := range expectedTuneOrder {
 					tuneIds = append(tuneIds, tune.Id)
 				}
@@ -91,7 +92,7 @@ var _ = Describe("DbDataService", func() {
 			When("retrieving the music set by tune ids", func() {
 				var foundMusicSet *apimodel.MusicSet
 				BeforeEach(func() {
-					foundMusicSet, err = service.getMusicSetByTuneIds([]int64{
+					foundMusicSet, err = service.getMusicSetByTuneIds([]uuid.UUID{
 						expectedTuneOrder[0].Id,
 						expectedTuneOrder[1].Id,
 						expectedTuneOrder[2].Id,
@@ -110,7 +111,7 @@ var _ = Describe("DbDataService", func() {
 						*tune2,
 						*tune1,
 					}
-					var tuneIds []int64
+					var tuneIds []uuid.UUID
 					for _, tune := range expectedTuneOrder {
 						tuneIds = append(tuneIds, tune.Id)
 					}
@@ -151,7 +152,7 @@ var _ = Describe("DbDataService", func() {
 				BeforeEach(func() {
 					musicSetAfterAssignment, err = service.AssignTunesToMusicSet(
 						musicSet.Id,
-						[]int64{tune2.Id, tune1.Id, tune3.Id},
+						[]uuid.UUID{tune2.Id, tune1.Id, tune3.Id},
 					)
 				})
 

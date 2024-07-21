@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/rs/zerolog/log"
@@ -17,20 +18,17 @@ import (
 	"net/http/httptest"
 )
 
-var _ = Describe("CreateTune", func() {
+var _ = Describe("Api handler", func() {
 	utils.SetupConsoleLogger()
 	var c *gin.Context
 	var httpRec *httptest.ResponseRecorder
 	var api *apiHandler
-	var tune apimodel.CreateTune
-
+	var testId1 uuid.UUID
 	var dataService *mocks.DataService
 
-	JustBeforeEach(func() {
-		api.CreateTune(c)
-	})
-
 	BeforeEach(func() {
+		testId1 = uuid.MustParse("00000000-0000-0000-0000-000000000001")
+
 		httpRec = httptest.NewRecorder()
 		c, _ = gin.CreateTestContext(httpRec)
 		dataService = mocks.NewDataService(GinkgoT())
@@ -39,41 +37,93 @@ var _ = Describe("CreateTune", func() {
 		}
 	})
 
-	Context("no data given", func() {
-		BeforeEach(func() {
+	Context("Create Tune", func() {
+		JustBeforeEach(func() {
 			api.CreateTune(c)
 		})
 
-		It("should return BadRequest", func() {
-			Expect(httpRec.Code).To(Equal(http.StatusBadRequest))
+		Context("no data given", func() {
+			BeforeEach(func() {
+				api.CreateTune(c)
+			})
+
+			It("should return BadRequest", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusBadRequest))
+			})
+		})
+
+		Context("creating a tune", func() {
+			var tune apimodel.CreateTune
+
+			BeforeEach(func() {
+				tune = apimodel.CreateTune{
+					Title: "test title",
+				}
+				MockJsonPost(c, http.MethodPost, tune)
+			})
+
+			When("service returns an error on creation", func() {
+				BeforeEach(func() {
+					dataService.EXPECT().CreateTune(tune, (*model.ImportFile)(nil)).
+						Return(nil, fmt.Errorf("xxx"))
+				})
+
+				It("should return a server error", func() {
+					Expect(httpRec.Code).To(Equal(http.StatusInternalServerError))
+				})
+			})
+
+			When("service successfully creates tune", func() {
+				BeforeEach(func() {
+					dataService.EXPECT().CreateTune(tune, (*model.ImportFile)(nil)).
+						Return(&apimodel.Tune{
+							Id:    testId1,
+							Title: tune.Title,
+						}, nil)
+				})
+
+				It("should return ok and the tune", func() {
+					Expect(httpRec.Code).To(Equal(http.StatusOK))
+					data, err := io.ReadAll(httpRec.Body)
+					Expect(err).ShouldNot(HaveOccurred())
+					Expect(string(data)).To(Equal("{\"id\":\"00000000-0000-0000-0000-000000000001\",\"title\":\"test title\"}"))
+				})
+			})
 		})
 	})
 
-	Context("creating a tune", func() {
+	Context("Assign tunes to a set", func() {
+		var tuneIds []string
+		var tuneIdsUuid []uuid.UUID
+		var setId uuid.UUID
+
+		JustBeforeEach(func() {
+			api.AssignTunesToSet(c)
+		})
+
 		BeforeEach(func() {
-			tune = apimodel.CreateTune{
-				Title: "test title",
+			setId = testId1
+			tuneIds = []string{
+				"00000000-0000-0000-0000-000000000002",
+				"00000000-0000-0000-0000-000000000003",
 			}
-			MockJsonPost(c, http.MethodPost, tune)
+			tuneIdsUuid = []uuid.UUID{
+				uuid.MustParse(tuneIds[0]),
+				uuid.MustParse(tuneIds[1]),
+			}
+			MockJsonPost(c, http.MethodPut, tuneIds)
+
+			c.Params = gin.Params{
+				{Key: "setId", Value: setId.String()},
+			}
 		})
 
-		When("service returns an error on creation", func() {
+		When("service successfully assignes tunes", func() {
 			BeforeEach(func() {
-				dataService.EXPECT().CreateTune(tune, (*model.ImportFile)(nil)).
-					Return(nil, fmt.Errorf("xxx"))
-			})
-
-			It("should return a server error", func() {
-				Expect(httpRec.Code).To(Equal(http.StatusInternalServerError))
-			})
-		})
-
-		When("service successfully creates tune", func() {
-			BeforeEach(func() {
-				dataService.EXPECT().CreateTune(tune, (*model.ImportFile)(nil)).
-					Return(&apimodel.Tune{
-						Id:    1,
-						Title: tune.Title,
+				dataService.EXPECT().AssignTunesToMusicSet(setId, tuneIdsUuid).
+					Return(&apimodel.MusicSet{
+						Id:    setId,
+						Title: "set 1",
 					}, nil)
 			})
 
@@ -81,10 +131,9 @@ var _ = Describe("CreateTune", func() {
 				Expect(httpRec.Code).To(Equal(http.StatusOK))
 				data, err := io.ReadAll(httpRec.Body)
 				Expect(err).ShouldNot(HaveOccurred())
-				Expect(string(data)).To(Equal("{\"id\":1,\"title\":\"test title\"}"))
+				Expect(string(data)).To(Equal("{\"id\":\"00000000-0000-0000-0000-000000000001\",\"title\":\"set 1\"}"))
 			})
 		})
-
 	})
 })
 

@@ -4,12 +4,13 @@ import (
 	"bytes"
 	"encoding/gob"
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/tomvodi/limepipes/internal/common/music_model"
 	"github.com/tomvodi/limepipes/internal/database/model/file_type"
 )
 
 type TuneFile struct {
-	TuneID int64          `gorm:"primaryKey"`
+	TuneID uuid.UUID      `gorm:"primaryKey"`
 	Type   file_type.Type `gorm:"primaryKey"`
 	Data   []byte
 }

@@ -8,11 +8,12 @@
  */
 
 package apimodel
+import "github.com/google/uuid"
 
 type BasicMusicSet struct {
 
 	// Unique identifier for an object
-	Id int64 `json:"id"`
+	Id uuid.UUID `json:"id"`
 
 	// The name of the Set
 	Title string `json:"title"`

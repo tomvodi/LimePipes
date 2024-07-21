@@ -8,6 +8,7 @@
  */
 
 package apimodel
+import "github.com/google/uuid"
 
 type UpdateSet struct {
 
@@ -20,5 +21,5 @@ type UpdateSet struct {
 	// The name of the creator of the set
 	Creator string `json:"creator,omitempty"`
 
-	Tunes []int64 `json:"tunes,omitempty"`
+	Tunes []uuid.UUID `json:"tunes,omitempty"`
 }

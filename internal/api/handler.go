@@ -1,8 +1,10 @@
 package api
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
 	api_interfaces "github.com/tomvodi/limepipes/internal/api_gen/interfaces"
 	"github.com/tomvodi/limepipes/internal/common"
@@ -11,7 +13,6 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
-	"strconv"
 )
 
 type apiHandler struct {
@@ -102,7 +103,7 @@ func httpErrorResponse(c *gin.Context, code int, err error) {
 
 func handleResponseForError(c *gin.Context, err error) {
 	code := http.StatusInternalServerError
-	if err == common.NotFound {
+	if errors.Is(err, common.NotFound) {
 		code = http.StatusNotFound
 	}
 
@@ -133,7 +134,7 @@ func (a *apiHandler) CreateTune(c *gin.Context) {
 }
 
 func (a *apiHandler) GetTune(c *gin.Context) {
-	tuneId, err := strconv.ParseInt(c.Param("tuneId"), 10, 64)
+	tuneId, err := uuid.Parse(c.Param("tuneId"))
 	if err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
 		return
@@ -164,7 +165,7 @@ func (a *apiHandler) UpdateTune(c *gin.Context) {
 		return
 	}
 
-	tuneId, err := strconv.ParseInt(c.Param("tuneId"), 10, 64)
+	tuneId, err := uuid.Parse(c.Param("tuneId"))
 	if err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
 		return
@@ -180,7 +181,7 @@ func (a *apiHandler) UpdateTune(c *gin.Context) {
 }
 
 func (a *apiHandler) DeleteTune(c *gin.Context) {
-	tuneId, err := strconv.ParseInt(c.Param("tuneId"), 10, 64)
+	tuneId, err := uuid.Parse(c.Param("tuneId"))
 	if err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
 		return
@@ -212,7 +213,7 @@ func (a *apiHandler) CreateSet(c *gin.Context) {
 }
 
 func (a *apiHandler) GetSet(c *gin.Context) {
-	setId, err := strconv.ParseInt(c.Param("setId"), 10, 64)
+	setId, err := uuid.Parse(c.Param("setId"))
 	if err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
 		return
@@ -243,7 +244,7 @@ func (a *apiHandler) UpdateSet(c *gin.Context) {
 		return
 	}
 
-	setId, err := strconv.ParseInt(c.Param("setId"), 10, 64)
+	setId, err := uuid.Parse(c.Param("setId"))
 	if err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
 		return
@@ -258,7 +259,7 @@ func (a *apiHandler) UpdateSet(c *gin.Context) {
 }
 
 func (a *apiHandler) DeleteSet(c *gin.Context) {
-	setId, err := strconv.ParseInt(c.Param("setId"), 10, 64)
+	setId, err := uuid.Parse(c.Param("setId"))
 	if err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
 		return
@@ -273,13 +274,13 @@ func (a *apiHandler) DeleteSet(c *gin.Context) {
 }
 
 func (a *apiHandler) AssignTunesToSet(c *gin.Context) {
-	var tuneIds []int64
+	var tuneIds []uuid.UUID
 	if err := c.ShouldBindJSON(&tuneIds); err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
 		return
 	}
 
-	setId, err := strconv.ParseInt(c.Param("setId"), 10, 64)
+	setId, err := uuid.Parse(c.Param("setId"))
 	if err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
 		return

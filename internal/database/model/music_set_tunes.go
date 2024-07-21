@@ -1,10 +1,12 @@
 package model
 
+import "github.com/google/uuid"
+
 type MusicSetTunes struct {
 	BaseModel
-	MusicSetID int64
+	MusicSetID uuid.UUID
 	MusicSet   MusicSet
-	TuneID     int64
+	TuneID     uuid.UUID
 	Tune       Tune
 	Order      uint `gorm:"not null"`
 }
