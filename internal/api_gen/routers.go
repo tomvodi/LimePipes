@@ -118,6 +118,12 @@ func getRoutes(handleFunctions ApiHandleFunctions) []Route {
 			handleFunctions.ApiHandler.Health,
 		},
 		{
+			"Home",
+			http.MethodGet,
+			"/",
+			handleFunctions.ApiHandler.Home,
+		},
+		{
 			"ImportBww",
 			http.MethodPost,
 			"/imports/bww",

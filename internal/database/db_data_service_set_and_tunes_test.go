@@ -25,7 +25,6 @@ var _ = Describe("DbDataService", func() {
 		Expect(err).ShouldNot(HaveOccurred())
 		gormDb, err = GetInitTestPostgreSQLDB(cfg.DbConfig(), "testdb")
 		validator = mocks.NewApiModelValidator(GinkgoT())
-		Expect(err).ShouldNot(HaveOccurred())
 
 		service = &dbService{
 			db:        gormDb,

@@ -23,6 +23,10 @@ type apiHandler struct {
 	healthChecker       interfaces.HealthChecker
 }
 
+func (a *apiHandler) Home(c *gin.Context) {
+	c.Status(http.StatusOK)
+}
+
 func (a *apiHandler) Health(c *gin.Context) {
 	handler, err := a.healthChecker.GetCheckHandler()
 	if err != nil {
