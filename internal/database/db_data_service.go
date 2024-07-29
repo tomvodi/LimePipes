@@ -7,10 +7,11 @@ import (
 	"github.com/jinzhu/copier"
 	"github.com/mitchellh/mapstructure"
 	"github.com/rs/zerolog/log"
+	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/measure"
+	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/tune"
 	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
 	"github.com/tomvodi/limepipes/internal/common"
 	"github.com/tomvodi/limepipes/internal/common/music_model"
-	"github.com/tomvodi/limepipes/internal/common/music_model/import_message"
 	"github.com/tomvodi/limepipes/internal/database/model"
 	"github.com/tomvodi/limepipes/internal/database/model/file_type"
 	"github.com/tomvodi/limepipes/internal/interfaces"
@@ -104,7 +105,7 @@ func (d *dbService) GetTune(id uuid.UUID) (*apimodel.Tune, error) {
 
 // getTuneFromDb returns a tune from the database if it is identical
 // this means it has the same title, composer, type and arranger
-func (d *dbService) getIdenticalTuneFromDb(tune *music_model.Tune) (*apimodel.Tune, error) {
+func (d *dbService) getIdenticalTuneFromDb(tune *tune.Tune) (*apimodel.Tune, error) {
 	dbTune, err := d.getTuneByTitle(tune.Title)
 	if err != nil {
 		return nil, err
@@ -604,7 +605,7 @@ func (d *dbService) ImportMusicModel(
 			timeSigStr := ""
 			timeSig := tune.FirstTimeSignature()
 			if timeSig != nil {
-				timeSigStr = timeSig.String()
+				timeSigStr = timeSig.DisplayString()
 			}
 			alreadyImportedTune := apiTuneWithTitle(tune.Title, apiTunes)
 			if alreadyImportedTune != nil {
@@ -808,15 +809,15 @@ func apiTuneWithTitle(
 	return nil
 }
 
-func setMessagesToApiTune(apiTune *apimodel.ImportTune, tune *music_model.Tune) {
+func setMessagesToApiTune(apiTune *apimodel.ImportTune, tune *tune.Tune) {
 	messages := tune.ImportMessages()
 	for _, message := range messages {
-		switch message.Type {
-		case import_message.Error:
+		switch message.Severity {
+		case measure.Severity_Error:
 			apiTune.Errors = append(apiTune.Errors, message.Text)
-		case import_message.Warning:
+		case measure.Severity_Warning:
 			apiTune.Warnings = append(apiTune.Warnings, message.Text)
-		case import_message.Info:
+		case measure.Severity_Info:
 			apiTune.Infos = append(apiTune.Infos, message.Text)
 		}
 	}

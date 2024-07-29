@@ -3,62 +3,65 @@ package bww
 import (
 	"fmt"
 	"github.com/rs/zerolog/log"
-	"github.com/tomvodi/limepipes/internal/common"
+	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/barline"
+	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/boundary"
+	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/length"
+	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/measure"
+	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/pitch"
+	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/symbols"
+	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/symbols/accidental"
+	emb "github.com/tomvodi/limepipes-music-model/musicmodel/v1/symbols/embellishment"
+	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/symbols/movement"
+	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/symbols/tie"
+	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/symbols/timeline"
+	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/symbols/tuplet"
+	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/tune"
 	"github.com/tomvodi/limepipes/internal/common/music_model"
-	"github.com/tomvodi/limepipes/internal/common/music_model/barline"
-	"github.com/tomvodi/limepipes/internal/common/music_model/import_message"
-	"github.com/tomvodi/limepipes/internal/common/music_model/symbols"
-	"github.com/tomvodi/limepipes/internal/common/music_model/symbols/accidental"
-	emb "github.com/tomvodi/limepipes/internal/common/music_model/symbols/embellishment"
-	"github.com/tomvodi/limepipes/internal/common/music_model/symbols/movement"
-	"github.com/tomvodi/limepipes/internal/common/music_model/symbols/tie"
-	"github.com/tomvodi/limepipes/internal/common/music_model/symbols/time_line"
-	"github.com/tomvodi/limepipes/internal/common/music_model/symbols/tuplet"
 	"reflect"
 	"strconv"
 	"strings"
 )
 
 type staffContext struct {
-	PendingOldTie         common.Pitch
+	PendingOldTie         pitch.Pitch
 	PendingNewTie         bool
 	NextMeasureComments   []string
 	NextMeasureInLineText []string
-	PreviousStaveMeasures []*music_model.Measure
+	PreviousStaveMeasures []*measure.Measure
 }
 
 func convertGrammarToModel(grammar *BwwDocument) (music_model.MusicModel, error) {
 	var tunes music_model.MusicModel
 
-	var newTune *music_model.Tune
+	var newTune *tune.Tune
 	staffCtx := &staffContext{
-		PendingOldTie: common.NoPitch,
+		PendingOldTie: pitch.Pitch_NoPitch,
 	}
-	for i, tune := range grammar.Tunes {
-		if tune.Header.HasTitle() {
+	for i, t := range grammar.Tunes {
+		if t.Header.HasTitle() {
 			if newTune != nil {
 				tunes = append(tunes, newTune)
 			}
-			newTune = &music_model.Tune{}
-			if err := fillTuneWithParameter(newTune, tune.Header.TuneParameter); err != nil {
+			newTune = &tune.Tune{}
+			if err := fillTuneWithParameter(newTune, t.Header.TuneParameter); err != nil {
 				return nil, err
 			}
 		} else {
 			if i == 0 && newTune == nil {
-				log.Warn().Msgf("first tune doesn't have a title. Setting it to 'no title'")
-				newTune = &music_model.Tune{}
-				if err := fillTuneWithParameter(newTune, tune.Header.TuneParameter); err != nil {
+				log.Warn().Msgf("first t doesn't have a title. Setting it to 'no title'")
+				newTune = &tune.Tune{}
+				if err := fillTuneWithParameter(newTune, t.Header.TuneParameter); err != nil {
 					return nil, err
 				}
 				newTune.Title = "no title"
 			} else {
-				staffCtx.NextMeasureComments = tune.Header.GetComments()
-				staffCtx.NextMeasureInLineText = tune.Header.GetInlineTexts()
+				staffCtx.NextMeasureComments = t.Header.GetComments()
+				staffCtx.NextMeasureInLineText = t.Header.GetInlineTexts()
 			}
 		}
 
-		// TODO when tempo only of first tune, set to other tunes as well?
-		if err := fillTunePartsFromStaves(newTune, tune.Body.Staffs, staffCtx); err != nil {
+		// TODO when tempo only of first t, set to other tunes as well?
+		if err := fillTunePartsFromStaves(newTune, t.Body.Staffs, staffCtx); err != nil {
 			return nil, err
 		}
 	}
@@ -67,7 +70,7 @@ func convertGrammarToModel(grammar *BwwDocument) (music_model.MusicModel, error)
 	return tunes, nil
 }
 
-func fillTuneWithParameter(tune *music_model.Tune, params []*TuneParameter) error {
+func fillTuneWithParameter(tune *tune.Tune, params []*TuneParameter) error {
 	for _, param := range params {
 		if param.Tempo != nil {
 			tempo, err := strconv.ParseUint(param.Tempo.Tempo, 10, 64)
@@ -75,7 +78,7 @@ func fillTuneWithParameter(tune *music_model.Tune, params []*TuneParameter) erro
 				return fmt.Errorf("failed parsing tune tempo: %s", err.Error())
 			}
 
-			tune.Tempo = tempo
+			tune.Tempo = uint32(tempo)
 		}
 
 		if param.Description != nil {
@@ -107,11 +110,11 @@ func fillTuneWithParameter(tune *music_model.Tune, params []*TuneParameter) erro
 }
 
 func fillTunePartsFromStaves(
-	tune *music_model.Tune,
+	tune *tune.Tune,
 	staves []*Staff,
 	staffCtx *staffContext,
 ) error {
-	var measures []*music_model.Measure
+	var measures []*measure.Measure
 
 	for _, stave := range staves {
 		staveMeasures, err := getMeasuresFromStave(stave, staffCtx)
@@ -129,13 +132,13 @@ func fillTunePartsFromStaves(
 			var rightBarline *barline.Barline
 			if stave.End == "''!I" {
 				rightBarline = &barline.Barline{
-					Type:     barline.Heavy,
-					Timeline: barline.Repeat,
+					Type: barline.Type_Heavy,
+					Time: barline.Time_Repeat,
 				}
 			}
 			if stave.End == "!I" {
 				rightBarline = &barline.Barline{
-					Type: barline.Heavy,
+					Type: barline.Type_Heavy,
 				}
 			}
 			lastMeasure.RightBarline = rightBarline
@@ -146,10 +149,10 @@ func fillTunePartsFromStaves(
 	return nil
 }
 
-func getMeasuresFromStave(stave *Staff, ctx *staffContext) ([]*music_model.Measure, error) {
-	var measures []*music_model.Measure
-	currMeasure := &music_model.Measure{}
-	currMeasure.InLineText = ctx.NextMeasureInLineText
+func getMeasuresFromStave(stave *Staff, ctx *staffContext) ([]*measure.Measure, error) {
+	var measures []*measure.Measure
+	currMeasure := &measure.Measure{}
+	currMeasure.InlineText = ctx.NextMeasureInLineText
 	currMeasure.Comments = ctx.NextMeasureComments
 	ctx.NextMeasureInLineText = nil
 	ctx.NextMeasureComments = nil
@@ -165,15 +168,15 @@ func getMeasuresFromStave(stave *Staff, ctx *staffContext) ([]*music_model.Measu
 			var leftBarline *barline.Barline
 			if staffSym.PartStart != nil {
 				leftBarline = &barline.Barline{
-					Type: barline.Heavy,
+					Type: barline.Type_Heavy,
 				}
 				ps := *staffSym.PartStart
 				if ps == "I!''" {
-					leftBarline.Timeline = barline.Repeat
+					leftBarline.Time = barline.Time_Repeat
 				}
 			}
 
-			currMeasure = &music_model.Measure{
+			currMeasure = &measure.Measure{
 				LeftBarline: leftBarline,
 			}
 
@@ -194,7 +197,7 @@ func getMeasuresFromStave(stave *Staff, ctx *staffContext) ([]*music_model.Measu
 			}
 		}
 
-		var lastSym *music_model.Symbol
+		var lastSym *symbols.Symbol
 		measSymLen := len(currMeasure.Symbols)
 		if len(currMeasure.Symbols) > 0 {
 			lastSym = currMeasure.Symbols[measSymLen-1]
@@ -212,15 +215,15 @@ func getMeasuresFromStave(stave *Staff, ctx *staffContext) ([]*music_model.Measu
 			return nil, err
 		}
 		if newSym != nil {
-			if ctx.PendingOldTie != common.NoPitch {
+			if ctx.PendingOldTie != pitch.Pitch_NoPitch {
 				if newSym.Note == nil || !newSym.Note.IsValid() {
 					log.Error().Msgf("old tie on pitch %s was started in previous measure but there is "+
 						"no note at the beginning of new measure", ctx.PendingOldTie.String())
 				} else {
-					newSym.Note.Tie = tie.End
+					newSym.Note.Tie = tie.Tie_End
 				}
 
-				ctx.PendingOldTie = common.NoPitch
+				ctx.PendingOldTie = pitch.Pitch_NoPitch
 			}
 			currMeasure.Symbols = append(currMeasure.Symbols, newSym)
 		}
@@ -233,14 +236,14 @@ func getMeasuresFromStave(stave *Staff, ctx *staffContext) ([]*music_model.Measu
 	}
 	if stave.Dalsegno != nil {
 		currMeasure.RightBarline = &barline.Barline{
-			Type:     barline.Regular,
-			Timeline: barline.Dalsegno,
+			Type: barline.Type_Regular,
+			Time: barline.Time_Dalsegno,
 		}
 	}
 	if stave.DacapoAlFine != nil {
 		currMeasure.RightBarline = &barline.Barline{
-			Type:     barline.Regular,
-			Timeline: barline.DacapoAlFine,
+			Type: barline.Type_Regular,
+			Time: barline.Time_DacapoAlFine,
 		}
 	}
 
@@ -248,7 +251,7 @@ func getMeasuresFromStave(stave *Staff, ctx *staffContext) ([]*music_model.Measu
 	return measures, nil
 }
 
-func getLastSymbolFromMeasures(measures []*music_model.Measure) *music_model.Symbol {
+func getLastSymbolFromMeasures(measures []*measure.Measure) *symbols.Symbol {
 	if len(measures) > 0 {
 		lastMeasure := measures[len(measures)-1]
 		if len(lastMeasure.Symbols) > 0 {
@@ -259,7 +262,7 @@ func getLastSymbolFromMeasures(measures []*music_model.Measure) *music_model.Sym
 	return nil
 }
 
-func handleTriplet(measure *music_model.Measure, sym string) error {
+func handleTriplet(measure *measure.Measure, sym string) error {
 
 	if len(measure.Symbols) == 0 {
 		return fmt.Errorf("triplet symbol %s does not follow any note", sym)
@@ -291,12 +294,12 @@ func handleTriplet(measure *music_model.Measure, sym string) error {
 	if hasSymbolsBeforeTriplet {
 		symBeforeTriplet := measure.Symbols[tripletStartIdx-1]
 		if symBeforeTriplet.Tuplet != nil &&
-			symBeforeTriplet.Tuplet.BoundaryType == tuplet.Start {
+			symBeforeTriplet.Tuplet.BoundaryType == boundary.Boundary_Start {
 			tupletHasAlreadyAStartSymbol = true
 		}
 	}
 	if !tupletHasAlreadyAStartSymbol {
-		tripletStartSym := newIrregularGroup(tuplet.Start, tuplet.Type32)
+		tripletStartSym := newIrregularGroup(boundary.Boundary_Start, tuplet.Type32)
 		measure.Symbols = append(
 			measure.Symbols[:tripletStartIdx+1],
 			measure.Symbols[tripletStartIdx:]...,
@@ -304,16 +307,16 @@ func handleTriplet(measure *music_model.Measure, sym string) error {
 		measure.Symbols[tripletStartIdx] = tripletStartSym
 	}
 
-	measure.Symbols = append(measure.Symbols, newIrregularGroup(tuplet.End, tuplet.Type32))
+	measure.Symbols = append(measure.Symbols, newIrregularGroup(boundary.Boundary_End, tuplet.Type32))
 
 	return nil
 }
 
 func appendTieStartToPreviousNote(
 	staffSym string,
-	lastSym *music_model.Symbol,
-	measures []*music_model.Measure,
-	currentMeasure *music_model.Measure,
+	lastSym *symbols.Symbol,
+	measures []*measure.Measure,
+	currentMeasure *measure.Measure,
 	ctx *staffContext,
 ) error {
 	if lastSym == nil {
@@ -323,17 +326,17 @@ func appendTieStartToPreviousNote(
 		}
 		if lastSym == nil {
 			msg := fmt.Sprintf("tie in old format (%s) must follow a note and can't be the first symbol in a measure", staffSym)
-			currentMeasure.AddMessage(&import_message.ImportMessage{
-				Symbol: staffSym,
-				Type:   import_message.Warning,
-				Text:   msg,
-				Fix:    import_message.SkipSymbol,
+			currentMeasure.AddMessage(&measure.ImportMessage{
+				Symbol:   staffSym,
+				Severity: measure.Severity_Warning,
+				Text:     msg,
+				Fix:      measure.Fix_SkipSymbol,
 			})
 			return nil
 		}
 
 		if lastSym.IsValidNote() {
-			lastSym.Note.Tie = tie.Start
+			lastSym.Note.Tie = tie.Tie_Start
 		} else {
 			return fmt.Errorf("tie in old format (%s) must follow a note", staffSym)
 		}
@@ -346,15 +349,15 @@ func appendTieStartToPreviousNote(
 			"tie in old format (%s) must follow a note with pitch and length",
 			staffSym,
 		)
-		currentMeasure.AddMessage(&import_message.ImportMessage{
-			Symbol: staffSym,
-			Type:   import_message.Error,
-			Text:   msg,
-			Fix:    import_message.SkipSymbol,
+		currentMeasure.AddMessage(&measure.ImportMessage{
+			Symbol:   staffSym,
+			Severity: measure.Severity_Error,
+			Text:     msg,
+			Fix:      measure.Fix_SkipSymbol,
 		})
 		return nil
 	}
-	lastSym.Note.Tie = tie.Start
+	lastSym.Note.Tie = tie.Tie_Start
 	tiePitch := pitchFromSuffix(staffSym)
 	ctx.PendingOldTie = tiePitch
 
@@ -362,9 +365,9 @@ func appendTieStartToPreviousNote(
 }
 
 func cleanupAndAppendMeasure(
-	measures []*music_model.Measure,
-	measure *music_model.Measure,
-) []*music_model.Measure {
+	measures []*measure.Measure,
+	measure *measure.Measure,
+) []*measure.Measure {
 	cleanupMeasure(measure)
 	if len(measure.Symbols) == 0 {
 		measure.Symbols = nil
@@ -381,7 +384,7 @@ func cleanupAndAppendMeasure(
 // this may be the case for the accidentals at the beginning of the measure which are
 // indicating the key of the measure. For bagpipes the key is always sharpf sharpc,
 // so we delete these symbols here.
-func cleanupMeasure(meas *music_model.Measure) {
+func cleanupMeasure(meas *measure.Measure) {
 	for _, symbol := range meas.Symbols {
 		if symbol.Note == nil {
 			continue
@@ -398,21 +401,21 @@ func cleanupMeasure(meas *music_model.Measure) {
 	}
 }
 
-func setMeasureTimeSig(measure *music_model.Measure, timeSigSym *string) {
+func setMeasureTimeSig(measure *measure.Measure, timeSigSym *string) {
 	timeSig := timeSigFromSymbol(timeSigSym)
 	measure.Time = timeSig
 }
 
-func timeSigFromSymbol(sym *string) *music_model.TimeSignature {
+func timeSigFromSymbol(sym *string) *measure.TimeSignature {
 	if *sym == "C" {
-		return &music_model.TimeSignature{
+		return &measure.TimeSignature{
 			Beats:    4,
 			BeatType: 4,
 		}
 	}
 
 	if *sym == "C_" {
-		return &music_model.TimeSignature{
+		return &measure.TimeSignature{
 			Beats:    2,
 			BeatType: 2,
 		}
@@ -436,13 +439,13 @@ func timeSigFromSymbol(sym *string) *music_model.TimeSignature {
 		return nil
 	}
 
-	return &music_model.TimeSignature{
-		Beats:    uint8(beat),
-		BeatType: uint8(beatTime),
+	return &measure.TimeSignature{
+		Beats:    uint32(beat),
+		BeatType: uint32(beatTime),
 	}
 }
 
-func symbolIndexOf(symbols []*music_model.Symbol, findSym *music_model.Symbol) int {
+func symbolIndexOf(symbols []*symbols.Symbol, findSym *symbols.Symbol) int {
 	for i, symbol := range symbols {
 		if reflect.DeepEqual(symbol, findSym) {
 			return i
@@ -451,18 +454,18 @@ func symbolIndexOf(symbols []*music_model.Symbol, findSym *music_model.Symbol) i
 	return -1
 }
 
-func removeSymbol(symbols []*music_model.Symbol, idx int) []*music_model.Symbol {
+func removeSymbol(symbols []*symbols.Symbol, idx int) []*symbols.Symbol {
 	return append(symbols[:idx], symbols[idx+1:]...)
 }
 
 func appendStaffSymbolToMeasureSymbols(
 	staffSym *StaffSymbols,
-	lastSym *music_model.Symbol,
-	currentMeasure *music_model.Measure,
-	currentStaffMeasures []*music_model.Measure,
+	lastSym *symbols.Symbol,
+	currentMeasure *measure.Measure,
+	currentStaffMeasures []*measure.Measure,
 	ctx *staffContext,
-) (*music_model.Symbol, error) {
-	newSym := &music_model.Symbol{}
+) (*symbols.Symbol, error) {
+	newSym := &symbols.Symbol{}
 
 	if staffSym.WholeNote != nil || staffSym.HalfNote != nil ||
 		staffSym.QuarterNote != nil || staffSym.EighthNote != nil ||
@@ -480,21 +483,21 @@ func appendStaffSymbolToMeasureSymbols(
 	if staffSym.Segno != nil {
 		if currentMeasure.LeftBarline == nil {
 			currentMeasure.LeftBarline = &barline.Barline{
-				Type:     barline.Regular,
-				Timeline: barline.Segno,
+				Type: barline.Type_Regular,
+				Time: barline.Time_Segno,
 			}
 		} else {
-			currentMeasure.LeftBarline.Timeline = barline.Segno
+			currentMeasure.LeftBarline.Time = barline.Time_Segno
 		}
 	}
 	if staffSym.Fine != nil {
 		if currentMeasure.RightBarline == nil {
 			currentMeasure.RightBarline = &barline.Barline{
-				Type:     barline.Regular,
-				Timeline: barline.Fine,
+				Type: barline.Type_Regular,
+				Time: barline.Time_Fine,
 			}
 		} else {
-			currentMeasure.LeftBarline.Timeline = barline.Fine
+			currentMeasure.LeftBarline.Time = barline.Time_Fine
 		}
 	}
 
@@ -509,7 +512,7 @@ func appendStaffSymbolToMeasureSymbols(
 	}
 	if staffSym.TieStart != nil {
 		newSym.Note = &symbols.Note{
-			Tie: tie.Start,
+			Tie: tie.Tie_Start,
 		}
 		ctx.PendingNewTie = true
 		return newSym, nil
@@ -528,160 +531,160 @@ func appendStaffSymbolToMeasureSymbols(
 		}
 
 		if lastSym != nil && lastSym.Note != nil && ctx.PendingNewTie {
-			lastSym.Note.Tie = tie.End
+			lastSym.Note.Tie = tie.Tie_End
 			ctx.PendingNewTie = false
 		}
 	}
 	if staffSym.Flat != nil {
-		return handleAccidential(accidental.Flat), nil
+		return handleAccidential(accidental.Accidental_Flat), nil
 	}
 	if staffSym.Natural != nil {
-		return handleAccidential(accidental.Natural), nil
+		return handleAccidential(accidental.Accidental_Natural), nil
 	}
 	if staffSym.Sharp != nil {
-		return handleAccidential(accidental.Sharp), nil
+		return handleAccidential(accidental.Accidental_Sharp), nil
 	}
 	if staffSym.Doubling != nil {
-		return handleEmbellishment(emb.Doubling)
+		return handleEmbellishment(emb.EmbellishmentType_Doubling)
 	}
 	if staffSym.HalfDoubling != nil {
-		return handleEmbellishmentVariant(emb.Doubling, emb.Half, emb.NoWeight)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_Doubling, emb.EmbellishmentVariant_Half, emb.EmbellishmentWeight_NoWeight)
 	}
 	if staffSym.ThumbDoubling != nil {
-		return handleEmbellishmentVariant(emb.Doubling, emb.Thumb, emb.NoWeight)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_Doubling, emb.EmbellishmentVariant_Thumb, emb.EmbellishmentWeight_NoWeight)
 	}
 	if staffSym.Grip != nil {
-		return handleEmbellishment(emb.Grip)
+		return handleEmbellishment(emb.EmbellishmentType_Grip)
 	}
 	if staffSym.GGrip != nil {
-		return handleEmbellishmentVariant(emb.Grip, emb.G, emb.NoWeight)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_Grip, emb.EmbellishmentVariant_G, emb.EmbellishmentWeight_NoWeight)
 	}
 	if staffSym.ThumbGrip != nil {
-		return handleEmbellishmentVariant(emb.Grip, emb.Thumb, emb.NoWeight)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_Grip, emb.EmbellishmentVariant_Thumb, emb.EmbellishmentWeight_NoWeight)
 	}
 	if staffSym.HalfGrip != nil {
-		return handleEmbellishmentVariant(emb.Grip, emb.Half, emb.NoWeight)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_Grip, emb.EmbellishmentVariant_Half, emb.EmbellishmentWeight_NoWeight)
 	}
 	if staffSym.Taorluath != nil {
-		return handleEmbellishment(emb.Taorluath)
+		return handleEmbellishment(emb.EmbellishmentType_Taorluath)
 	}
 	if staffSym.Bubbly != nil {
-		return handleEmbellishment(emb.Bubbly)
+		return handleEmbellishment(emb.EmbellishmentType_Bubbly)
 	}
 	if staffSym.ThrowD != nil {
-		return handleEmbellishmentVariant(emb.ThrowD, emb.NoVariant, emb.Light)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_ThrowD, emb.EmbellishmentVariant_NoVariant, emb.EmbellishmentWeight_Light)
 	}
 	if staffSym.HeavyThrowD != nil {
-		return handleEmbellishment(emb.ThrowD)
+		return handleEmbellishment(emb.EmbellishmentType_ThrowD)
 	}
 	if staffSym.Birl != nil {
-		return handleEmbellishment(emb.Birl)
+		return handleEmbellishment(emb.EmbellishmentType_Birl)
 	}
 	if staffSym.ABirl != nil {
-		return handleEmbellishment(emb.ABirl)
+		return handleEmbellishment(emb.EmbellishmentType_ABirl)
 	}
 	if staffSym.Strike != nil {
-		return handleEmbellishment(emb.Strike)
+		return handleEmbellishment(emb.EmbellishmentType_Strike)
 	}
 	if staffSym.GStrike != nil {
-		return handleEmbellishmentVariant(emb.Strike, emb.G, emb.NoWeight)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_Strike, emb.EmbellishmentVariant_G, emb.EmbellishmentWeight_NoWeight)
 	}
 	if staffSym.LightGStrike != nil {
-		return handleEmbellishmentVariant(emb.Strike, emb.G, emb.Light)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_Strike, emb.EmbellishmentVariant_G, emb.EmbellishmentWeight_Light)
 	}
 	if staffSym.LightDoubleStrike != nil {
-		return handleEmbellishmentVariant(emb.DoubleStrike, emb.NoVariant, emb.Light)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_DoubleStrike, emb.EmbellishmentVariant_NoVariant, emb.EmbellishmentWeight_Light)
 	}
 	if staffSym.DoubleStrike != nil {
-		return handleEmbellishmentVariant(emb.DoubleStrike, emb.NoVariant, emb.NoWeight)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_DoubleStrike, emb.EmbellishmentVariant_NoVariant, emb.EmbellishmentWeight_NoWeight)
 	}
 	if staffSym.LightGDoubleStrike != nil {
-		return handleEmbellishmentVariant(emb.DoubleStrike, emb.G, emb.Light)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_DoubleStrike, emb.EmbellishmentVariant_G, emb.EmbellishmentWeight_Light)
 	}
 	if staffSym.GDoubleStrike != nil {
-		return handleEmbellishmentVariant(emb.DoubleStrike, emb.G, emb.NoWeight)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_DoubleStrike, emb.EmbellishmentVariant_G, emb.EmbellishmentWeight_NoWeight)
 	}
 	if staffSym.LightThumbDoubleStrike != nil {
-		return handleEmbellishmentVariant(emb.DoubleStrike, emb.Thumb, emb.Light)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_DoubleStrike, emb.EmbellishmentVariant_Thumb, emb.EmbellishmentWeight_Light)
 	}
 	if staffSym.ThumbDoubleStrike != nil {
-		return handleEmbellishmentVariant(emb.DoubleStrike, emb.Thumb, emb.NoWeight)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_DoubleStrike, emb.EmbellishmentVariant_Thumb, emb.EmbellishmentWeight_NoWeight)
 	}
 	if staffSym.LightHalfDoubleStrike != nil {
-		return handleEmbellishmentVariant(emb.DoubleStrike, emb.Half, emb.Light)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_DoubleStrike, emb.EmbellishmentVariant_Half, emb.EmbellishmentWeight_Light)
 	}
 	if staffSym.HalfDoubleStrike != nil {
-		return handleEmbellishmentVariant(emb.DoubleStrike, emb.Half, emb.NoWeight)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_DoubleStrike, emb.EmbellishmentVariant_Half, emb.EmbellishmentWeight_NoWeight)
 	}
 	if staffSym.LightTripleStrike != nil {
-		return handleEmbellishmentVariant(emb.TripleStrike, emb.NoVariant, emb.Light)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_TripleStrike, emb.EmbellishmentVariant_NoVariant, emb.EmbellishmentWeight_Light)
 	}
 	if staffSym.TripleStrike != nil {
-		return handleEmbellishmentVariant(emb.TripleStrike, emb.NoVariant, emb.NoWeight)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_TripleStrike, emb.EmbellishmentVariant_NoVariant, emb.EmbellishmentWeight_NoWeight)
 	}
 	if staffSym.LightGTripleStrike != nil {
-		return handleEmbellishmentVariant(emb.TripleStrike, emb.G, emb.Light)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_TripleStrike, emb.EmbellishmentVariant_G, emb.EmbellishmentWeight_Light)
 	}
 	if staffSym.GTripleStrike != nil {
-		return handleEmbellishmentVariant(emb.TripleStrike, emb.G, emb.NoWeight)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_TripleStrike, emb.EmbellishmentVariant_G, emb.EmbellishmentWeight_NoWeight)
 	}
 	if staffSym.LightThumbTripleStrike != nil {
-		return handleEmbellishmentVariant(emb.TripleStrike, emb.Thumb, emb.Light)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_TripleStrike, emb.EmbellishmentVariant_Thumb, emb.EmbellishmentWeight_Light)
 	}
 	if staffSym.ThumbTripleStrike != nil {
-		return handleEmbellishmentVariant(emb.TripleStrike, emb.Thumb, emb.NoWeight)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_TripleStrike, emb.EmbellishmentVariant_Thumb, emb.EmbellishmentWeight_NoWeight)
 	}
 	if staffSym.LightHalfTripleStrike != nil {
-		return handleEmbellishmentVariant(emb.TripleStrike, emb.Half, emb.Light)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_TripleStrike, emb.EmbellishmentVariant_Half, emb.EmbellishmentWeight_Light)
 	}
 	if staffSym.HalfTripleStrike != nil {
-		return handleEmbellishmentVariant(emb.TripleStrike, emb.Half, emb.NoWeight)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_TripleStrike, emb.EmbellishmentVariant_Half, emb.EmbellishmentWeight_NoWeight)
 	}
 	if staffSym.DDoubleGrace != nil {
-		return handleDoubleGrace(common.D)
+		return handleDoubleGrace(pitch.Pitch_D)
 	}
 	if staffSym.EDoubleGrace != nil {
-		return handleDoubleGrace(common.E)
+		return handleDoubleGrace(pitch.Pitch_E)
 	}
 	if staffSym.FDoubleGrace != nil {
-		return handleDoubleGrace(common.F)
+		return handleDoubleGrace(pitch.Pitch_F)
 	}
 	if staffSym.GDoubleGrace != nil {
-		return handleDoubleGrace(common.HighG)
+		return handleDoubleGrace(pitch.Pitch_HighG)
 	}
 	if staffSym.ThumbDoubleGrace != nil {
-		return handleDoubleGrace(common.HighA)
+		return handleDoubleGrace(pitch.Pitch_HighA)
 	}
 	if staffSym.HalfStrike != nil {
-		return handleEmbellishmentVariant(emb.Strike, emb.Half, emb.NoWeight)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_Strike, emb.EmbellishmentVariant_Half, emb.EmbellishmentWeight_NoWeight)
 	}
 	if staffSym.LightHalfStrike != nil {
-		return handleEmbellishmentVariant(emb.Strike, emb.Half, emb.Light)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_Strike, emb.EmbellishmentVariant_Half, emb.EmbellishmentWeight_Light)
 	}
 	if staffSym.ThumbStrike != nil {
-		return handleEmbellishmentVariant(emb.Strike, emb.Thumb, emb.NoWeight)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_Strike, emb.EmbellishmentVariant_Thumb, emb.EmbellishmentWeight_NoWeight)
 	}
 	if staffSym.LightThumbStrike != nil {
-		return handleEmbellishmentVariant(emb.Strike, emb.Thumb, emb.Light)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_Strike, emb.EmbellishmentVariant_Thumb, emb.EmbellishmentWeight_Light)
 	}
 	if staffSym.Pele != nil {
-		return handleEmbellishment(emb.Pele)
+		return handleEmbellishment(emb.EmbellishmentType_Pele)
 	}
 	if staffSym.LightPele != nil {
-		return handleEmbellishmentVariant(emb.Pele, emb.NoVariant, emb.Light)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_Pele, emb.EmbellishmentVariant_NoVariant, emb.EmbellishmentWeight_Light)
 	}
 	if staffSym.ThumbPele != nil {
-		return handleEmbellishmentVariant(emb.Pele, emb.Thumb, emb.NoWeight)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_Pele, emb.EmbellishmentVariant_Thumb, emb.EmbellishmentWeight_NoWeight)
 	}
 	if staffSym.LightThumbPele != nil {
-		return handleEmbellishmentVariant(emb.Pele, emb.Thumb, emb.Light)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_Pele, emb.EmbellishmentVariant_Thumb, emb.EmbellishmentWeight_Light)
 	}
 	if staffSym.HalfPele != nil {
-		return handleEmbellishmentVariant(emb.Pele, emb.Half, emb.NoWeight)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_Pele, emb.EmbellishmentVariant_Half, emb.EmbellishmentWeight_NoWeight)
 	}
 	if staffSym.IrregularGroupStart != nil {
 		ttype := tupletTypeFromSymbol(staffSym.IrregularGroupStart)
-		return handleIrregularGroup(tuplet.Start, ttype)
+		return handleIrregularGroup(boundary.Boundary_Start, ttype)
 	}
 	if staffSym.IrregularGroupEnd != nil {
 		ttype := tupletTypeFromSymbol(staffSym.IrregularGroupEnd)
@@ -690,15 +693,15 @@ func appendStaffSymbolToMeasureSymbols(
 			_ = handleTriplet(currentMeasure, "^3e")
 			return nil, nil
 		} else {
-			return handleIrregularGroup(tuplet.End, ttype)
+			return handleIrregularGroup(boundary.Boundary_End, ttype)
 		}
 	}
 	if staffSym.LightHalfPele != nil {
-		return handleEmbellishmentVariant(emb.Pele, emb.Half, emb.Light)
+		return handleEmbellishmentVariant(emb.EmbellishmentType_Pele, emb.EmbellishmentVariant_Half, emb.EmbellishmentWeight_Light)
 	}
 	if staffSym.GBirl != nil ||
 		staffSym.ThumbBirl != nil {
-		return handleEmbellishment(emb.GraceBirl)
+		return handleEmbellishment(emb.EmbellishmentType_GraceBirl)
 	}
 	if staffSym.Fermata != nil {
 		if lastSym != nil && lastSym.Note != nil && lastSym.Note.HasPitchAndLength() {
@@ -730,129 +733,129 @@ func appendStaffSymbolToMeasureSymbols(
 		return handleCadence(staffSym.FermatCadence, true)
 	}
 	if staffSym.Embari != nil {
-		return handleMovement(movement.Embari, staffSym.Embari, true, true)
+		return handleMovement(movement.Type_Embari, staffSym.Embari, true, true)
 	}
 	if staffSym.Endari != nil {
-		return handleMovement(movement.Endari, staffSym.Endari, true, true)
+		return handleMovement(movement.Type_Endari, staffSym.Endari, true, true)
 	}
 	if staffSym.Chedari != nil {
-		return handleMovement(movement.Chedari, staffSym.Chedari, true, true)
+		return handleMovement(movement.Type_Chedari, staffSym.Chedari, true, true)
 	}
 	if staffSym.Hedari != nil {
-		return handleMovement(movement.Hedari, staffSym.Hedari, true, false)
+		return handleMovement(movement.Type_Hedari, staffSym.Hedari, true, false)
 	}
 	if staffSym.Dili != nil {
-		return handleMovement(movement.Dili, staffSym.Dili, true, true)
+		return handleMovement(movement.Type_Dili, staffSym.Dili, true, true)
 	}
 	if staffSym.Tra != nil {
-		return handleMovement(movement.Tra, staffSym.Tra, false, true)
+		return handleMovement(movement.Type_Tra, staffSym.Tra, false, true)
 	}
 	if staffSym.Edre != nil {
-		mv, _ := handleMovement(movement.Edre, staffSym.Edre, true, true)
-		pitch := pitchFromSuffix(*staffSym.Edre)
-		if pitch != common.E {
-			mv.Note.Movement.PitchHint = pitch
+		mv, _ := handleMovement(movement.Type_Edre, staffSym.Edre, true, true)
+		p := pitchFromSuffix(*staffSym.Edre)
+		if p != pitch.Pitch_E {
+			mv.Note.Movement.PitchHint = p
 		}
 		return mv, nil
 	}
 	if staffSym.HalfEdre != nil {
-		mv, _ := handleMovement(movement.Edre, staffSym.HalfEdre, true, true)
-		mv.Note.Movement.Variant = movement.Half
+		mv, _ := handleMovement(movement.Type_Edre, staffSym.HalfEdre, true, true)
+		mv.Note.Movement.Variant = movement.Variant_Half
 		return mv, nil
 	}
 	if staffSym.GEdre != nil {
-		return handleMovement(movement.Edre, staffSym.GEdre, true, true)
+		return handleMovement(movement.Type_Edre, staffSym.GEdre, true, true)
 	}
 	if staffSym.ThumbEdre != nil {
-		return handleMovement(movement.Edre, staffSym.ThumbEdre, true, true)
+		return handleMovement(movement.Type_Edre, staffSym.ThumbEdre, true, true)
 	}
 	if staffSym.Dare != nil {
-		return handleMovement(movement.Dare, staffSym.Dare, true, true)
+		return handleMovement(movement.Type_Dare, staffSym.Dare, true, true)
 	}
 	if staffSym.HalfDare != nil {
-		return handleMovement(movement.Dare, staffSym.HalfDare, true, true)
+		return handleMovement(movement.Type_Dare, staffSym.HalfDare, true, true)
 	}
 	if staffSym.ThumbDare != nil {
-		return handleMovement(movement.Dare, staffSym.ThumbDare, true, true)
+		return handleMovement(movement.Type_Dare, staffSym.ThumbDare, true, true)
 	}
 	if staffSym.GDare != nil {
-		return handleMovement(movement.Dare, staffSym.GDare, true, true)
+		return handleMovement(movement.Type_Dare, staffSym.GDare, true, true)
 	}
 	if staffSym.CheCheRe != nil {
-		return handleMovement(movement.CheCheRe, staffSym.CheCheRe, true, true)
+		return handleMovement(movement.Type_CheCheRe, staffSym.CheCheRe, true, true)
 	}
 	if staffSym.HalfCheCheRe != nil {
-		return handleMovement(movement.CheCheRe, staffSym.HalfCheCheRe, true, true)
+		return handleMovement(movement.Type_CheCheRe, staffSym.HalfCheCheRe, true, true)
 	}
 	if staffSym.ThumbCheCheRe != nil {
-		return handleMovement(movement.CheCheRe, staffSym.ThumbCheCheRe, true, true)
+		return handleMovement(movement.Type_CheCheRe, staffSym.ThumbCheCheRe, true, true)
 	}
 	if staffSym.GripAbbrev != nil {
-		return handleMovement(movement.Grip, staffSym.GripAbbrev, true, true)
+		return handleMovement(movement.Type_Grip, staffSym.GripAbbrev, true, true)
 	}
 	if staffSym.Deda != nil {
-		return handleMovement(movement.Deda, staffSym.Deda, true, true)
+		return handleMovement(movement.Type_Deda, staffSym.Deda, true, true)
 	}
 	if staffSym.Enbain != nil {
-		return handleMovement(movement.Enbain, staffSym.Enbain, true, true)
+		return handleMovement(movement.Type_Enbain, staffSym.Enbain, true, true)
 	}
 	if staffSym.GEnbain != nil {
-		return handleMovement(movement.Enbain, staffSym.GEnbain, true, true)
+		return handleMovement(movement.Type_Enbain, staffSym.GEnbain, true, true)
 	}
 	if staffSym.ThumbEnbain != nil {
-		return handleMovement(movement.Enbain, staffSym.ThumbEnbain, true, true)
+		return handleMovement(movement.Type_Enbain, staffSym.ThumbEnbain, true, true)
 	}
 	if staffSym.Otro != nil {
-		return handleMovement(movement.Otro, staffSym.Otro, true, true)
+		return handleMovement(movement.Type_Otro, staffSym.Otro, true, true)
 	}
 	if staffSym.GOtro != nil {
-		return handleMovement(movement.Otro, staffSym.GOtro, true, true)
+		return handleMovement(movement.Type_Otro, staffSym.GOtro, true, true)
 	}
 	if staffSym.ThumbOtro != nil {
-		return handleMovement(movement.Otro, staffSym.ThumbOtro, true, true)
+		return handleMovement(movement.Type_Otro, staffSym.ThumbOtro, true, true)
 	}
 	if staffSym.Odro != nil {
-		return handleMovement(movement.Odro, staffSym.Odro, true, true)
+		return handleMovement(movement.Type_Odro, staffSym.Odro, true, true)
 	}
 	if staffSym.GOdro != nil {
-		return handleMovement(movement.Odro, staffSym.GOdro, true, true)
+		return handleMovement(movement.Type_Odro, staffSym.GOdro, true, true)
 	}
 	if staffSym.ThumbOdro != nil {
-		return handleMovement(movement.Odro, staffSym.ThumbOdro, true, true)
+		return handleMovement(movement.Type_Odro, staffSym.ThumbOdro, true, true)
 	}
 	if staffSym.Adeda != nil {
-		return handleMovement(movement.Adeda, staffSym.Adeda, true, true)
+		return handleMovement(movement.Type_Adeda, staffSym.Adeda, true, true)
 	}
 	if staffSym.GAdeda != nil {
-		return handleMovement(movement.Adeda, staffSym.GAdeda, true, true)
+		return handleMovement(movement.Type_Adeda, staffSym.GAdeda, true, true)
 	}
 	if staffSym.ThumbAdeda != nil {
-		return handleMovement(movement.Adeda, staffSym.ThumbAdeda, true, true)
+		return handleMovement(movement.Type_Adeda, staffSym.ThumbAdeda, true, true)
 	}
 	if staffSym.EchoBeats != nil {
-		mv, _ := handleMovement(movement.EchoBeat, staffSym.EchoBeats, false, false)
+		mv, _ := handleMovement(movement.Type_EchoBeat, staffSym.EchoBeats, false, false)
 		pitch := pitchFromSuffix(*staffSym.EchoBeats)
 		mv.Note.Movement.Pitch = pitch
 		return mv, nil
 	}
 	if staffSym.Darodo != nil {
-		return handleMovement(movement.Darodo, staffSym.Darodo, false, true)
+		return handleMovement(movement.Type_Darodo, staffSym.Darodo, false, true)
 	}
 	if staffSym.Hiharin != nil {
-		return handleMovement(movement.Hiharin, staffSym.Hiharin, false, false)
+		return handleMovement(movement.Type_Hiharin, staffSym.Hiharin, false, false)
 	}
 	if staffSym.Rodin != nil {
-		return handleMovement(movement.Rodin, staffSym.Rodin, false, false)
+		return handleMovement(movement.Type_Rodin, staffSym.Rodin, false, false)
 	}
 	if staffSym.Chelalho != nil {
-		return handleMovement(movement.Chelalho, staffSym.Chelalho, false, false)
+		return handleMovement(movement.Type_Chelalho, staffSym.Chelalho, false, false)
 	}
 	if staffSym.Din != nil {
-		return handleMovement(movement.Din, staffSym.Din, false, false)
+		return handleMovement(movement.Type_Din, staffSym.Din, false, false)
 	}
 	if staffSym.Lemluath != nil {
 		lemSym, hadBrea := stripBreabach(staffSym.Lemluath)
-		mv, _ := handleMovement(movement.Lemluath, &lemSym, false, true)
+		mv, _ := handleMovement(movement.Type_Lemluath, &lemSym, false, true)
 		pitch := pitchFromSuffix(lemSym)
 		mv.Note.Movement.PitchHint = pitch
 		mv.Note.Movement.Breabach = hadBrea
@@ -866,7 +869,7 @@ func appendStaffSymbolToMeasureSymbols(
 		if !lastSym.Note.IsValid() {
 			return nil, fmt.Errorf("lemluath abbreviation %s must follow a valid melody note", *staffSym.LemluathAbbrev)
 		}
-		sym, _ := handleMovement(movement.Lemluath, &lemSym, false, true)
+		sym, _ := handleMovement(movement.Type_Lemluath, &lemSym, false, true)
 		move := sym.Note.Movement
 		pitch := pitchFromSuffix(lemSym)
 		move.PitchHint = pitch
@@ -876,7 +879,7 @@ func appendStaffSymbolToMeasureSymbols(
 	}
 	if staffSym.TaorluathPio != nil {
 		return handleMovementWithPitchHintSuffixAndBreabach(
-			movement.Taorluath, staffSym.TaorluathPio, false, true,
+			movement.Type_Taorluath, staffSym.TaorluathPio, false, true,
 		)
 	}
 	if staffSym.TaorluathAbbrev != nil {
@@ -887,7 +890,7 @@ func appendStaffSymbolToMeasureSymbols(
 			return nil, fmt.Errorf("taorluath abbreviation %s must follow a valid melody note", *staffSym.TaorluathAbbrev)
 		}
 		sym, err := handleMovementWithPitchHintSuffixAndBreabach(
-			movement.Taorluath, staffSym.TaorluathAbbrev, false, true,
+			movement.Type_Taorluath, staffSym.TaorluathAbbrev, false, true,
 		)
 		move := sym.Note.Movement
 		lastSym.Note.Movement = move
@@ -895,17 +898,17 @@ func appendStaffSymbolToMeasureSymbols(
 	}
 	if staffSym.TaorluathAmach != nil {
 		pitch := pitchFromSuffix(*staffSym.TaorluathAmach)
-		mv, _ := handleMovement(movement.Taorluath, staffSym.TaorluathAmach, false, false)
+		mv, _ := handleMovement(movement.Type_Taorluath, staffSym.TaorluathAmach, false, false)
 		mv.Note.Movement.AMach = true
 		mv.Note.Movement.PitchHint = pitch
 		return mv, nil
 	}
 	if staffSym.Crunluath != nil {
 		mv, _ := handleMovementWithPitchHintSuffixAndBreabach(
-			movement.Crunluath, staffSym.Crunluath, false, true,
+			movement.Type_Crunluath, staffSym.Crunluath, false, true,
 		)
 		if strings.Contains(*staffSym.Crunluath, "crunllgla") {
-			mv.Note.Movement.AdditionalPitchHint = common.LowG
+			mv.Note.Movement.AdditionalPitchHint = pitch.Pitch_LowG
 		}
 		return mv, nil
 	}
@@ -917,7 +920,7 @@ func appendStaffSymbolToMeasureSymbols(
 			return nil, fmt.Errorf("crunluath abbreviation %s must follow a valid melody note", *staffSym.CrunluathAbbrev)
 		}
 		sym, err := handleMovementWithPitchHintSuffixAndBreabach(
-			movement.Crunluath, staffSym.CrunluathAbbrev, false, true,
+			movement.Type_Crunluath, staffSym.CrunluathAbbrev, false, true,
 		)
 		move := sym.Note.Movement
 		lastSym.Note.Movement = move
@@ -925,17 +928,17 @@ func appendStaffSymbolToMeasureSymbols(
 	}
 	if staffSym.CrunluathAmach != nil {
 		pitch := pitchFromSuffix(*staffSym.CrunluathAmach)
-		mv, _ := handleMovement(movement.Crunluath, staffSym.CrunluathAmach, false, false)
+		mv, _ := handleMovement(movement.Type_Crunluath, staffSym.CrunluathAmach, false, false)
 		mv.Note.Movement.AMach = true
 		mv.Note.Movement.PitchHint = pitch
 		return mv, nil
 	}
 	if staffSym.Tripling != nil {
 		pitch := pitchFromSuffix(*staffSym.Tripling)
-		mv, _ := handleMovement(movement.Tripling, staffSym.Tripling, false, true)
+		mv, _ := handleMovement(movement.Type_Tripling, staffSym.Tripling, false, true)
 		// thumb variant handled here because pt is always recognized as thumb
 		if strings.HasPrefix(*staffSym.Tripling, "ptt") {
-			mv.Note.Movement.Variant = movement.Thumb
+			mv.Note.Movement.Variant = movement.Variant_Thumb
 		}
 		mv.Note.Movement.Pitch = pitch
 		return mv, nil
@@ -945,7 +948,7 @@ func appendStaffSymbolToMeasureSymbols(
 		if err != nil {
 			return nil, fmt.Errorf("failed parsing tune tempo: %s", err.Error())
 		}
-		return &music_model.Symbol{TempoChange: tempo}, nil
+		return &symbols.Symbol{TempoChange: &tempo}, nil
 	}
 
 	return nil, nil // fmt.Errorf("staff symbol %v not handled", staffSym)
@@ -956,7 +959,7 @@ func handleMovementWithPitchHintSuffixAndBreabach(
 	sym *string,
 	withThumb bool,
 	withHalf bool,
-) (*music_model.Symbol, error) {
+) (*symbols.Symbol, error) {
 	strippedSym, hadBrea := stripBreabach(sym)
 	currSym, _ := handleMovement(mtype, &strippedSym, withThumb, withHalf)
 	pitch := pitchFromSuffix(strippedSym)
@@ -966,34 +969,34 @@ func handleMovementWithPitchHintSuffixAndBreabach(
 	return currSym, nil
 }
 
-func handleMovement(mtype movement.Type, sym *string, withThumb bool, withHalf bool) (*music_model.Symbol, error) {
+func handleMovement(mtype movement.Type, sym *string, withThumb bool, withHalf bool) (*symbols.Symbol, error) {
 	showAbbr := false
 	if strings.HasPrefix(*sym, "p") {
 		showAbbr = true
 	}
-	mVar := movement.NoVariant
+	mVar := movement.Variant_NoVariant
 	if withHalf {
 		if strings.HasPrefix(*sym, "h") || strings.HasPrefix(*sym, "ph") {
-			mVar = movement.Half
+			mVar = movement.Variant_Half
 		}
 	}
 
 	if withThumb {
 		if strings.HasPrefix(*sym, "t") || strings.HasPrefix(*sym, "pt") {
-			mVar = movement.Thumb
+			mVar = movement.Variant_Thumb
 		}
 	}
 
 	if strings.HasPrefix(*sym, "g") {
-		mVar = movement.G
+		mVar = movement.Variant_G
 	}
 
 	if strings.HasSuffix(*sym, "8") ||
 		strings.HasSuffix(*sym, "16") {
-		mVar = movement.LongLowG
+		mVar = movement.Variant_LongLowG
 	}
 
-	return &music_model.Symbol{
+	return &symbols.Symbol{
 		Note: &symbols.Note{
 			Movement: &movement.Movement{
 				Type:       mtype,
@@ -1007,11 +1010,11 @@ func handleMovement(mtype movement.Type, sym *string, withThumb bool, withHalf b
 func handleCadence(
 	cad *string,
 	fermata bool,
-) (*music_model.Symbol, error) {
-	return &music_model.Symbol{
+) (*symbols.Symbol, error) {
+	return &symbols.Symbol{
 		Note: &symbols.Note{
 			Movement: &movement.Movement{
-				Type:    movement.Cadence,
+				Type:    movement.Type_Cadence,
 				Fermata: fermata,
 				Pitches: pitchesFromCadenceSym(*cad, fermata),
 			},
@@ -1019,37 +1022,37 @@ func handleCadence(
 	}, nil
 }
 
-func pitchesFromCadenceSym(sym string, fermata bool) []common.Pitch {
+func pitchesFromCadenceSym(sym string, fermata bool) []pitch.Pitch {
 	if fermata {
 		sym = strings.Replace(sym, "fcad", "", 1)
 	} else {
 		sym = strings.Replace(sym, "cad", "", 1)
 	}
 
-	pitches := make([]common.Pitch, len(sym))
+	pitches := make([]pitch.Pitch, len(sym))
 	for i, ch := range sym {
 		switch ch {
 		case 'g':
-			pitches[i] = common.HighG
+			pitches[i] = pitch.Pitch_HighG
 		case 'e':
-			pitches[i] = common.E
+			pitches[i] = pitch.Pitch_E
 		case 'd':
-			pitches[i] = common.D
+			pitches[i] = pitch.Pitch_D
 		case 'a':
-			pitches[i] = common.HighA
+			pitches[i] = pitch.Pitch_HighA
 		case 'f':
-			pitches[i] = common.F
+			pitches[i] = pitch.Pitch_F
 		default:
 			log.Error().Msgf("char %c is not handled for cadence symbol", ch)
-			pitches[i] = common.NoPitch
+			pitches[i] = pitch.Pitch_NoPitch
 		}
 	}
 	return pitches
 }
 
 func handleInsideStaffComment(
-	lastSym *music_model.Symbol,
-	currentMeasure *music_model.Measure,
+	lastSym *symbols.Symbol,
+	currentMeasure *measure.Measure,
 	text string,
 ) {
 	if lastSym != nil {
@@ -1065,8 +1068,8 @@ func handleInsideStaffComment(
 
 func handleEmbellishment(
 	embType emb.EmbellishmentType,
-) (*music_model.Symbol, error) {
-	return &music_model.Symbol{
+) (*symbols.Symbol, error) {
+	return &symbols.Symbol{
 		Note: &symbols.Note{
 			Embellishment: &emb.Embellishment{
 				Type: embType,
@@ -1075,8 +1078,8 @@ func handleEmbellishment(
 	}, nil
 }
 
-func handleDoubleGrace(pitch common.Pitch) (*music_model.Symbol, error) {
-	doubleG, err := handleEmbellishment(emb.DoubleGrace)
+func handleDoubleGrace(pitch pitch.Pitch) (*symbols.Symbol, error) {
+	doubleG, err := handleEmbellishment(emb.EmbellishmentType_DoubleGrace)
 	doubleG.Note.Embellishment.Pitch = pitch
 	return doubleG, err
 }
@@ -1085,8 +1088,8 @@ func handleEmbellishmentVariant(
 	embType emb.EmbellishmentType,
 	variant emb.EmbellishmentVariant,
 	weight emb.EmbellishmentWeight,
-) (*music_model.Symbol, error) {
-	return &music_model.Symbol{
+) (*symbols.Symbol, error) {
+	return &symbols.Symbol{
 		Note: &symbols.Note{
 			Embellishment: &emb.Embellishment{
 				Type:    embType,
@@ -1098,17 +1101,17 @@ func handleEmbellishmentVariant(
 }
 
 func handleIrregularGroup(
-	boundary tuplet.TupletBoundary,
+	boundary boundary.Boundary,
 	ttype tuplet.TupletType,
-) (*music_model.Symbol, error) {
+) (*symbols.Symbol, error) {
 	return newIrregularGroup(boundary, ttype), nil
 }
 
-func newIrregularGroup(boundary tuplet.TupletBoundary,
+func newIrregularGroup(boundary boundary.Boundary,
 	ttype tuplet.TupletType,
-) *music_model.Symbol {
+) *symbols.Symbol {
 	tpl := tuplet.NewTuplet(boundary, ttype)
-	return &music_model.Symbol{
+	return &symbols.Symbol{
 		Tuplet: tpl,
 	}
 }
@@ -1146,8 +1149,8 @@ func tupletTypeFromSymbol(sym *string) tuplet.TupletType {
 	return tuplet.NoType
 }
 
-func handleDots(staffSym *StaffSymbols, lastSym *music_model.Symbol) {
-	var dotCount = uint8(0)
+func handleDots(staffSym *StaffSymbols, lastSym *symbols.Symbol) {
+	var dotCount = uint32(0)
 	var dotSym *string
 	if staffSym.SingleDots != nil {
 		dotCount = 1
@@ -1190,65 +1193,65 @@ func handleNote(staffSym *StaffSymbols, note *symbols.Note) {
 	note.Pitch = pitchFromStaffNotePrefix(token)
 }
 
-func handleAccidential(acc accidental.Accidental) *music_model.Symbol {
-	return &music_model.Symbol{
+func handleAccidential(acc accidental.Accidental) *symbols.Symbol {
+	return &symbols.Symbol{
 		Note: &symbols.Note{
 			Accidental: acc,
 		},
 	}
 }
 
-func handleTimeLine(sym string) (*music_model.Symbol, error) {
+func handleTimeLine(sym string) (*symbols.Symbol, error) {
 	if sym == "'1" {
-		return newTimeLineStartSymbol(time_line.First), nil
+		return newTimeLineStartSymbol(timeline.Type_First), nil
 	}
 	if sym == "'2" {
-		return newTimeLineStartSymbol(time_line.Second), nil
+		return newTimeLineStartSymbol(timeline.Type_Second), nil
 	}
 	if sym == "'22" {
-		return newTimeLineStartSymbol(time_line.SecondOf2), nil
+		return newTimeLineStartSymbol(timeline.Type_SecondOf2), nil
 	}
 	if sym == "'23" {
-		return newTimeLineStartSymbol(time_line.SecondOf3), nil
+		return newTimeLineStartSymbol(timeline.Type_SecondOf3), nil
 	}
 	if sym == "'24" {
-		return newTimeLineStartSymbol(time_line.SecondOf4), nil
+		return newTimeLineStartSymbol(timeline.Type_SecondOf4), nil
 	}
 	if sym == "'224" {
-		return newTimeLineStartSymbol(time_line.SecondOf2And4), nil
+		return newTimeLineStartSymbol(timeline.Type_SecondOf2And4), nil
 	}
 	if sym == "'25" {
-		return newTimeLineStartSymbol(time_line.SecondOf5), nil
+		return newTimeLineStartSymbol(timeline.Type_SecondOf5), nil
 	}
 	if sym == "'26" {
-		return newTimeLineStartSymbol(time_line.SecondOf6), nil
+		return newTimeLineStartSymbol(timeline.Type_SecondOf6), nil
 	}
 	if sym == "'27" {
-		return newTimeLineStartSymbol(time_line.SecondOf7), nil
+		return newTimeLineStartSymbol(timeline.Type_SecondOf7), nil
 	}
 	if sym == "'28" {
-		return newTimeLineStartSymbol(time_line.SecondOf8), nil
+		return newTimeLineStartSymbol(timeline.Type_SecondOf8), nil
 	}
 	if sym == "'si" {
-		return newTimeLineStartSymbol(time_line.Singling), nil
+		return newTimeLineStartSymbol(timeline.Type_Singling), nil
 	}
 	if sym == "'do" {
-		return newTimeLineStartSymbol(time_line.Doubling), nil
+		return newTimeLineStartSymbol(timeline.Type_Doubling), nil
 	}
 	if sym == "'bis" {
-		return newTimeLineStartSymbol(time_line.Bis), nil
+		return newTimeLineStartSymbol(timeline.Type_Bis), nil
 	}
 	if sym == "'intro" {
-		return newTimeLineStartSymbol(time_line.Intro), nil
+		return newTimeLineStartSymbol(timeline.Type_Intro), nil
 	}
 
 	return nil, fmt.Errorf("time line symbol %s not handled", sym)
 }
 
-func newTimeLineStartSymbol(ttype time_line.TimeLineType) *music_model.Symbol {
-	return &music_model.Symbol{
-		TimeLine: &time_line.TimeLine{
-			BoundaryType: time_line.Start,
+func newTimeLineStartSymbol(ttype timeline.Type) *symbols.Symbol {
+	return &symbols.Symbol{
+		Timeline: &timeline.TimeLine{
+			BoundaryType: boundary.Boundary_Start,
 			Type:         ttype,
 		},
 	}
@@ -1256,119 +1259,119 @@ func newTimeLineStartSymbol(ttype time_line.TimeLineType) *music_model.Symbol {
 
 func embellishmentForSingleGrace(grace *string) *emb.Embellishment {
 	emb := &emb.Embellishment{
-		Type: emb.SingleGrace,
+		Type: emb.EmbellishmentType_SingleGrace,
 	}
 
 	if *grace == "ag" {
-		emb.Pitch = common.LowA
+		emb.Pitch = pitch.Pitch_LowA
 	}
 	if *grace == "bg" {
-		emb.Pitch = common.B
+		emb.Pitch = pitch.Pitch_B
 	}
 	if *grace == "cg" {
-		emb.Pitch = common.C
+		emb.Pitch = pitch.Pitch_C
 	}
 	if *grace == "dg" {
-		emb.Pitch = common.D
+		emb.Pitch = pitch.Pitch_D
 	}
 	if *grace == "eg" {
-		emb.Pitch = common.E
+		emb.Pitch = pitch.Pitch_E
 	}
 	if *grace == "fg" {
-		emb.Pitch = common.F
+		emb.Pitch = pitch.Pitch_F
 	}
 	if *grace == "gg" {
-		emb.Pitch = common.HighG
+		emb.Pitch = pitch.Pitch_HighG
 	}
 	if *grace == "tg" {
-		emb.Pitch = common.HighA
+		emb.Pitch = pitch.Pitch_HighA
 	}
 	return emb
 }
 
-func pitchFromStaffNotePrefix(note *string) common.Pitch {
+func pitchFromStaffNotePrefix(note *string) pitch.Pitch {
 	if strings.HasPrefix(*note, "LG") {
-		return common.LowG
+		return pitch.Pitch_LowG
 	}
 	if strings.HasPrefix(*note, "LA") {
-		return common.LowA
+		return pitch.Pitch_LowA
 	}
 	if strings.HasPrefix(*note, "B") {
-		return common.B
+		return pitch.Pitch_B
 	}
 	if strings.HasPrefix(*note, "C") {
-		return common.C
+		return pitch.Pitch_C
 	}
 	if strings.HasPrefix(*note, "D") {
-		return common.D
+		return pitch.Pitch_D
 	}
 	if strings.HasPrefix(*note, "E") {
-		return common.E
+		return pitch.Pitch_E
 	}
 	if strings.HasPrefix(*note, "F") {
-		return common.F
+		return pitch.Pitch_F
 	}
 	if strings.HasPrefix(*note, "HG") {
-		return common.HighG
+		return pitch.Pitch_HighG
 	}
 	if strings.HasPrefix(*note, "HA") {
-		return common.HighA
+		return pitch.Pitch_HighA
 	}
 
-	return common.NoPitch
+	return pitch.Pitch_NoPitch
 }
-func lengthFromSuffix(note *string) common.Length {
+func lengthFromSuffix(note *string) length.Length {
 	if strings.HasSuffix(*note, "16") {
-		return common.Sixteenth
+		return length.Length_Sixteenth
 	}
 	if strings.HasSuffix(*note, "32") {
-		return common.Thirtysecond
+		return length.Length_Thirtysecond
 	}
 	if strings.HasSuffix(*note, "1") {
-		return common.Whole
+		return length.Length_Whole
 	}
 	if strings.HasSuffix(*note, "2") {
-		return common.Half
+		return length.Length_Half
 	}
 	if strings.HasSuffix(*note, "4") {
-		return common.Quarter
+		return length.Length_Quarter
 	}
 	if strings.HasSuffix(*note, "8") {
-		return common.Eighth
+		return length.Length_Eighth
 	}
 
-	return common.NoLength
+	return length.Length_NoLength
 }
 
-func pitchFromSuffix(sym string) common.Pitch {
+func pitchFromSuffix(sym string) pitch.Pitch {
 	if strings.HasSuffix(sym, "lg") {
-		return common.LowG
+		return pitch.Pitch_LowG
 	}
 	if strings.HasSuffix(sym, "la") {
-		return common.LowA
+		return pitch.Pitch_LowA
 	}
 	if strings.HasSuffix(sym, "b") {
-		return common.B
+		return pitch.Pitch_B
 	}
 	if strings.HasSuffix(sym, "c") {
-		return common.C
+		return pitch.Pitch_C
 	}
 	if strings.HasSuffix(sym, "d") {
-		return common.D
+		return pitch.Pitch_D
 	}
 	if strings.HasSuffix(sym, "e") {
-		return common.E
+		return pitch.Pitch_E
 	}
 	if strings.HasSuffix(sym, "f") {
-		return common.F
+		return pitch.Pitch_F
 	}
 	if strings.HasSuffix(sym, "hg") {
-		return common.HighG
+		return pitch.Pitch_HighG
 	}
 	if strings.HasSuffix(sym, "ha") {
-		return common.HighA
+		return pitch.Pitch_HighA
 	}
-	return common.NoPitch
+	return pitch.Pitch_NoPitch
 }
 
 func stripBreabach(sym *string) (string, bool) {
@@ -1377,14 +1380,14 @@ func stripBreabach(sym *string) (string, bool) {
 	return stripped, didReplace
 }
 
-func newTimeLineEnd(sym *string) *music_model.Symbol {
-	ttype := time_line.NoType
+func newTimeLineEnd(sym *string) *symbols.Symbol {
+	ttype := timeline.Type_NoType
 	if *sym == "bis_'" {
-		ttype = time_line.Bis
+		ttype = timeline.Type_Bis
 	}
-	return &music_model.Symbol{
-		TimeLine: &time_line.TimeLine{
-			BoundaryType: time_line.End,
+	return &symbols.Symbol{
+		Timeline: &timeline.TimeLine{
+			BoundaryType: boundary.Boundary_End,
 			Type:         ttype,
 		},
 	}

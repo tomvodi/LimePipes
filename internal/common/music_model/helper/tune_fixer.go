@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/tune"
 	"github.com/tomvodi/limepipes/internal/common/music_model"
 	"github.com/tomvodi/limepipes/internal/interfaces"
 	"golang.org/x/text/cases"
@@ -24,7 +25,7 @@ func (t *tuneFix) Fix(muMo music_model.MusicModel) {
 	}
 }
 
-func fixComposerArranger(tune *music_model.Tune) {
+func fixComposerArranger(tune *tune.Tune) {
 	if tune.Composer == "" {
 		return
 	}
@@ -56,7 +57,7 @@ func fixComposerArranger(tune *music_model.Tune) {
 	}
 }
 
-func fixComposerTrad(tune *music_model.Tune) {
+func fixComposerTrad(tune *tune.Tune) {
 	regX := regexp.MustCompile(`(?i)^trad\.?$`)
 	trimmedComposer := strings.TrimSpace(tune.Composer)
 	if regX.MatchString(trimmedComposer) {
@@ -64,7 +65,7 @@ func fixComposerTrad(tune *music_model.Tune) {
 	}
 }
 
-func removeTimeSigFromTuneType(tune *music_model.Tune) {
+func removeTimeSigFromTuneType(tune *tune.Tune) {
 	trimmedType := strings.TrimSpace(tune.Type)
 	regX := regexp.MustCompile(`\d+/\d+`)
 	typeWithoutTimesig := regX.ReplaceAllString(trimmedType, "")
@@ -72,20 +73,20 @@ func removeTimeSigFromTuneType(tune *music_model.Tune) {
 	tune.Type = typeWithoutTimesig
 }
 
-func removeSpecialCharsFromTuneType(tune *music_model.Tune) {
+func removeSpecialCharsFromTuneType(tune *tune.Tune) {
 	trimmedType := strings.TrimSpace(tune.Type)
 	trimmedType = strings.Trim(trimmedType, ".:/-|")
 	tune.Type = trimmedType
 }
 
-func trimSpaces(tune *music_model.Tune) {
+func trimSpaces(tune *tune.Tune) {
 	tune.Title = strings.TrimSpace(tune.Title)
 	tune.Composer = strings.TrimSpace(tune.Composer)
 	tune.Arranger = strings.TrimSpace(tune.Arranger)
 	tune.Type = strings.TrimSpace(tune.Type)
 }
 
-func capitalizeTuneType(tune *music_model.Tune) {
+func capitalizeTuneType(tune *tune.Tune) {
 	trimmedType := strings.TrimSpace(tune.Type)
 	caser := cases.Title(language.English)
 	tune.Type = caser.String(trimmedType)
@@ -100,7 +101,7 @@ func fixComposerArrangerField(arr string) string {
 	return arranger
 }
 
-func fixTitle(tune *music_model.Tune) {
+func fixTitle(tune *tune.Tune) {
 	tune.Title = strings.Replace(tune.Title, "_", " ", -1)
 
 	caser := cases.Title(language.English)
