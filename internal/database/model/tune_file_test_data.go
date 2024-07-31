@@ -46,10 +46,10 @@ func TestMusicModelTune(title string) *tune.Tune {
 							Fermata:    true,
 							Tie:        tie.Tie_Start,
 							Embellishment: &embellishment.Embellishment{
-								Type:    embellishment.EmbellishmentType_Doubling,
+								Type:    embellishment.Type_Doubling,
 								Pitch:   pitch.Pitch_E,
-								Variant: embellishment.EmbellishmentVariant_Half,
-								Weight:  embellishment.EmbellishmentWeight_Light,
+								Variant: embellishment.Variant_Half,
+								Weight:  embellishment.Weight_Light,
 							},
 							Movement: nil,
 							Comment:  "",

@@ -54,7 +54,7 @@ func Test_handleTriplet(t *testing.T) {
 					Symbols: []*symbols.Symbol{
 						{Note: &symbols.Note{Pitch: pitch.Pitch_LowA, Length: length.Length_Eighth}},
 						{Note: &symbols.Note{
-							Embellishment: &embellishment.Embellishment{Type: embellishment.EmbellishmentType_Doubling},
+							Embellishment: &embellishment.Embellishment{Type: embellishment.Type_Doubling},
 						}},
 						{Note: &symbols.Note{Pitch: pitch.Pitch_LowA, Length: length.Length_Eighth}},
 					},

@@ -545,100 +545,100 @@ func appendStaffSymbolToMeasureSymbols(
 		return handleAccidential(accidental.Accidental_Sharp), nil
 	}
 	if staffSym.Doubling != nil {
-		return handleEmbellishment(emb.EmbellishmentType_Doubling)
+		return handleEmbellishment(emb.Type_Doubling)
 	}
 	if staffSym.HalfDoubling != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_Doubling, emb.EmbellishmentVariant_Half, emb.EmbellishmentWeight_NoWeight)
+		return handleVariant(emb.Type_Doubling, emb.Variant_Half, emb.Weight_NoWeight)
 	}
 	if staffSym.ThumbDoubling != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_Doubling, emb.EmbellishmentVariant_Thumb, emb.EmbellishmentWeight_NoWeight)
+		return handleVariant(emb.Type_Doubling, emb.Variant_Thumb, emb.Weight_NoWeight)
 	}
 	if staffSym.Grip != nil {
-		return handleEmbellishment(emb.EmbellishmentType_Grip)
+		return handleEmbellishment(emb.Type_Grip)
 	}
 	if staffSym.GGrip != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_Grip, emb.EmbellishmentVariant_G, emb.EmbellishmentWeight_NoWeight)
+		return handleVariant(emb.Type_Grip, emb.Variant_G, emb.Weight_NoWeight)
 	}
 	if staffSym.ThumbGrip != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_Grip, emb.EmbellishmentVariant_Thumb, emb.EmbellishmentWeight_NoWeight)
+		return handleVariant(emb.Type_Grip, emb.Variant_Thumb, emb.Weight_NoWeight)
 	}
 	if staffSym.HalfGrip != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_Grip, emb.EmbellishmentVariant_Half, emb.EmbellishmentWeight_NoWeight)
+		return handleVariant(emb.Type_Grip, emb.Variant_Half, emb.Weight_NoWeight)
 	}
 	if staffSym.Taorluath != nil {
-		return handleEmbellishment(emb.EmbellishmentType_Taorluath)
+		return handleEmbellishment(emb.Type_Taorluath)
 	}
 	if staffSym.Bubbly != nil {
-		return handleEmbellishment(emb.EmbellishmentType_Bubbly)
+		return handleEmbellishment(emb.Type_Bubbly)
 	}
 	if staffSym.ThrowD != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_ThrowD, emb.EmbellishmentVariant_NoVariant, emb.EmbellishmentWeight_Light)
+		return handleVariant(emb.Type_ThrowD, emb.Variant_NoVariant, emb.Weight_Light)
 	}
 	if staffSym.HeavyThrowD != nil {
-		return handleEmbellishment(emb.EmbellishmentType_ThrowD)
+		return handleEmbellishment(emb.Type_ThrowD)
 	}
 	if staffSym.Birl != nil {
-		return handleEmbellishment(emb.EmbellishmentType_Birl)
+		return handleEmbellishment(emb.Type_Birl)
 	}
 	if staffSym.ABirl != nil {
-		return handleEmbellishment(emb.EmbellishmentType_ABirl)
+		return handleEmbellishment(emb.Type_ABirl)
 	}
 	if staffSym.Strike != nil {
-		return handleEmbellishment(emb.EmbellishmentType_Strike)
+		return handleEmbellishment(emb.Type_Strike)
 	}
 	if staffSym.GStrike != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_Strike, emb.EmbellishmentVariant_G, emb.EmbellishmentWeight_NoWeight)
+		return handleVariant(emb.Type_Strike, emb.Variant_G, emb.Weight_NoWeight)
 	}
 	if staffSym.LightGStrike != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_Strike, emb.EmbellishmentVariant_G, emb.EmbellishmentWeight_Light)
+		return handleVariant(emb.Type_Strike, emb.Variant_G, emb.Weight_Light)
 	}
 	if staffSym.LightDoubleStrike != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_DoubleStrike, emb.EmbellishmentVariant_NoVariant, emb.EmbellishmentWeight_Light)
+		return handleVariant(emb.Type_DoubleStrike, emb.Variant_NoVariant, emb.Weight_Light)
 	}
 	if staffSym.DoubleStrike != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_DoubleStrike, emb.EmbellishmentVariant_NoVariant, emb.EmbellishmentWeight_NoWeight)
+		return handleVariant(emb.Type_DoubleStrike, emb.Variant_NoVariant, emb.Weight_NoWeight)
 	}
 	if staffSym.LightGDoubleStrike != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_DoubleStrike, emb.EmbellishmentVariant_G, emb.EmbellishmentWeight_Light)
+		return handleVariant(emb.Type_DoubleStrike, emb.Variant_G, emb.Weight_Light)
 	}
 	if staffSym.GDoubleStrike != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_DoubleStrike, emb.EmbellishmentVariant_G, emb.EmbellishmentWeight_NoWeight)
+		return handleVariant(emb.Type_DoubleStrike, emb.Variant_G, emb.Weight_NoWeight)
 	}
 	if staffSym.LightThumbDoubleStrike != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_DoubleStrike, emb.EmbellishmentVariant_Thumb, emb.EmbellishmentWeight_Light)
+		return handleVariant(emb.Type_DoubleStrike, emb.Variant_Thumb, emb.Weight_Light)
 	}
 	if staffSym.ThumbDoubleStrike != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_DoubleStrike, emb.EmbellishmentVariant_Thumb, emb.EmbellishmentWeight_NoWeight)
+		return handleVariant(emb.Type_DoubleStrike, emb.Variant_Thumb, emb.Weight_NoWeight)
 	}
 	if staffSym.LightHalfDoubleStrike != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_DoubleStrike, emb.EmbellishmentVariant_Half, emb.EmbellishmentWeight_Light)
+		return handleVariant(emb.Type_DoubleStrike, emb.Variant_Half, emb.Weight_Light)
 	}
 	if staffSym.HalfDoubleStrike != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_DoubleStrike, emb.EmbellishmentVariant_Half, emb.EmbellishmentWeight_NoWeight)
+		return handleVariant(emb.Type_DoubleStrike, emb.Variant_Half, emb.Weight_NoWeight)
 	}
 	if staffSym.LightTripleStrike != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_TripleStrike, emb.EmbellishmentVariant_NoVariant, emb.EmbellishmentWeight_Light)
+		return handleVariant(emb.Type_TripleStrike, emb.Variant_NoVariant, emb.Weight_Light)
 	}
 	if staffSym.TripleStrike != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_TripleStrike, emb.EmbellishmentVariant_NoVariant, emb.EmbellishmentWeight_NoWeight)
+		return handleVariant(emb.Type_TripleStrike, emb.Variant_NoVariant, emb.Weight_NoWeight)
 	}
 	if staffSym.LightGTripleStrike != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_TripleStrike, emb.EmbellishmentVariant_G, emb.EmbellishmentWeight_Light)
+		return handleVariant(emb.Type_TripleStrike, emb.Variant_G, emb.Weight_Light)
 	}
 	if staffSym.GTripleStrike != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_TripleStrike, emb.EmbellishmentVariant_G, emb.EmbellishmentWeight_NoWeight)
+		return handleVariant(emb.Type_TripleStrike, emb.Variant_G, emb.Weight_NoWeight)
 	}
 	if staffSym.LightThumbTripleStrike != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_TripleStrike, emb.EmbellishmentVariant_Thumb, emb.EmbellishmentWeight_Light)
+		return handleVariant(emb.Type_TripleStrike, emb.Variant_Thumb, emb.Weight_Light)
 	}
 	if staffSym.ThumbTripleStrike != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_TripleStrike, emb.EmbellishmentVariant_Thumb, emb.EmbellishmentWeight_NoWeight)
+		return handleVariant(emb.Type_TripleStrike, emb.Variant_Thumb, emb.Weight_NoWeight)
 	}
 	if staffSym.LightHalfTripleStrike != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_TripleStrike, emb.EmbellishmentVariant_Half, emb.EmbellishmentWeight_Light)
+		return handleVariant(emb.Type_TripleStrike, emb.Variant_Half, emb.Weight_Light)
 	}
 	if staffSym.HalfTripleStrike != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_TripleStrike, emb.EmbellishmentVariant_Half, emb.EmbellishmentWeight_NoWeight)
+		return handleVariant(emb.Type_TripleStrike, emb.Variant_Half, emb.Weight_NoWeight)
 	}
 	if staffSym.DDoubleGrace != nil {
 		return handleDoubleGrace(pitch.Pitch_D)
@@ -656,31 +656,31 @@ func appendStaffSymbolToMeasureSymbols(
 		return handleDoubleGrace(pitch.Pitch_HighA)
 	}
 	if staffSym.HalfStrike != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_Strike, emb.EmbellishmentVariant_Half, emb.EmbellishmentWeight_NoWeight)
+		return handleVariant(emb.Type_Strike, emb.Variant_Half, emb.Weight_NoWeight)
 	}
 	if staffSym.LightHalfStrike != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_Strike, emb.EmbellishmentVariant_Half, emb.EmbellishmentWeight_Light)
+		return handleVariant(emb.Type_Strike, emb.Variant_Half, emb.Weight_Light)
 	}
 	if staffSym.ThumbStrike != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_Strike, emb.EmbellishmentVariant_Thumb, emb.EmbellishmentWeight_NoWeight)
+		return handleVariant(emb.Type_Strike, emb.Variant_Thumb, emb.Weight_NoWeight)
 	}
 	if staffSym.LightThumbStrike != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_Strike, emb.EmbellishmentVariant_Thumb, emb.EmbellishmentWeight_Light)
+		return handleVariant(emb.Type_Strike, emb.Variant_Thumb, emb.Weight_Light)
 	}
 	if staffSym.Pele != nil {
-		return handleEmbellishment(emb.EmbellishmentType_Pele)
+		return handleEmbellishment(emb.Type_Pele)
 	}
 	if staffSym.LightPele != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_Pele, emb.EmbellishmentVariant_NoVariant, emb.EmbellishmentWeight_Light)
+		return handleVariant(emb.Type_Pele, emb.Variant_NoVariant, emb.Weight_Light)
 	}
 	if staffSym.ThumbPele != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_Pele, emb.EmbellishmentVariant_Thumb, emb.EmbellishmentWeight_NoWeight)
+		return handleVariant(emb.Type_Pele, emb.Variant_Thumb, emb.Weight_NoWeight)
 	}
 	if staffSym.LightThumbPele != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_Pele, emb.EmbellishmentVariant_Thumb, emb.EmbellishmentWeight_Light)
+		return handleVariant(emb.Type_Pele, emb.Variant_Thumb, emb.Weight_Light)
 	}
 	if staffSym.HalfPele != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_Pele, emb.EmbellishmentVariant_Half, emb.EmbellishmentWeight_NoWeight)
+		return handleVariant(emb.Type_Pele, emb.Variant_Half, emb.Weight_NoWeight)
 	}
 	if staffSym.IrregularGroupStart != nil {
 		ttype := tupletTypeFromSymbol(staffSym.IrregularGroupStart)
@@ -697,11 +697,11 @@ func appendStaffSymbolToMeasureSymbols(
 		}
 	}
 	if staffSym.LightHalfPele != nil {
-		return handleEmbellishmentVariant(emb.EmbellishmentType_Pele, emb.EmbellishmentVariant_Half, emb.EmbellishmentWeight_Light)
+		return handleVariant(emb.Type_Pele, emb.Variant_Half, emb.Weight_Light)
 	}
 	if staffSym.GBirl != nil ||
 		staffSym.ThumbBirl != nil {
-		return handleEmbellishment(emb.EmbellishmentType_GraceBirl)
+		return handleEmbellishment(emb.Type_GraceBirl)
 	}
 	if staffSym.Fermata != nil {
 		if lastSym != nil && lastSym.Note != nil && lastSym.Note.HasPitchAndLength() {
@@ -1067,7 +1067,7 @@ func handleInsideStaffComment(
 }
 
 func handleEmbellishment(
-	embType emb.EmbellishmentType,
+	embType emb.Type,
 ) (*symbols.Symbol, error) {
 	return &symbols.Symbol{
 		Note: &symbols.Note{
@@ -1079,15 +1079,15 @@ func handleEmbellishment(
 }
 
 func handleDoubleGrace(pitch pitch.Pitch) (*symbols.Symbol, error) {
-	doubleG, err := handleEmbellishment(emb.EmbellishmentType_DoubleGrace)
+	doubleG, err := handleEmbellishment(emb.Type_DoubleGrace)
 	doubleG.Note.Embellishment.Pitch = pitch
 	return doubleG, err
 }
 
-func handleEmbellishmentVariant(
-	embType emb.EmbellishmentType,
-	variant emb.EmbellishmentVariant,
-	weight emb.EmbellishmentWeight,
+func handleVariant(
+	embType emb.Type,
+	variant emb.Variant,
+	weight emb.Weight,
 ) (*symbols.Symbol, error) {
 	return &symbols.Symbol{
 		Note: &symbols.Note{
@@ -1259,7 +1259,7 @@ func newTimeLineStartSymbol(ttype timeline.Type) *symbols.Symbol {
 
 func embellishmentForSingleGrace(grace *string) *emb.Embellishment {
 	emb := &emb.Embellishment{
-		Type: emb.EmbellishmentType_SingleGrace,
+		Type: emb.Type_SingleGrace,
 	}
 
 	if *grace == "ag" {
