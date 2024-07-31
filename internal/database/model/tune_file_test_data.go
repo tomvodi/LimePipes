@@ -57,7 +57,7 @@ func TestMusicModelTune(title string) *tune.Tune {
 						Rest:        nil,
 						Tuplet:      nil,
 						Timeline:    nil,
-						TempoChange: func() *uint64 { t := uint64(0); return &t }(),
+						TempoChange: nil,
 					},
 				},
 				Comments:   []string{"comment measure 1", "comment measure 2"},

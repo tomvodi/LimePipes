@@ -5,9 +5,9 @@ import (
 	"github.com/google/uuid"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	mumotune "github.com/tomvodi/limepipes-music-model/musicmodel/v1/tune"
 	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
 	"github.com/tomvodi/limepipes/internal/common"
-	"github.com/tomvodi/limepipes/internal/common/music_model"
 	"github.com/tomvodi/limepipes/internal/config"
 	"github.com/tomvodi/limepipes/internal/database/model"
 	"github.com/tomvodi/limepipes/internal/database/model/file_type"
@@ -249,7 +249,7 @@ var _ = Describe("DbDataService", func() {
 		})
 
 		When("adding a file to that tune", func() {
-			var testTune *music_model.Tune
+			var testTune *mumotune.Tune
 			var tuneFile *model.TuneFile
 			var tuneFiles []*model.TuneFile
 			var returnTuneFile *model.TuneFile

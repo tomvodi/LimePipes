@@ -3,9 +3,11 @@ package database
 import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/tune"
 	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
 	"github.com/tomvodi/limepipes/internal/common"
 	"github.com/tomvodi/limepipes/internal/common/music_model"
+	"github.com/tomvodi/limepipes/internal/common/music_model/helper"
 	"github.com/tomvodi/limepipes/internal/config"
 	"github.com/tomvodi/limepipes/internal/database/model"
 	"github.com/tomvodi/limepipes/internal/database/model/file_type"
@@ -17,7 +19,7 @@ var _ = Describe("DbDataService Import", func() {
 	var returnTunes []*apimodel.ImportTune
 	var bwwFileData *common.BwwFileTuneData
 	var tuneFile *model.TuneFile
-	var tuneFileTune *music_model.Tune
+	var tuneFileTune *tune.Tune
 	var service *dbService
 	var muMo music_model.MusicModel
 	var musicSet *apimodel.MusicSet
@@ -88,7 +90,7 @@ var _ = Describe("DbDataService Import", func() {
 
 					It("should return the same data as for the imported music model tune", func() {
 						Expect(err).ShouldNot(HaveOccurred())
-						Expect(tuneFileTune).Should(Equal(muMo[0]))
+						Expect(tuneFileTune).Should(BeComparableTo(muMo[0], helper.CompareOpts))
 						Expect(returnTunes[0].Set).ShouldNot(BeNil())
 						Expect(returnTunes[1].Set).ShouldNot(BeNil())
 						setId := returnTunes[0].Set.Id

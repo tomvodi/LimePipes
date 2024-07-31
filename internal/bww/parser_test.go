@@ -1,10 +1,13 @@
 package bww
 
 import (
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/measure"
+	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/tune"
 	"github.com/tomvodi/limepipes/internal/common/music_model"
-	"github.com/tomvodi/limepipes/internal/common/music_model/import_message"
 	"github.com/tomvodi/limepipes/internal/interfaces"
 	"github.com/tomvodi/limepipes/internal/utils"
 	"gopkg.in/yaml.v3"
@@ -53,8 +56,15 @@ var _ = Describe("BWW Parser", func() {
 	var parser interfaces.BwwParser
 	var musicTunesBww music_model.MusicModel
 	var musicTunesExpect music_model.MusicModel
+	var compareOpts cmp.Option
 
 	BeforeEach(func() {
+		compareOpts = cmpopts.IgnoreUnexported(
+			tune.Tune{},
+			measure.Measure{},
+			measure.TimeSignature{},
+			measure.ImportMessage{},
+		)
 		parser = NewBwwParser()
 	})
 
@@ -96,7 +106,8 @@ var _ = Describe("BWW Parser", func() {
 
 		It("should have parsed all measures", func() {
 			Expect(err).ShouldNot(HaveOccurred())
-			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
+			Expect(musicTunesBww).Should(
+				BeComparableTo(musicTunesExpect, compareOpts))
 		})
 	})
 
@@ -372,18 +383,18 @@ var _ = Describe("BWW Parser", func() {
 		It("should have parsed file correctly", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 			Expect(musicTunesBww[0].Measures[0].ImportMessages[0]).Should(
-				Equal(&import_message.ImportMessage{
-					Symbol: "^tla",
-					Type:   import_message.Warning,
-					Text:   "tie in old format (^tla) must follow a note and can't be the first symbol in a measure",
-					Fix:    import_message.SkipSymbol,
+				Equal(&measure.ImportMessage{
+					Symbol:   "^tla",
+					Severity: measure.Severity_Warning,
+					Text:     "tie in old format (^tla) must follow a note and can't be the first symbol in a measure",
+					Fix:      measure.Fix_SkipSymbol,
 				}))
 			Expect(musicTunesBww[0].Measures[1].ImportMessages[0]).Should(
-				Equal(&import_message.ImportMessage{
-					Symbol: "^tlg",
-					Type:   import_message.Error,
-					Text:   "tie in old format (^tlg) must follow a note with pitch and length",
-					Fix:    import_message.SkipSymbol,
+				Equal(&measure.ImportMessage{
+					Symbol:   "^tlg",
+					Severity: measure.Severity_Error,
+					Text:     "tie in old format (^tlg) must follow a note with pitch and length",
+					Fix:      measure.Fix_SkipSymbol,
 				}))
 			nilAllMeasureMessages(musicTunesBww)
 			Expect(musicTunesBww).Should(BeComparableTo(musicTunesExpect))
