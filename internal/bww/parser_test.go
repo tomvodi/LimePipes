@@ -1,6 +1,7 @@
 package bww
 
 import (
+	"github.com/goccy/go-yaml"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
 	. "github.com/onsi/ginkgo/v2"
@@ -10,7 +11,6 @@ import (
 	"github.com/tomvodi/limepipes/internal/common/music_model"
 	"github.com/tomvodi/limepipes/internal/interfaces"
 	"github.com/tomvodi/limepipes/internal/utils"
-	"gopkg.in/yaml.v3"
 	"io"
 	"os"
 )
