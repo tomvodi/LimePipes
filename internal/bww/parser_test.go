@@ -1,10 +1,9 @@
 package bww
 
 import (
-	"github.com/goccy/go-yaml"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/measure"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/measure"
 	"github.com/tomvodi/limepipes/internal/common/music_model"
 	"github.com/tomvodi/limepipes/internal/common/music_model/helper"
 	"github.com/tomvodi/limepipes/internal/interfaces"

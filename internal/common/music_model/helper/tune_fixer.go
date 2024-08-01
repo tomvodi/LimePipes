@@ -1,7 +1,7 @@
 package helper
 
 import (
-	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/tune"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
 	"github.com/tomvodi/limepipes/internal/common/music_model"
 	"github.com/tomvodi/limepipes/internal/interfaces"
 	"golang.org/x/text/cases"

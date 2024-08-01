@@ -1,14 +1,13 @@
 package bww
 
 import (
-	. "github.com/onsi/gomega"
-	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/boundary"
-	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/length"
-	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/measure"
-	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/pitch"
-	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/symbols"
-	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/symbols/embellishment"
-	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/symbols/tuplet"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/boundary"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/length"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/measure"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/pitch"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/symbols"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/symbols/embellishment"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/symbols/tuplet"
 	"github.com/tomvodi/limepipes/internal/utils"
 	"testing"
 )

@@ -2,7 +2,7 @@ package helper
 
 import (
 	. "github.com/onsi/gomega"
-	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/tune"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
 	"github.com/tomvodi/limepipes/internal/utils"
 	"testing"
 )

@@ -3,7 +3,7 @@ package database
 import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/tune"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
 	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
 	"github.com/tomvodi/limepipes/internal/common"
 	"github.com/tomvodi/limepipes/internal/common/music_model"

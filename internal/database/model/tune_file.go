@@ -5,7 +5,7 @@ import (
 	"encoding/gob"
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/tune"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
 	"github.com/tomvodi/limepipes/internal/database/model/file_type"
 )
 

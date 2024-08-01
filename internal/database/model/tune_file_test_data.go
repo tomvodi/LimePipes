@@ -1,15 +1,15 @@
 package model
 
 import (
-	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/barline"
-	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/length"
-	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/measure"
-	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/pitch"
-	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/symbols"
-	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/symbols/accidental"
-	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/symbols/embellishment"
-	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/symbols/tie"
-	"github.com/tomvodi/limepipes-music-model/musicmodel/v1/tune"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/barline"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/length"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/measure"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/pitch"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/symbols"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/symbols/accidental"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/symbols/embellishment"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/symbols/tie"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
 )
 
 func TestMusicModelTune(title string) *tune.Tune {

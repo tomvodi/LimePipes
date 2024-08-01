@@ -3,7 +3,7 @@ package model
 import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	mumotune "github.com/tomvodi/limepipes-music-model/musicmodel/v1/tune"
+	mumotune "github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
 	"github.com/tomvodi/limepipes/internal/database/model/file_type"
 )
 
