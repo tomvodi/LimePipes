@@ -3,28 +3,28 @@
   measures:
     - time:
         beats: 4
-        beatType: 4
-    - leftBarline:
+        beat_type: 4
+    - left_barline:
         type: Heavy
-        timeline: Repeat
+        time: Repeat
       symbols:
         - note:
             pitch: LowA
             length: Quarter
-    - rightBarline:
+    - right_barline:
         type: Heavy
-        timeline: Repeat
+        time: Repeat
       symbols:
         - note:
             pitch: C
             length: Quarter
-    - leftBarline:
+    - left_barline:
         type: Heavy
       symbols:
         - note:
             pitch: B
             length: Quarter
-    - rightBarline:
+    - right_barline:
         type: Heavy
       symbols:
         - note:

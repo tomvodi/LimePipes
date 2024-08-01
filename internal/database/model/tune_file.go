@@ -5,7 +5,7 @@ import (
 	"encoding/gob"
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/tomvodi/limepipes/internal/common/music_model"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
 	"github.com/tomvodi/limepipes/internal/database/model/file_type"
 )
 
@@ -15,7 +15,7 @@ type TuneFile struct {
 	Data   []byte
 }
 
-func (t *TuneFile) MusicModelTune() (*music_model.Tune, error) {
+func (t *TuneFile) MusicModelTune() (*tune.Tune, error) {
 	if t.Type != file_type.MusicModelTune {
 		return nil, fmt.Errorf("tune file has type %s not type %s",
 			t.Type.String(), file_type.MusicModelTune.String(),
@@ -29,7 +29,7 @@ func (t *TuneFile) MusicModelTune() (*music_model.Tune, error) {
 	buf := bytes.NewBuffer(t.Data)
 	dec := gob.NewDecoder(buf)
 
-	tune := &music_model.Tune{}
+	tune := &tune.Tune{}
 
 	if err := dec.Decode(tune); err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func (t *TuneFile) MusicModelTune() (*music_model.Tune, error) {
 	return tune, nil
 }
 
-func TuneFileFromTune(tune *music_model.Tune) (*TuneFile, error) {
+func TuneFileFromTune(tune *tune.Tune) (*TuneFile, error) {
 	var buf bytes.Buffer
 	enc := gob.NewEncoder(&buf)
 

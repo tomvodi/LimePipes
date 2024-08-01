@@ -1,12 +1,13 @@
 package bww
 
 import (
-	. "github.com/onsi/gomega"
-	"github.com/tomvodi/limepipes/internal/common"
-	"github.com/tomvodi/limepipes/internal/common/music_model"
-	"github.com/tomvodi/limepipes/internal/common/music_model/symbols"
-	"github.com/tomvodi/limepipes/internal/common/music_model/symbols/embellishment"
-	"github.com/tomvodi/limepipes/internal/common/music_model/symbols/tuplet"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/boundary"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/length"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/measure"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/pitch"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/symbols"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/symbols/embellishment"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/symbols/tuplet"
 	"github.com/tomvodi/limepipes/internal/utils"
 	"testing"
 )
@@ -15,7 +16,7 @@ func Test_handleTriplet(t *testing.T) {
 	utils.SetupConsoleLogger()
 	g := NewGomegaWithT(t)
 	type fields struct {
-		measure *music_model.Measure
+		measure *measure.Measure
 		sym     string
 		wantErr bool
 	}
@@ -27,18 +28,18 @@ func Test_handleTriplet(t *testing.T) {
 		{
 			name: "no symbols in measure",
 			prepare: func(f *fields) {
-				f.measure = &music_model.Measure{}
+				f.measure = &measure.Measure{}
 				f.wantErr = true
 			},
 		},
 		{
 			name: "not enough symbols in measure",
 			prepare: func(f *fields) {
-				f.measure = &music_model.Measure{
+				f.measure = &measure.Measure{
 					Time: nil,
-					Symbols: []*music_model.Symbol{
-						{Note: &symbols.Note{Pitch: common.LowA, Length: common.Eighth}},
-						{Note: &symbols.Note{Pitch: common.LowA, Length: common.Eighth}},
+					Symbols: []*symbols.Symbol{
+						{Note: &symbols.Note{Pitch: pitch.Pitch_LowA, Length: length.Length_Eighth}},
+						{Note: &symbols.Note{Pitch: pitch.Pitch_LowA, Length: length.Length_Eighth}},
 					},
 				}
 				f.wantErr = true
@@ -47,14 +48,14 @@ func Test_handleTriplet(t *testing.T) {
 		{
 			name: "not all preceding symbols are notes",
 			prepare: func(f *fields) {
-				f.measure = &music_model.Measure{
+				f.measure = &measure.Measure{
 					Time: nil,
-					Symbols: []*music_model.Symbol{
-						{Note: &symbols.Note{Pitch: common.LowA, Length: common.Eighth}},
+					Symbols: []*symbols.Symbol{
+						{Note: &symbols.Note{Pitch: pitch.Pitch_LowA, Length: length.Length_Eighth}},
 						{Note: &symbols.Note{
-							Embellishment: &embellishment.Embellishment{Type: embellishment.Doubling},
+							Embellishment: &embellishment.Embellishment{Type: embellishment.Type_Doubling},
 						}},
-						{Note: &symbols.Note{Pitch: common.LowA, Length: common.Eighth}},
+						{Note: &symbols.Note{Pitch: pitch.Pitch_LowA, Length: length.Length_Eighth}},
 					},
 				}
 				f.wantErr = true
@@ -63,12 +64,12 @@ func Test_handleTriplet(t *testing.T) {
 		{
 			name: "all preceding symbols are notes",
 			prepare: func(f *fields) {
-				f.measure = &music_model.Measure{
+				f.measure = &measure.Measure{
 					Time: nil,
-					Symbols: []*music_model.Symbol{
-						{Note: &symbols.Note{Pitch: common.LowA, Length: common.Eighth}},
-						{Note: &symbols.Note{Pitch: common.LowA, Length: common.Eighth}},
-						{Note: &symbols.Note{Pitch: common.LowA, Length: common.Eighth}},
+					Symbols: []*symbols.Symbol{
+						{Note: &symbols.Note{Pitch: pitch.Pitch_LowA, Length: length.Length_Eighth}},
+						{Note: &symbols.Note{Pitch: pitch.Pitch_LowA, Length: length.Length_Eighth}},
+						{Note: &symbols.Note{Pitch: pitch.Pitch_LowA, Length: length.Length_Eighth}},
 					},
 				}
 				f.wantErr = false
@@ -76,12 +77,12 @@ func Test_handleTriplet(t *testing.T) {
 			after: func(f *fields) {
 				g.Expect(f.measure.Symbols).To(HaveLen(5))
 				g.Expect(f.measure.Symbols[0].Tuplet).To(Equal(&tuplet.Tuplet{
-					BoundaryType: tuplet.Start,
+					BoundaryType: boundary.Boundary_Start,
 					VisibleNotes: 3,
 					PlayedNotes:  2,
 				}))
 				g.Expect(f.measure.Symbols[4].Tuplet).To(Equal(&tuplet.Tuplet{
-					BoundaryType: tuplet.End,
+					BoundaryType: boundary.Boundary_End,
 					VisibleNotes: 3,
 					PlayedNotes:  2,
 				}))
@@ -90,19 +91,19 @@ func Test_handleTriplet(t *testing.T) {
 		{
 			name: "if there is already a tuplet start, don't add another one",
 			prepare: func(f *fields) {
-				f.measure = &music_model.Measure{
+				f.measure = &measure.Measure{
 					Time: nil,
-					Symbols: []*music_model.Symbol{
+					Symbols: []*symbols.Symbol{
 						{
 							Tuplet: &tuplet.Tuplet{
-								BoundaryType: tuplet.Start,
+								BoundaryType: boundary.Boundary_Start,
 								VisibleNotes: 3,
 								PlayedNotes:  2,
 							},
 						},
-						{Note: &symbols.Note{Pitch: common.LowA, Length: common.Eighth}},
-						{Note: &symbols.Note{Pitch: common.LowA, Length: common.Eighth}},
-						{Note: &symbols.Note{Pitch: common.LowA, Length: common.Eighth}},
+						{Note: &symbols.Note{Pitch: pitch.Pitch_LowA, Length: length.Length_Eighth}},
+						{Note: &symbols.Note{Pitch: pitch.Pitch_LowA, Length: length.Length_Eighth}},
+						{Note: &symbols.Note{Pitch: pitch.Pitch_LowA, Length: length.Length_Eighth}},
 					},
 				}
 				f.wantErr = false
@@ -110,12 +111,12 @@ func Test_handleTriplet(t *testing.T) {
 			after: func(f *fields) {
 				g.Expect(f.measure.Symbols).To(HaveLen(5))
 				g.Expect(f.measure.Symbols[0].Tuplet).To(Equal(&tuplet.Tuplet{
-					BoundaryType: tuplet.Start,
+					BoundaryType: boundary.Boundary_Start,
 					VisibleNotes: 3,
 					PlayedNotes:  2,
 				}))
 				g.Expect(f.measure.Symbols[4].Tuplet).To(Equal(&tuplet.Tuplet{
-					BoundaryType: tuplet.End,
+					BoundaryType: boundary.Boundary_End,
 					VisibleNotes: 3,
 					PlayedNotes:  2,
 				}))
@@ -124,19 +125,19 @@ func Test_handleTriplet(t *testing.T) {
 		{
 			name: "if there is a tuplet end, a start mus be added",
 			prepare: func(f *fields) {
-				f.measure = &music_model.Measure{
+				f.measure = &measure.Measure{
 					Time: nil,
-					Symbols: []*music_model.Symbol{
+					Symbols: []*symbols.Symbol{
 						{
 							Tuplet: &tuplet.Tuplet{
-								BoundaryType: tuplet.End,
+								BoundaryType: boundary.Boundary_End,
 								VisibleNotes: 7,
 								PlayedNotes:  6,
 							},
 						},
-						{Note: &symbols.Note{Pitch: common.LowA, Length: common.Eighth}},
-						{Note: &symbols.Note{Pitch: common.LowA, Length: common.Eighth}},
-						{Note: &symbols.Note{Pitch: common.LowA, Length: common.Eighth}},
+						{Note: &symbols.Note{Pitch: pitch.Pitch_LowA, Length: length.Length_Eighth}},
+						{Note: &symbols.Note{Pitch: pitch.Pitch_LowA, Length: length.Length_Eighth}},
+						{Note: &symbols.Note{Pitch: pitch.Pitch_LowA, Length: length.Length_Eighth}},
 					},
 				}
 				f.wantErr = false
@@ -144,17 +145,17 @@ func Test_handleTriplet(t *testing.T) {
 			after: func(f *fields) {
 				g.Expect(f.measure.Symbols).To(HaveLen(6))
 				g.Expect(f.measure.Symbols[0].Tuplet).To(Equal(&tuplet.Tuplet{
-					BoundaryType: tuplet.End,
+					BoundaryType: boundary.Boundary_End,
 					VisibleNotes: 7,
 					PlayedNotes:  6,
 				}))
 				g.Expect(f.measure.Symbols[1].Tuplet).To(Equal(&tuplet.Tuplet{
-					BoundaryType: tuplet.Start,
+					BoundaryType: boundary.Boundary_Start,
 					VisibleNotes: 3,
 					PlayedNotes:  2,
 				}))
 				g.Expect(f.measure.Symbols[5].Tuplet).To(Equal(&tuplet.Tuplet{
-					BoundaryType: tuplet.End,
+					BoundaryType: boundary.Boundary_End,
 					VisibleNotes: 3,
 					PlayedNotes:  2,
 				}))
@@ -189,7 +190,7 @@ func Test_pitchesFromFermataSym(t *testing.T) {
 	type fields struct {
 		sym     string
 		fermata bool
-		want    []common.Pitch
+		want    []pitch.Pitch
 	}
 	tests := []struct {
 		name    string
@@ -200,10 +201,10 @@ func Test_pitchesFromFermataSym(t *testing.T) {
 			prepare: func(f *fields) {
 				f.sym = "cadged"
 				f.fermata = false
-				f.want = []common.Pitch{
-					common.HighG,
-					common.E,
-					common.D,
+				f.want = []pitch.Pitch{
+					pitch.Pitch_HighG,
+					pitch.Pitch_E,
+					pitch.Pitch_D,
 				}
 			},
 		},
@@ -212,10 +213,10 @@ func Test_pitchesFromFermataSym(t *testing.T) {
 			prepare: func(f *fields) {
 				f.sym = "fcadged"
 				f.fermata = true
-				f.want = []common.Pitch{
-					common.HighG,
-					common.E,
-					common.D,
+				f.want = []pitch.Pitch{
+					pitch.Pitch_HighG,
+					pitch.Pitch_E,
+					pitch.Pitch_D,
 				}
 			},
 		},
@@ -224,9 +225,9 @@ func Test_pitchesFromFermataSym(t *testing.T) {
 			prepare: func(f *fields) {
 				f.sym = "fcadaf"
 				f.fermata = true
-				f.want = []common.Pitch{
-					common.HighA,
-					common.F,
+				f.want = []pitch.Pitch{
+					pitch.Pitch_HighA,
+					pitch.Pitch_F,
 				}
 			},
 		},

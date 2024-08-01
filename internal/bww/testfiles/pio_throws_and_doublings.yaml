@@ -166,7 +166,7 @@
             length: Quarter
             movement:
                 type: Edre
-                pitchHint: B
+                pitch_hint: B
         - note:
             pitch: C
             length: Quarter
@@ -175,7 +175,7 @@
             length: Quarter
             movement:
                 type: Edre
-                pitchHint: C
+                pitch_hint: C
         - note:
             pitch: D
             length: Quarter
@@ -184,7 +184,7 @@
             length: Quarter
             movement:
                 type: Edre
-                pitchHint: D
+                pitch_hint: D
     - symbols:
         - note:
             pitch: C
@@ -203,7 +203,7 @@
             length: Quarter
             movement:
                 type: Edre
-                pitchHint: B
+                pitch_hint: B
                 abbreviate: true
         - note:
             pitch: F
@@ -213,7 +213,7 @@
             length: Quarter
             movement:
                 type: Edre
-                pitchHint: C
+                pitch_hint: C
                 abbreviate: true
         - note:
             pitch: F
@@ -221,7 +221,7 @@
         - note:
             movement:
                 type: Edre
-                pitchHint: D
+                pitch_hint: D
                 abbreviate: true
     - symbols:
         - note:

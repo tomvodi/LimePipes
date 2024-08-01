@@ -2,7 +2,7 @@ package helper
 
 import (
 	. "github.com/onsi/gomega"
-	"github.com/tomvodi/limepipes/internal/common/music_model"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
 	"github.com/tomvodi/limepipes/internal/utils"
 	"testing"
 )
@@ -197,7 +197,7 @@ func Test_fixComposer(t *testing.T) {
 				tt.prepare(f)
 			}
 
-			tune := &music_model.Tune{
+			tune := &tune.Tune{
 				Composer: f.composer,
 			}
 			fixComposerArranger(tune)
@@ -270,7 +270,7 @@ func Test_fixComposerTrad(t *testing.T) {
 				tt.prepare(f)
 			}
 
-			tune := &music_model.Tune{
+			tune := &tune.Tune{
 				Composer: f.composer,
 			}
 			fixComposerTrad(tune)
@@ -314,7 +314,7 @@ func Test_removeTimeSigFromTuneType(t *testing.T) {
 				tt.prepare(f)
 			}
 
-			tune := &music_model.Tune{
+			tune := &tune.Tune{
 				Type: f.tuneType,
 			}
 			removeTimeSigFromTuneType(tune)
@@ -351,7 +351,7 @@ func Test_capitalizeTuneType(t *testing.T) {
 				tt.prepare(f)
 			}
 
-			tune := &music_model.Tune{
+			tune := &tune.Tune{
 				Type: f.tuneType,
 			}
 			capitalizeTuneType(tune)
@@ -400,7 +400,7 @@ func Test_trimSpaces(t *testing.T) {
 				tt.prepare(f)
 			}
 
-			tune := &music_model.Tune{
+			tune := &tune.Tune{
 				Type:     f.tuneType,
 				Title:    f.tuneTitle,
 				Composer: f.tuneComposer,
@@ -443,7 +443,7 @@ func Test_fixTitle(t *testing.T) {
 				tt.prepare(f)
 			}
 
-			tune := &music_model.Tune{
+			tune := &tune.Tune{
 				Title: f.tuneTitle,
 			}
 			fixTitle(tune)

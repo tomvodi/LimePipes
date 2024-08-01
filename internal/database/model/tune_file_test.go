@@ -3,15 +3,15 @@ package model
 import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.com/tomvodi/limepipes/internal/common/music_model"
+	mumotune "github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
 	"github.com/tomvodi/limepipes/internal/database/model/file_type"
 )
 
 var _ = Describe("TuneFile", func() {
 	var tf *TuneFile
 	var err error
-	var tune *music_model.Tune
-	var gotTune *music_model.Tune
+	var tune *mumotune.Tune
+	var gotTune *mumotune.Tune
 
 	Context("having an empty tune file with correct type", func() {
 		BeforeEach(func() {

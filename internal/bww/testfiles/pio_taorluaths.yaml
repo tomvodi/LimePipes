@@ -13,7 +13,7 @@
             movement:
                 type: Taorluath
                 variant: Half
-                pitchHint: LowA
+                pitch_hint: LowA
         - note:
             pitch: LowG
             length: Quarter
@@ -23,7 +23,7 @@
             movement:
                 type: Taorluath
                 variant: Half
-                pitchHint: LowG
+                pitch_hint: LowG
     - symbols:
         - note:
             pitch: HighA
@@ -36,7 +36,7 @@
             length: Quarter
             movement:
                 type: Taorluath
-                pitchHint: B
+                pitch_hint: B
                 abbreviate: true
         - note:
             pitch: LowG
@@ -44,7 +44,7 @@
             movement:
                 type: Taorluath
                 variant: Half
-                pitchHint: LowA
+                pitch_hint: LowA
                 abbreviate: true
     - symbols:
         - note:
@@ -66,7 +66,7 @@
             length: Quarter
             movement:
                 type: Taorluath
-                pitchHint: B
+                pitch_hint: B
                 breabach: true
         - note:
             pitch: LowG
@@ -77,7 +77,7 @@
             movement:
                 type: Taorluath
                 variant: Half
-                pitchHint: LowA
+                pitch_hint: LowA
                 breabach: true
     - symbols:
         - note:
@@ -92,7 +92,7 @@
             length: Quarter
             movement:
                 type: Taorluath
-                pitchHint: B
+                pitch_hint: B
                 abbreviate: true
                 breabach: true
         - note:
@@ -101,7 +101,7 @@
             movement:
                 type: Taorluath
                 variant: Half
-                pitchHint: LowA
+                pitch_hint: LowA
                 abbreviate: true
                 breabach: true
     - symbols:
@@ -110,22 +110,22 @@
             length: Quarter
             movement:
                 type: Taorluath
-                pitchHint: B
+                pitch_hint: B
                 abbreviate: true
-                AMach: true
+                a_mach: true
         - note:
             pitch: C
             length: Quarter
             movement:
                 type: Taorluath
-                pitchHint: C
+                pitch_hint: C
                 abbreviate: true
-                AMach: true
+                a_mach: true
         - note:
             pitch: D
             length: Quarter
             movement:
                 type: Taorluath
-                pitchHint: D
+                pitch_hint: D
                 abbreviate: true
-                AMach: true
+                a_mach: true

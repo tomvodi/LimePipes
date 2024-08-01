@@ -5,9 +5,9 @@
   measures:
     - symbols:
         - tuplet:
-            boundaryType: Start
-            visibleNotes: 3
-            playedNotes: 2
+            boundary_type: Start
+            visible_notes: 3
+            played_notes: 2
         - note:
             pitch: LowG
             length: Eighth
@@ -18,14 +18,14 @@
             pitch: C
             length: Eighth
         - tuplet:
-            boundaryType: End
-            visibleNotes: 3
-            playedNotes: 2
+            boundary_type: End
+            visible_notes: 3
+            played_notes: 2
     - symbols:
         - tuplet:
-            boundaryType: Start
-            visibleNotes: 3
-            playedNotes: 2
+            boundary_type: Start
+            visible_notes: 3
+            played_notes: 2
         - note:
             pitch: LowA
             length: Eighth
@@ -36,14 +36,14 @@
             pitch: C
             length: Eighth
         - tuplet:
-            boundaryType: End
-            visibleNotes: 3
-            playedNotes: 2
+            boundary_type: End
+            visible_notes: 3
+            played_notes: 2
     - symbols:
         - tuplet:
-            boundaryType: Start
-            visibleNotes: 3
-            playedNotes: 2
+            boundary_type: Start
+            visible_notes: 3
+            played_notes: 2
         - note:
             pitch: B
             length: Eighth
@@ -54,14 +54,14 @@
             pitch: C
             length: Eighth
         - tuplet:
-            boundaryType: End
-            visibleNotes: 3
-            playedNotes: 2
+            boundary_type: End
+            visible_notes: 3
+            played_notes: 2
     - symbols:
         - tuplet:
-            boundaryType: Start
-            visibleNotes: 3
-            playedNotes: 2
+            boundary_type: Start
+            visible_notes: 3
+            played_notes: 2
         - note:
             pitch: C
             length: Eighth
@@ -72,14 +72,14 @@
             pitch: C
             length: Eighth
         - tuplet:
-            boundaryType: End
-            visibleNotes: 3
-            playedNotes: 2
+            boundary_type: End
+            visible_notes: 3
+            played_notes: 2
     - symbols:
         - tuplet:
-            boundaryType: Start
-            visibleNotes: 3
-            playedNotes: 2
+            boundary_type: Start
+            visible_notes: 3
+            played_notes: 2
         - note:
             pitch: D
             length: Eighth
@@ -90,14 +90,14 @@
             pitch: C
             length: Eighth
         - tuplet:
-            boundaryType: End
-            visibleNotes: 3
-            playedNotes: 2
+            boundary_type: End
+            visible_notes: 3
+            played_notes: 2
     - symbols:
         - tuplet:
-            boundaryType: Start
-            visibleNotes: 3
-            playedNotes: 2
+            boundary_type: Start
+            visible_notes: 3
+            played_notes: 2
         - note:
             pitch: E
             length: Eighth
@@ -108,14 +108,14 @@
             pitch: C
             length: Eighth
         - tuplet:
-            boundaryType: End
-            visibleNotes: 3
-            playedNotes: 2
+            boundary_type: End
+            visible_notes: 3
+            played_notes: 2
     - symbols:
         - tuplet:
-            boundaryType: Start
-            visibleNotes: 3
-            playedNotes: 2
+            boundary_type: Start
+            visible_notes: 3
+            played_notes: 2
         - note:
             pitch: F
             length: Eighth
@@ -126,14 +126,14 @@
             pitch: C
             length: Eighth
         - tuplet:
-            boundaryType: End
-            visibleNotes: 3
-            playedNotes: 2
+            boundary_type: End
+            visible_notes: 3
+            played_notes: 2
     - symbols:
         - tuplet:
-            boundaryType: Start
-            visibleNotes: 3
-            playedNotes: 2
+            boundary_type: Start
+            visible_notes: 3
+            played_notes: 2
         - note:
             pitch: HighG
             length: Eighth
@@ -144,14 +144,14 @@
             pitch: C
             length: Eighth
         - tuplet:
-            boundaryType: End
-            visibleNotes: 3
-            playedNotes: 2
+            boundary_type: End
+            visible_notes: 3
+            played_notes: 2
     - symbols:
         - tuplet:
-            boundaryType: Start
-            visibleNotes: 3
-            playedNotes: 2
+            boundary_type: Start
+            visible_notes: 3
+            played_notes: 2
         - note:
             pitch: HighA
             length: Eighth
@@ -162,6 +162,6 @@
             pitch: C
             length: Eighth
         - tuplet:
-            boundaryType: End
-            visibleNotes: 3
-            playedNotes: 2
+            boundary_type: End
+            visible_notes: 3
+            played_notes: 2

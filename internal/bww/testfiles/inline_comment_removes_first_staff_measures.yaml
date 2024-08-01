@@ -1,11 +1,11 @@
 - title: inline comment removes first staff measures
-  inLineText:
+  inline_text:
     - 'A:'
   tempo: 62
   measures:
     - time:
         beats: 4
-        beatType: 4
+        beat_type: 4
     - symbols:
         - note:
             pitch: LowA
@@ -14,5 +14,5 @@
         - note:
             pitch: LowA
             length: Quarter
-      inLineText:
+      inline_text:
         - 'B:'
