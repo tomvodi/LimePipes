@@ -2,7 +2,7 @@
   comments:
     - just a comment
     - and another comment
-  inLineText:
+  inline_text:
     - tune inline text
   tempo: 0
   measures:
@@ -10,7 +10,7 @@
         - note:
             pitch: LowA
             length: Quarter
-    - rightBarline:
+    - right_barline:
         type: Heavy
       symbols:
         - note:
@@ -18,5 +18,5 @@
             length: Quarter
       comments:
         - stave comment
-      inLineText:
+      inline_text:
         - stave inline text

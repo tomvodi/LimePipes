@@ -2,7 +2,7 @@
   tempo: 0
   measures:
     - symbols:
-        - tempoChange: 80
+        - tempo_change: 80
         - note:
             pitch: C
             length: Quarter

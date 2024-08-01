@@ -2,7 +2,7 @@
   comments:
     - just a comment
     - and another comment
-  inLineText:
+  inline_text:
     - tune inline text
   tempo: 0
   measures:

@@ -1,14 +1,14 @@
 - title: Tune Title
   tempo: 0
   measures:
-    - rightBarline:
+    - right_barline:
         type: Heavy
       symbols:
-        - timeLine:
-            boundaryType: Start
+        - timeline:
+            boundary_type: Start
             type: First
         - note:
             pitch: D
             length: Quarter
-        - timeLine:
-            boundaryType: End
+        - timeline:
+            boundary_type: End

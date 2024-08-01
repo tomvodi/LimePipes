@@ -1,22 +1,22 @@
 - title: Segno Dalsegno
   tempo: 0
   measures:
-    - leftBarline:
+    - left_barline:
         type: Regular
-        timeline: Segno
-    - rightBarline:
+        time: Segno
+    - right_barline:
         type: Regular
-        timeline: Dalsegno
+        time: Dalsegno
       symbols:
         - note:
             pitch: LowA
             length: Quarter
-    - leftBarline:
+    - left_barline:
         type: Regular
-        timeline: Segno
-    - rightBarline:
+        time: Segno
+    - right_barline:
         type: Regular
-        timeline: Dalsegno
+        time: Dalsegno
       symbols:
         - note:
             pitch: LowA

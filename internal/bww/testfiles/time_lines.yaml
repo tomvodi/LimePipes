@@ -2,50 +2,50 @@
   tempo: 0
   measures:
     - symbols:
-        - timeLine:
-            boundaryType: Start
+        - timeline:
+            boundary_type: Start
             type: First
-        - timeLine:
-            boundaryType: Start
+        - timeline:
+            boundary_type: Start
             type: Singling
-        - timeLine:
-            boundaryType: Start
+        - timeline:
+            boundary_type: Start
             type: Second
-        - timeLine:
-            boundaryType: Start
+        - timeline:
+            boundary_type: Start
             type: Doubling
-        - timeLine:
-            boundaryType: Start
+        - timeline:
+            boundary_type: Start
             type: Bis
-        - timeLine:
-            boundaryType: Start
+        - timeline:
+            boundary_type: Start
             type: SecondOf2
-        - timeLine:
-            boundaryType: Start
+        - timeline:
+            boundary_type: Start
             type: SecondOf3
-        - timeLine:
-            boundaryType: Start
+        - timeline:
+            boundary_type: Start
             type: SecondOf4
-        - timeLine:
-            boundaryType: Start
+        - timeline:
+            boundary_type: Start
             type: SecondOf2And4
-        - timeLine:
-            boundaryType: Start
+        - timeline:
+            boundary_type: Start
             type: Intro
-        - timeLine:
-            boundaryType: Start
+        - timeline:
+            boundary_type: Start
             type: SecondOf5
-        - timeLine:
-            boundaryType: Start
+        - timeline:
+            boundary_type: Start
             type: SecondOf6
-        - timeLine:
-            boundaryType: Start
+        - timeline:
+            boundary_type: Start
             type: SecondOf7
-        - timeLine:
-            boundaryType: Start
+        - timeline:
+            boundary_type: Start
             type: SecondOf8
-        - timeLine:
-            boundaryType: End
-        - timeLine:
-            boundaryType: End
+        - timeline:
+            boundary_type: End
+        - timeline:
+            boundary_type: End
             type: Bis

@@ -5,13 +5,13 @@
         - note:
             pitch: LowA
             length: Quarter
-    - rightBarline:
+    - right_barline:
         type: Heavy
       symbols:
         - note:
             pitch: D
             length: Quarter
-      inLineText:
+      inline_text:
         - stave inline text
 - title: Tune 2 Title
   tempo: 0

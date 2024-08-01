@@ -20,7 +20,7 @@ func TestMusicModelTune(title string) *tune.Tune {
 		Arranger:   "someone arranged it",
 		Footer:     []string{"footer tune 1"},
 		Comments:   []string{"comment 1", "comment 2"},
-		InLineText: []string{"inline text 1", "inline text 2"},
+		InlineText: []string{"inline text 1", "inline text 2"},
 		Tempo:      80,
 		Measures: []*measure.Measure{
 			{

@@ -1,30 +1,30 @@
 - title: Fine and Dacapo Al Fine
   tempo: 0
   measures:
-    - rightBarline:
+    - right_barline:
         type: Regular
-        timeline: Fine
+        time: Fine
       symbols:
         - note:
             pitch: LowA
             length: Quarter
-    - rightBarline:
+    - right_barline:
         type: Regular
-        timeline: DacapoAlFine
+        time: DacapoAlFine
       symbols:
         - note:
             pitch: B
             length: Quarter
-    - rightBarline:
+    - right_barline:
         type: Regular
-        timeline: Fine
+        time: Fine
       symbols:
         - note:
             pitch: LowA
             length: Quarter
-    - rightBarline:
+    - right_barline:
         type: Regular
-        timeline: DacapoAlFine
+        time: DacapoAlFine
       symbols:
         - note:
             pitch: B
