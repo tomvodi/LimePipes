@@ -1,6 +1,7 @@
 package bww
 
 import (
+	. "github.com/onsi/gomega"
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/boundary"
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/length"
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/measure"

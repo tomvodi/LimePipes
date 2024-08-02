@@ -1,6 +1,7 @@
 package bww
 
 import (
+	"github.com/goccy/go-yaml"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/measure"
