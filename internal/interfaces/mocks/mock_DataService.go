@@ -8,11 +8,11 @@ import (
 
 	file_type "github.com/tomvodi/limepipes/internal/database/model/file_type"
 
+	messages "github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
+
 	mock "github.com/stretchr/testify/mock"
 
 	model "github.com/tomvodi/limepipes/internal/database/model"
-
-	music_model "github.com/tomvodi/limepipes/internal/common/music_model"
 
 	uuid "github.com/google/uuid"
 )
@@ -626,29 +626,29 @@ func (_c *DataService_GetTuneFiles_Call) RunAndReturn(run func(uuid.UUID) ([]*mo
 	return _c
 }
 
-// ImportMusicModel provides a mock function with given fields: muMo, fileInfo, bwwFileData
-func (_m *DataService) ImportMusicModel(muMo music_model.MusicModel, fileInfo *common.ImportFileInfo, bwwFileData *common.BwwFileTuneData) ([]*apimodel.ImportTune, error) {
-	ret := _m.Called(muMo, fileInfo, bwwFileData)
+// ImportTunes provides a mock function with given fields: tunes, fileInfo
+func (_m *DataService) ImportTunes(tunes []*messages.ImportedTune, fileInfo *common.ImportFileInfo) ([]*apimodel.ImportTune, error) {
+	ret := _m.Called(tunes, fileInfo)
 
 	if len(ret) == 0 {
-		panic("no return value specified for ImportMusicModel")
+		panic("no return value specified for ImportTunes")
 	}
 
 	var r0 []*apimodel.ImportTune
 	var r1 error
-	if rf, ok := ret.Get(0).(func(music_model.MusicModel, *common.ImportFileInfo, *common.BwwFileTuneData) ([]*apimodel.ImportTune, error)); ok {
-		return rf(muMo, fileInfo, bwwFileData)
+	if rf, ok := ret.Get(0).(func([]*messages.ImportedTune, *common.ImportFileInfo) ([]*apimodel.ImportTune, error)); ok {
+		return rf(tunes, fileInfo)
 	}
-	if rf, ok := ret.Get(0).(func(music_model.MusicModel, *common.ImportFileInfo, *common.BwwFileTuneData) []*apimodel.ImportTune); ok {
-		r0 = rf(muMo, fileInfo, bwwFileData)
+	if rf, ok := ret.Get(0).(func([]*messages.ImportedTune, *common.ImportFileInfo) []*apimodel.ImportTune); ok {
+		r0 = rf(tunes, fileInfo)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*apimodel.ImportTune)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(music_model.MusicModel, *common.ImportFileInfo, *common.BwwFileTuneData) error); ok {
-		r1 = rf(muMo, fileInfo, bwwFileData)
+	if rf, ok := ret.Get(1).(func([]*messages.ImportedTune, *common.ImportFileInfo) error); ok {
+		r1 = rf(tunes, fileInfo)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -656,32 +656,31 @@ func (_m *DataService) ImportMusicModel(muMo music_model.MusicModel, fileInfo *c
 	return r0, r1
 }
 
-// DataService_ImportMusicModel_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ImportMusicModel'
-type DataService_ImportMusicModel_Call struct {
+// DataService_ImportTunes_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ImportTunes'
+type DataService_ImportTunes_Call struct {
 	*mock.Call
 }
 
-// ImportMusicModel is a helper method to define mock.On call
-//   - muMo music_model.MusicModel
+// ImportTunes is a helper method to define mock.On call
+//   - tunes []*messages.ImportedTune
 //   - fileInfo *common.ImportFileInfo
-//   - bwwFileData *common.BwwFileTuneData
-func (_e *DataService_Expecter) ImportMusicModel(muMo interface{}, fileInfo interface{}, bwwFileData interface{}) *DataService_ImportMusicModel_Call {
-	return &DataService_ImportMusicModel_Call{Call: _e.mock.On("ImportMusicModel", muMo, fileInfo, bwwFileData)}
+func (_e *DataService_Expecter) ImportTunes(tunes interface{}, fileInfo interface{}) *DataService_ImportTunes_Call {
+	return &DataService_ImportTunes_Call{Call: _e.mock.On("ImportTunes", tunes, fileInfo)}
 }
 
-func (_c *DataService_ImportMusicModel_Call) Run(run func(muMo music_model.MusicModel, fileInfo *common.ImportFileInfo, bwwFileData *common.BwwFileTuneData)) *DataService_ImportMusicModel_Call {
+func (_c *DataService_ImportTunes_Call) Run(run func(tunes []*messages.ImportedTune, fileInfo *common.ImportFileInfo)) *DataService_ImportTunes_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(music_model.MusicModel), args[1].(*common.ImportFileInfo), args[2].(*common.BwwFileTuneData))
+		run(args[0].([]*messages.ImportedTune), args[1].(*common.ImportFileInfo))
 	})
 	return _c
 }
 
-func (_c *DataService_ImportMusicModel_Call) Return(_a0 []*apimodel.ImportTune, _a1 error) *DataService_ImportMusicModel_Call {
+func (_c *DataService_ImportTunes_Call) Return(_a0 []*apimodel.ImportTune, _a1 error) *DataService_ImportTunes_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *DataService_ImportMusicModel_Call) RunAndReturn(run func(music_model.MusicModel, *common.ImportFileInfo, *common.BwwFileTuneData) ([]*apimodel.ImportTune, error)) *DataService_ImportMusicModel_Call {
+func (_c *DataService_ImportTunes_Call) RunAndReturn(run func([]*messages.ImportedTune, *common.ImportFileInfo) ([]*apimodel.ImportTune, error)) *DataService_ImportTunes_Call {
 	_c.Call.Return(run)
 	return _c
 }

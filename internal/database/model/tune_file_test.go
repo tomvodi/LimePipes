@@ -4,13 +4,14 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	mumotune "github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
 	"github.com/tomvodi/limepipes/internal/database/model/file_type"
 )
 
 var _ = Describe("TuneFile", func() {
 	var tf *TuneFile
 	var err error
-	var tune *mumotune.Tune
+	var tune *messages.ImportedTune
 	var gotTune *mumotune.Tune
 
 	Context("having an empty tune file with correct type", func() {
@@ -35,7 +36,7 @@ var _ = Describe("TuneFile", func() {
 	Context("a TuneFile created from a music model", func() {
 		BeforeEach(func() {
 			tune = TestMusicModelTune("tune 1")
-			tf, err = TuneFileFromTune(tune)
+			tf, err = TuneFileFromTune(tune.Tune)
 		})
 
 		It("should have the correct file type", func() {

@@ -1,6 +1,0 @@
-"Tune Title",(T,L,0,0,Times New Roman,15,700,0,1,2,0,0,32768)
-
-& grp C_4 LG_4 hgrp C_4 D_4 grpb C_4 !t
-& ggrpla LA_4 ggrpb B_4 ggrpc C_4 ggrpd D_4 ggrpdb D_4 ggrpe E_4 ggrpf F_4 !t
-& tgrpla LA_4 tgrpb B_4 tgrpc C_4 tgrpd D_4 tgrpdb D_4 tgrpe E_4 tgrpf F_4 tgrphg HG_4 !t
-& hgrpla LA_4 hgrpb B_4 hgrpc C_4 hgrpd D_4 hgrpdb D_4 hgrpe E_4 hgrpf F_4 hgrphg HG_4 hgrpha HA_4 !t

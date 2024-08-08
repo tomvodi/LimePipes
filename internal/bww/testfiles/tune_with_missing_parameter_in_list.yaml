@@ -1,7 +1,0 @@
-- title: Test Title
-  tempo: 0
-  measures:
-    - symbols:
-        - note:
-            pitch: HighA
-            length: Eighth

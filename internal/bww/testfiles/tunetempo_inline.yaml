@@ -1,8 +1,0 @@
-- title: Tune Title
-  tempo: 0
-  measures:
-    - symbols:
-        - tempo_change: 80
-        - note:
-            pitch: C
-            length: Quarter

@@ -1,7 +1,7 @@
 package musicxml
 
 import (
-	"github.com/tomvodi/limepipes/internal/common/music_model"
+	music_model "github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/musicmodel"
 	"github.com/tomvodi/limepipes/internal/interfaces"
 	"github.com/tomvodi/limepipes/internal/musicxml/model"
 )

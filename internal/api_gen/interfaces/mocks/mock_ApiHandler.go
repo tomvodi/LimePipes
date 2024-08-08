@@ -252,6 +252,72 @@ func (_c *ApiHandler_GetTune_Call) RunAndReturn(run func(*gin.Context)) *ApiHand
 	return _c
 }
 
+// Health provides a mock function with given fields: c
+func (_m *ApiHandler) Health(c *gin.Context) {
+	_m.Called(c)
+}
+
+// ApiHandler_Health_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Health'
+type ApiHandler_Health_Call struct {
+	*mock.Call
+}
+
+// Health is a helper method to define mock.On call
+//   - c *gin.Context
+func (_e *ApiHandler_Expecter) Health(c interface{}) *ApiHandler_Health_Call {
+	return &ApiHandler_Health_Call{Call: _e.mock.On("Health", c)}
+}
+
+func (_c *ApiHandler_Health_Call) Run(run func(c *gin.Context)) *ApiHandler_Health_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(*gin.Context))
+	})
+	return _c
+}
+
+func (_c *ApiHandler_Health_Call) Return() *ApiHandler_Health_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *ApiHandler_Health_Call) RunAndReturn(run func(*gin.Context)) *ApiHandler_Health_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// Home provides a mock function with given fields: c
+func (_m *ApiHandler) Home(c *gin.Context) {
+	_m.Called(c)
+}
+
+// ApiHandler_Home_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Home'
+type ApiHandler_Home_Call struct {
+	*mock.Call
+}
+
+// Home is a helper method to define mock.On call
+//   - c *gin.Context
+func (_e *ApiHandler_Expecter) Home(c interface{}) *ApiHandler_Home_Call {
+	return &ApiHandler_Home_Call{Call: _e.mock.On("Home", c)}
+}
+
+func (_c *ApiHandler_Home_Call) Run(run func(c *gin.Context)) *ApiHandler_Home_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(*gin.Context))
+	})
+	return _c
+}
+
+func (_c *ApiHandler_Home_Call) Return() *ApiHandler_Home_Call {
+	_c.Call.Return()
+	return _c
+}
+
+func (_c *ApiHandler_Home_Call) RunAndReturn(run func(*gin.Context)) *ApiHandler_Home_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // ImportBww provides a mock function with given fields: c
 func (_m *ApiHandler) ImportBww(c *gin.Context) {
 	_m.Called(c)

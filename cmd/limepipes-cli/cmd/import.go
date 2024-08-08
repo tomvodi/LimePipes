@@ -5,12 +5,11 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/tomvodi/limepipes/internal/api"
-	"github.com/tomvodi/limepipes/internal/bww"
 	"github.com/tomvodi/limepipes/internal/common"
-	"github.com/tomvodi/limepipes/internal/common/music_model"
-	"github.com/tomvodi/limepipes/internal/common/music_model/helper"
 	"github.com/tomvodi/limepipes/internal/config"
 	"github.com/tomvodi/limepipes/internal/database"
+	"github.com/tomvodi/limepipes/internal/interfaces"
+	"github.com/tomvodi/limepipes/internal/plugin_loader"
 	"github.com/tomvodi/limepipes/internal/utils"
 	"gorm.io/gorm"
 	"os"
@@ -37,6 +36,18 @@ If a given file that has an extension which is not in the import-file-types, it 
 			return fmt.Errorf("failed init configuration: %s", err.Error())
 		}
 
+		pluginLoader := plugin_loader.NewPluginLoader()
+		err = pluginLoader.LoadPluginsFromDir(cfg.PluginsDirectoryPath)
+		if err != nil {
+			log.Fatal().Err(err).Msg("failed loading plugins")
+		}
+		defer func(pluginLoader interfaces.PluginLoader) {
+			err := pluginLoader.UnloadPlugins()
+			if err != nil {
+				log.Fatal().Err(err).Msg("failed unloading plugins")
+			}
+		}(pluginLoader)
+
 		var db *gorm.DB
 		db, err = database.GetInitPostgreSQLDB(cfg.DbConfig())
 		if err != nil {
@@ -45,8 +56,11 @@ If a given file that has an extension which is not in the import-file-types, it 
 		ginValidator := api.NewGinValidator()
 		apiModelValidator := api.NewApiModelValidator(ginValidator)
 		dbService := database.NewDbDataService(db, apiModelValidator)
-		bwwFileTuneSplitter := bww.NewBwwFileTuneSplitter()
-		tuneFixer := helper.NewTuneFixer()
+
+		bwwPlugin, err := pluginLoader.PluginForFileExtension(".bww")
+		if err != nil {
+			log.Fatal().Err(err).Msgf("failed getting plugin for extension .bww")
+		}
 
 		err = checkForInvalidImportTypes()
 		if err != nil {
@@ -61,7 +75,6 @@ If a given file that has an extension which is not in the import-file-types, it 
 		log.Info().Msgf("found %d files for import", len(allFiles))
 
 		importedTunesCnt := 0
-		parser := bww.NewBwwParser()
 		allFileCnt := len(allFiles)
 		for i, file := range allFiles {
 			fileData, err := os.ReadFile(file)
@@ -69,8 +82,8 @@ If a given file that has an extension which is not in the import-file-types, it 
 				return err
 			}
 			log.Info().Msgf("importing file %d/%d %s", i+1, allFileCnt, file)
-			var muModel music_model.MusicModel
-			muModel, err = parser.ParseBwwData(fileData)
+
+			tunesImport, err := bwwPlugin.Import(fileData)
 			if err != nil {
 				if skipFailedFiles {
 					log.Error().Err(err).Msgf("failed parsing file %s", file)
@@ -84,27 +97,9 @@ If a given file that has an extension which is not in the import-file-types, it 
 				log.Info().Msgf("(%d/%d) successfully parsed %d tunes from file %s",
 					i+1,
 					allFileCnt,
-					len(muModel),
+					len(tunesImport.ImportedTunes),
 					file,
 				)
-			}
-
-			tuneFixer.Fix(muModel)
-
-			bwwFileTuneData, err := bwwFileTuneSplitter.SplitFileData(fileData)
-			if err != nil {
-				msg := fmt.Sprintf("failed splitting file %s by tunes: %s", file, err.Error())
-				if skipFailedFiles {
-					log.Error().Msg(msg)
-					continue
-				} else {
-					return fmt.Errorf(msg)
-				}
-			}
-
-			if len(bwwFileTuneData.TuneTitles()) != len(muModel) {
-				log.Warn().Msgf("split bww file and music model don't have the same amount of tunes: %s",
-					file)
 			}
 
 			fInfo, err := common.NewImportFileInfoFromLocalFile(file)
@@ -116,7 +111,8 @@ If a given file that has an extension which is not in the import-file-types, it 
 					return err
 				}
 			}
-			apiTunes, err := dbService.ImportMusicModel(muModel, fInfo, bwwFileTuneData)
+
+			apiTunes, err := dbService.ImportTunes(tunesImport.ImportedTunes, fInfo)
 			if err != nil {
 				if skipFailedFiles {
 					log.Error().Err(err).Msg("failed importing tunes")

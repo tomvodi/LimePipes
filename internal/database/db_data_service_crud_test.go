@@ -5,7 +5,7 @@ import (
 	"github.com/google/uuid"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	mumotune "github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
 	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
 	"github.com/tomvodi/limepipes/internal/common"
 	"github.com/tomvodi/limepipes/internal/config"
@@ -249,14 +249,14 @@ var _ = Describe("DbDataService", func() {
 		})
 
 		When("adding a file to that tune", func() {
-			var testTune *mumotune.Tune
+			var testTune *messages.ImportedTune
 			var tuneFile *model.TuneFile
 			var tuneFiles []*model.TuneFile
 			var returnTuneFile *model.TuneFile
 
 			BeforeEach(func() {
 				testTune = model.TestMusicModelTune("test tune")
-				tuneFile, err = model.TuneFileFromTune(testTune)
+				tuneFile, err = model.TuneFileFromTune(testTune.Tune)
 				Expect(err).ShouldNot(HaveOccurred())
 				err = service.AddFileToTune(tune.Id, tuneFile)
 			})

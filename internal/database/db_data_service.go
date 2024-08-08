@@ -9,9 +9,9 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/measure"
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
 	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
 	"github.com/tomvodi/limepipes/internal/common"
-	"github.com/tomvodi/limepipes/internal/common/music_model"
 	"github.com/tomvodi/limepipes/internal/database/model"
 	"github.com/tomvodi/limepipes/internal/database/model/file_type"
 	"github.com/tomvodi/limepipes/internal/interfaces"
@@ -584,10 +584,9 @@ func tunesOrderedByIds(tunes []model.Tune, tuneIds []uuid.UUID) []model.Tune {
 	return orderedTunes
 }
 
-func (d *dbService) ImportMusicModel(
-	muMo music_model.MusicModel,
+func (d *dbService) ImportTunes(
+	tunes []*messages.ImportedTune,
 	fileInfo *common.ImportFileInfo,
-	bwwFileData *common.BwwFileTuneData,
 ) ([]*apimodel.ImportTune, error) {
 	var apiTunes []*apimodel.ImportTune
 
@@ -601,50 +600,51 @@ func (d *dbService) ImportMusicModel(
 			}
 		}
 
-		for i, tune := range muMo {
+		for _, impTune := range tunes {
+			newTune := impTune.Tune
 			timeSigStr := ""
-			timeSig := tune.FirstTimeSignature()
+			timeSig := newTune.FirstTimeSignature()
 			if timeSig != nil {
 				timeSigStr = timeSig.DisplayString()
 			}
-			alreadyImportedTune := apiTuneWithTitle(tune.Title, apiTunes)
+			alreadyImportedTune := apiTuneWithTitle(newTune.Title, apiTunes)
 			if alreadyImportedTune != nil {
 				impTune := &apimodel.ImportTune{}
 				err := copier.Copy(impTune, alreadyImportedTune)
 				if err != nil {
-					return fmt.Errorf("failed creating import tune from already imported tune: %s", err.Error())
+					return fmt.Errorf("failed creating import impTune from already imported impTune: %s", err.Error())
 				}
 				impTune.ImportedToDatabase = false
 				apiTunes = append(apiTunes, impTune)
 				continue
 			}
 
-			// when tune has the same title but for example another arranger,
-			// the tune should be added to database
-			tuneInDb, err := d.getIdenticalTuneFromDb(tune)
+			// when impTune has the same title but for example another arranger,
+			// the impTune should be added to database
+			tuneInDb, err := d.getIdenticalTuneFromDb(newTune)
 			if err == nil {
-				impTune := &apimodel.ImportTune{}
-				err = copier.Copy(impTune, tuneInDb)
+				tune := &apimodel.ImportTune{}
+				err = copier.Copy(tune, tuneInDb)
 				if err != nil {
-					return fmt.Errorf("failed creating import tune: %s", err.Error())
+					return fmt.Errorf("failed creating import newTune: %s", err.Error())
 				}
 
-				apiTunes = append(apiTunes, impTune)
+				apiTunes = append(apiTunes, tune)
 				continue
 			}
 
 			createTune := apimodel.CreateTune{
-				Title:    tune.Title,
-				Type:     tune.Type,
+				Title:    newTune.Title,
+				Type:     newTune.Type,
 				TimeSig:  timeSigStr,
-				Composer: tune.Composer,
-				Arranger: tune.Arranger,
+				Composer: newTune.Composer,
+				Arranger: newTune.Arranger,
 			}
 			apiTune, err := d.CreateTune(createTune, importFile)
 			if err != nil {
 				return err
 			}
-			tuneFile, err := model.TuneFileFromTune(tune)
+			tuneFile, err := model.TuneFileFromTune(newTune)
 			if err != nil {
 				return err
 			}
@@ -653,10 +653,10 @@ func (d *dbService) ImportMusicModel(
 				return err
 			}
 
-			if bwwFileData != nil {
+			if impTune.TuneFileData != nil {
 				tuneFile = &model.TuneFile{
 					Type: file_type.Bww,
-					Data: bwwFileData.Data(i),
+					Data: impTune.TuneFileData,
 				}
 				if err = d.AddFileToTune(apiTune.Id, tuneFile); err != nil {
 					return err
@@ -670,16 +670,16 @@ func (d *dbService) ImportMusicModel(
 			if err != nil {
 				return err
 			}
-			setMessagesToApiTune(importTune, tune)
+			setMessagesToApiTune(importTune, newTune)
 			apiTunes = append(apiTunes, importTune)
 		}
 
-		if len(muMo) > 1 {
+		if len(tunes) > 1 {
 			var apiSet *apimodel.MusicSet
 			var err error
 			var tuneIds []uuid.UUID
-			for _, tune := range apiTunes {
-				tuneIds = append(tuneIds, tune.Id)
+			for _, apiTune := range apiTunes {
+				tuneIds = append(tuneIds, apiTune.Id)
 			}
 
 			musicSetTitle := musicSetTitleFromTunes(apiTunes)
@@ -701,8 +701,8 @@ func (d *dbService) ImportMusicModel(
 				return fmt.Errorf("failed creating basic music set from music set")
 			}
 
-			for _, tune := range apiTunes {
-				tune.Set = basicSet
+			for _, apiTune := range apiTunes {
+				apiTune.Set = basicSet
 			}
 		}
 

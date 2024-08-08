@@ -8,7 +8,6 @@ import (
 	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
 	api_interfaces "github.com/tomvodi/limepipes/internal/api_gen/interfaces"
 	"github.com/tomvodi/limepipes/internal/common"
-	"github.com/tomvodi/limepipes/internal/common/music_model"
 	"github.com/tomvodi/limepipes/internal/interfaces"
 	"io"
 	"mime/multipart"
@@ -16,11 +15,9 @@ import (
 )
 
 type apiHandler struct {
-	service             interfaces.DataService
-	bwwParser           interfaces.BwwParser
-	bwwFileTuneSplitter interfaces.BwwFileByTuneSplitter
-	tuneFixer           interfaces.TuneFixer
-	healthChecker       interfaces.HealthChecker
+	service       interfaces.DataService
+	pluginLoader  interfaces.PluginLoader
+	healthChecker interfaces.HealthChecker
 }
 
 func (a *apiHandler) Home(c *gin.Context) {
@@ -76,13 +73,7 @@ func (a *apiHandler) importBwwFile(
 		},
 	}
 
-	bwwFileTuneData, err := a.bwwFileTuneSplitter.SplitFileData(fileData)
-	if err != nil {
-		return nil, err
-	}
-
-	var muModel music_model.MusicModel
-	muModel, err = a.bwwParser.ParseBwwData(fileData)
+	bwwPlugin, err := a.pluginLoader.PluginForFileExtension(".bww")
 	if err != nil {
 		importFile.Result = apimodel.ParseResult{
 			Message: err.Error(),
@@ -90,14 +81,20 @@ func (a *apiHandler) importBwwFile(
 		return importFile, err
 	}
 
-	a.tuneFixer.Fix(muModel)
+	importTunes, err := bwwPlugin.Import(fileData)
+	if err != nil {
+		importFile.Result = apimodel.ParseResult{
+			Message: err.Error(),
+		}
+		return importFile, err
+	}
 
 	info, err := common.NewImportFileInfo(file.Filename, fileData)
 	if err != nil {
 		return nil, err
 	}
 
-	apiImpTunes, err := a.service.ImportMusicModel(muModel, info, bwwFileTuneData)
+	apiImpTunes, err := a.service.ImportTunes(importTunes.ImportedTunes, info)
 	if err != nil {
 		importFile.Result = apimodel.ParseResult{
 			Message: err.Error(),
@@ -313,16 +310,12 @@ func (a *apiHandler) AssignTunesToSet(c *gin.Context) {
 
 func NewApiHandler(
 	service interfaces.DataService,
-	bwwParser interfaces.BwwParser,
-	bwwFileTuneSplitter interfaces.BwwFileByTuneSplitter,
-	tuneFixer interfaces.TuneFixer,
+	pluginLoader interfaces.PluginLoader,
 	healthChecker interfaces.HealthChecker,
 ) api_interfaces.ApiHandler {
 	return &apiHandler{
-		service:             service,
-		bwwParser:           bwwParser,
-		bwwFileTuneSplitter: bwwFileTuneSplitter,
-		tuneFixer:           tuneFixer,
-		healthChecker:       healthChecker,
+		service:       service,
+		pluginLoader:  pluginLoader,
+		healthChecker: healthChecker,
 	}
 }
