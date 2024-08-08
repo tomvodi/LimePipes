@@ -18,6 +18,8 @@ type Config struct {
 	HealthGlobalTimeoutSeconds uint32 `mapstructure:"HEALTH_GLOBAL_TIMEOUT_SECONDS"`
 	HealthRefreshPeriodSeconds uint32 `mapstructure:"HEALTH_REFRESH_PERIOD_SECONDS"`
 	HealthInitialDelaySeconds  uint32 `mapstructure:"HEALTH_INITIAL_DELAY_SECONDS"`
+
+	PluginsDirectoryPath string `mapstructure:"PLUGINS_DIRECTORY_PATH"`
 }
 
 func (c *Config) DbConfig() DbConfig {
