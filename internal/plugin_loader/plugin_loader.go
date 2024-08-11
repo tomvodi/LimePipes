@@ -68,7 +68,7 @@ func (l *loader) loadPlugin(
 	pluginExeName := fmt.Sprintf("limepipes-plugin-%s", pluginId)
 	pluginExePath := filepath.Join(pluginDir, pluginExeName)
 
-	if _, err := os.Stat("/path/to/whatever"); errors.Is(err, os.ErrNotExist) {
+	if _, err := os.Stat(pluginExePath); errors.Is(err, os.ErrNotExist) {
 		return fmt.Errorf("plugin executable '%s' does not exist", pluginExePath)
 	}
 
@@ -128,5 +128,9 @@ func (l *loader) PluginForFileExtension(
 }
 
 func NewPluginLoader() interfaces.PluginLoader {
-	return &loader{}
+	return &loader{
+		pluginClients: map[string]*plugin.Client{},
+		plugins:       map[string]plugininterfaces.LimePipesPlugin{},
+		pluginInfos:   map[string]*messages.PluginInfoResponse{},
+	}
 }

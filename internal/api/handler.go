@@ -36,7 +36,11 @@ func (a *apiHandler) Health(c *gin.Context) {
 }
 
 func (a *apiHandler) ImportBww(c *gin.Context) {
-	form, _ := c.MultipartForm()
+	form, err := c.MultipartForm()
+	if err != nil {
+		httpErrorResponse(c, http.StatusBadRequest, err)
+	}
+
 	files := form.File["upload[]"]
 
 	var importFiles []*apimodel.ImportFile
