@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/rs/zerolog/log"
 	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
 	api_interfaces "github.com/tomvodi/limepipes/internal/api_gen/interfaces"
 	"github.com/tomvodi/limepipes/internal/common"
@@ -12,6 +13,7 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
+	"net/http/httputil"
 )
 
 type apiHandler struct {
@@ -36,15 +38,25 @@ func (a *apiHandler) Health(c *gin.Context) {
 }
 
 func (a *apiHandler) ImportBww(c *gin.Context) {
+	logReq, err := httputil.DumpRequest(c.Request, true)
+	if err != nil {
+		log.Err(err).Msg("failed dumping request")
+	}
+	log.Info().Msgf("request: %s", string(logReq))
+
 	form, err := c.MultipartForm()
 	if err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
+		return
 	}
 
-	files := form.File["upload[]"]
+	var allFiles []*multipart.FileHeader
+	for _, fh := range form.File {
+		allFiles = append(allFiles, fh...)
+	}
 
 	var importFiles []*apimodel.ImportFile
-	for _, file := range files {
+	for _, file := range allFiles {
 		importFile, err := a.importBwwFile(file)
 		if err != nil {
 			httpErrorResponse(c, http.StatusInternalServerError, err)
