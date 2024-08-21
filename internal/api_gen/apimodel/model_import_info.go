@@ -8,22 +8,8 @@
  */
 
 package apimodel
-import "github.com/google/uuid"
 
-type ImportTune struct {
-
-	// Unique identifier for an object
-	Id uuid.UUID `json:"id"`
-
-	Title string `json:"title"`
-
-	Type string `json:"type,omitempty"`
-
-	TimeSig string `json:"timeSig,omitempty"`
-
-	Composer string `json:"composer,omitempty"`
-
-	Arranger string `json:"arranger,omitempty"`
+type ImportInfo struct {
 
 	// true if entity was already imported
 	AlreadyImported bool `json:"alreadyImported,omitempty"`

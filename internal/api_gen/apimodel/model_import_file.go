@@ -11,9 +11,10 @@ package apimodel
 
 type ImportFile struct {
 
+	// the imported filename
 	Name string `json:"name"`
 
-	Result ParseResult `json:"result,omitempty"`
+	Set BasicMusicSet `json:"set,omitempty"`
 
 	// if import was successful, the array of imported tunes
 	Tunes []*ImportTune `json:"tunes,omitempty"`
