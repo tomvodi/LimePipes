@@ -4,7 +4,7 @@ package mocks
 
 import (
 	mock "github.com/stretchr/testify/mock"
-	music_model "github.com/tomvodi/limepipes/internal/common/music_model"
+	musicmodel "github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/musicmodel"
 	model "github.com/tomvodi/limepipes/internal/musicxml/model"
 )
 
@@ -22,7 +22,7 @@ func (_m *MusicxmlExporter) EXPECT() *MusicxmlExporter_Expecter {
 }
 
 // Export provides a mock function with given fields: musicModel
-func (_m *MusicxmlExporter) Export(musicModel music_model.MusicModel) (*model.Score, error) {
+func (_m *MusicxmlExporter) Export(musicModel musicmodel.MusicModel) (*model.Score, error) {
 	ret := _m.Called(musicModel)
 
 	if len(ret) == 0 {
@@ -31,10 +31,10 @@ func (_m *MusicxmlExporter) Export(musicModel music_model.MusicModel) (*model.Sc
 
 	var r0 *model.Score
 	var r1 error
-	if rf, ok := ret.Get(0).(func(music_model.MusicModel) (*model.Score, error)); ok {
+	if rf, ok := ret.Get(0).(func(musicmodel.MusicModel) (*model.Score, error)); ok {
 		return rf(musicModel)
 	}
-	if rf, ok := ret.Get(0).(func(music_model.MusicModel) *model.Score); ok {
+	if rf, ok := ret.Get(0).(func(musicmodel.MusicModel) *model.Score); ok {
 		r0 = rf(musicModel)
 	} else {
 		if ret.Get(0) != nil {
@@ -42,7 +42,7 @@ func (_m *MusicxmlExporter) Export(musicModel music_model.MusicModel) (*model.Sc
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(music_model.MusicModel) error); ok {
+	if rf, ok := ret.Get(1).(func(musicmodel.MusicModel) error); ok {
 		r1 = rf(musicModel)
 	} else {
 		r1 = ret.Error(1)
@@ -57,14 +57,14 @@ type MusicxmlExporter_Export_Call struct {
 }
 
 // Export is a helper method to define mock.On call
-//   - musicModel music_model.MusicModel
+//   - musicModel musicmodel.MusicModel
 func (_e *MusicxmlExporter_Expecter) Export(musicModel interface{}) *MusicxmlExporter_Export_Call {
 	return &MusicxmlExporter_Export_Call{Call: _e.mock.On("Export", musicModel)}
 }
 
-func (_c *MusicxmlExporter_Export_Call) Run(run func(musicModel music_model.MusicModel)) *MusicxmlExporter_Export_Call {
+func (_c *MusicxmlExporter_Export_Call) Run(run func(musicModel musicmodel.MusicModel)) *MusicxmlExporter_Export_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(music_model.MusicModel))
+		run(args[0].(musicmodel.MusicModel))
 	})
 	return _c
 }
@@ -74,7 +74,7 @@ func (_c *MusicxmlExporter_Export_Call) Return(_a0 *model.Score, _a1 error) *Mus
 	return _c
 }
 
-func (_c *MusicxmlExporter_Export_Call) RunAndReturn(run func(music_model.MusicModel) (*model.Score, error)) *MusicxmlExporter_Export_Call {
+func (_c *MusicxmlExporter_Export_Call) RunAndReturn(run func(musicmodel.MusicModel) (*model.Score, error)) *MusicxmlExporter_Export_Call {
 	_c.Call.Return(run)
 	return _c
 }

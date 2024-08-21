@@ -1,14 +1,12 @@
-/*
-Copyright © 2023 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
 	"fmt"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
-	"github.com/tomvodi/limepipes/internal/bww"
-	"github.com/tomvodi/limepipes/internal/common/music_model"
+	"github.com/tomvodi/limepipes/internal/config"
+	"github.com/tomvodi/limepipes/internal/interfaces"
+	"github.com/tomvodi/limepipes/internal/plugin_loader"
 	"github.com/tomvodi/limepipes/internal/utils"
 	"os"
 	"path/filepath"
@@ -34,6 +32,28 @@ If a given file that has an extension which is not in the import-file-types, it 
 		err := checkForInvalidImportTypes()
 		if err != nil {
 			return err
+		}
+
+		cfg, err := config.Init()
+		if err != nil {
+			return fmt.Errorf("failed init configuration: %s", err.Error())
+		}
+
+		pluginLoader := plugin_loader.NewPluginLoader()
+		err = pluginLoader.LoadPluginsFromDir(cfg.PluginsDirectoryPath)
+		if err != nil {
+			log.Fatal().Err(err).Msg("failed loading plugins")
+		}
+		defer func(pluginLoader interfaces.PluginLoader) {
+			err := pluginLoader.UnloadPlugins()
+			if err != nil {
+				log.Fatal().Err(err).Msg("failed unloading plugins")
+			}
+		}(pluginLoader)
+
+		bwwPlugin, err := pluginLoader.PluginForFileExtension(".bww")
+		if err != nil {
+			log.Fatal().Err(err).Msgf("failed getting plugin for extension .bww")
 		}
 
 		allFiles, err := getAllFilesFromArgs(args)
@@ -63,7 +83,6 @@ If a given file that has an extension which is not in the import-file-types, it 
 			log.Info().Msgf("successful parsed files will be moved to: %s", OutputDir)
 		}
 
-		parser := bww.NewBwwParser()
 		allFileCnt := len(allFiles)
 		for i, file := range allFiles {
 			fileData, err := os.ReadFile(file)
@@ -74,8 +93,7 @@ If a given file that has an extension which is not in the import-file-types, it 
 			if verbose {
 				log.Info().Msgf("parsing file %d/%d %s", i+1, allFileCnt, file)
 			}
-			var muModel music_model.MusicModel
-			muModel, err = parser.ParseBwwData(fileData)
+			tunesImport, err := bwwPlugin.Import(fileData)
 			if err != nil {
 				if skipFailedFiles {
 					log.Error().Err(err).Msgf("failed parsing file %s", file)
@@ -98,7 +116,7 @@ If a given file that has an extension which is not in the import-file-types, it 
 				log.Info().Msgf("(%d/%d) successfully parsed %d tunes from file %s",
 					i+1,
 					allFileCnt,
-					len(muModel),
+					len(tunesImport.ImportedTunes),
 					file,
 				)
 			}

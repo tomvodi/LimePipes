@@ -3,11 +3,11 @@ package database
 import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/helper"
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
 	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
 	"github.com/tomvodi/limepipes/internal/common"
-	"github.com/tomvodi/limepipes/internal/common/music_model"
-	"github.com/tomvodi/limepipes/internal/common/music_model/helper"
 	"github.com/tomvodi/limepipes/internal/config"
 	"github.com/tomvodi/limepipes/internal/database/model"
 	"github.com/tomvodi/limepipes/internal/database/model/file_type"
@@ -17,11 +17,10 @@ import (
 var _ = Describe("DbDataService Import", func() {
 	var err error
 	var returnTunes []*apimodel.ImportTune
-	var bwwFileData *common.BwwFileTuneData
 	var tuneFile *model.TuneFile
 	var tuneFileTune *tune.Tune
 	var service *dbService
-	var muMo music_model.MusicModel
+	var importTunes []*messages.ImportedTune
 	var musicSet *apimodel.MusicSet
 	var fileInfo *common.ImportFileInfo
 	var gormDb *gorm.DB
@@ -46,7 +45,7 @@ var _ = Describe("DbDataService Import", func() {
 		BeforeEach(func() {
 			fileInfo, err = common.NewImportFileInfo("testfile.bww", []byte(`BagpipeReader:1.0`))
 			Expect(err).ShouldNot(HaveOccurred())
-			muMo = music_model.MusicModel{
+			importTunes = []*messages.ImportedTune{
 				model.TestMusicModelTune("tune 1"),
 				model.TestMusicModelTune("tune 2"),
 			}
@@ -54,7 +53,7 @@ var _ = Describe("DbDataService Import", func() {
 
 		When("importing this music model", func() {
 			BeforeEach(func() {
-				returnTunes, err = service.ImportMusicModel(muMo, fileInfo, nil)
+				returnTunes, err = service.ImportTunes(importTunes, fileInfo)
 			})
 
 			It("should return two apimodel tunes", func() {
@@ -90,7 +89,7 @@ var _ = Describe("DbDataService Import", func() {
 
 					It("should return the same data as for the imported music model tune", func() {
 						Expect(err).ShouldNot(HaveOccurred())
-						Expect(tuneFileTune).Should(BeComparableTo(muMo[0], helper.CompareOpts))
+						Expect(tuneFileTune).Should(BeComparableTo(importTunes[0], helper.MusicModelCompareOptions))
 						Expect(returnTunes[0].Set).ShouldNot(BeNil())
 						Expect(returnTunes[1].Set).ShouldNot(BeNil())
 						setId := returnTunes[0].Set.Id
@@ -101,7 +100,7 @@ var _ = Describe("DbDataService Import", func() {
 
 			When("importing this music model a second time", func() {
 				BeforeEach(func() {
-					returnTunes, err = service.ImportMusicModel(muMo, fileInfo, nil)
+					returnTunes, err = service.ImportTunes(importTunes, fileInfo)
 				})
 
 				It("should return two apimodel tunes again", func() {
@@ -117,16 +116,16 @@ var _ = Describe("DbDataService Import", func() {
 
 			When("having a a tune with title of already imported tune but with another arranger", func() {
 				BeforeEach(func() {
-					tune1 := muMo[0]
-					tune1.Arranger = "another arranger"
-					muMo = music_model.MusicModel{
+					tune1 := importTunes[0]
+					tune1.Tune.Arranger = "another arranger"
+					importTunes = []*messages.ImportedTune{
 						tune1,
 					}
 				})
 
 				When("importing that tune with different arranger", func() {
 					BeforeEach(func() {
-						returnTunes, err = service.ImportMusicModel(muMo, fileInfo, nil)
+						returnTunes, err = service.ImportTunes(importTunes, fileInfo)
 					})
 
 					It("should succeed", func() {
@@ -143,15 +142,14 @@ var _ = Describe("DbDataService Import", func() {
 
 		Context("having bww tune file data", func() {
 			BeforeEach(func() {
-				bwwFileData = &common.BwwFileTuneData{}
-				bwwFileData.AddTuneData(muMo[0].Title, []byte("& LA_4 !t"))
-				bwwFileData.AddTuneData(muMo[1].Title, []byte("& B_4 !t"))
+				importTunes[0].TuneFileData = []byte("& LA_4 !t")
+				importTunes[1].TuneFileData = []byte("& B_4 !t")
 			})
 
 			When("importing this music model", func() {
 
 				BeforeEach(func() {
-					returnTunes, err = service.ImportMusicModel(muMo, fileInfo, bwwFileData)
+					returnTunes, err = service.ImportTunes(importTunes, fileInfo)
 				})
 
 				It("should return two apimodel tunes", func() {
@@ -174,8 +172,7 @@ var _ = Describe("DbDataService Import", func() {
 
 					It("should return the tune file data", func() {
 						Expect(getTuneFileErr).ShouldNot(HaveOccurred())
-						bwwData := bwwFileData.Data(0)
-						Expect(tuneFile.Data).To(Equal(bwwData))
+						Expect(tuneFile.Data).To(Equal(importTunes[0].TuneFileData))
 					})
 				})
 			})
@@ -186,7 +183,7 @@ var _ = Describe("DbDataService Import", func() {
 		BeforeEach(func() {
 			fileInfo, err = common.NewImportFileInfo("testfile.bww", []byte(`BagpipeReader:1.0`))
 			Expect(err).ShouldNot(HaveOccurred())
-			muMo = music_model.MusicModel{
+			importTunes = []*messages.ImportedTune{
 				model.TestMusicModelTune("scotty"),
 				model.TestMusicModelTune("wings"),
 				model.TestMusicModelTune("scotty"),
@@ -195,7 +192,7 @@ var _ = Describe("DbDataService Import", func() {
 
 		When("importing this music model", func() {
 			BeforeEach(func() {
-				returnTunes, err = service.ImportMusicModel(muMo, fileInfo, nil)
+				returnTunes, err = service.ImportTunes(importTunes, fileInfo)
 			})
 
 			It("should return three apimodel tunes", func() {

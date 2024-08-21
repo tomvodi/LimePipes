@@ -2,9 +2,9 @@ package interfaces
 
 import (
 	"github.com/google/uuid"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
 	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
 	"github.com/tomvodi/limepipes/internal/common"
-	"github.com/tomvodi/limepipes/internal/common/music_model"
 	"github.com/tomvodi/limepipes/internal/database/model"
 	"github.com/tomvodi/limepipes/internal/database/model/file_type"
 )
@@ -29,9 +29,8 @@ type DataService interface {
 
 	AssignTunesToMusicSet(setId uuid.UUID, tuneIds []uuid.UUID) (*apimodel.MusicSet, error)
 
-	ImportMusicModel(
-		muMo music_model.MusicModel,
+	ImportTunes(
+		tunes []*messages.ImportedTune,
 		fileInfo *common.ImportFileInfo,
-		bwwFileData *common.BwwFileTuneData,
 	) ([]*apimodel.ImportTune, error)
 }

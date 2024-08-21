@@ -1,10 +1,10 @@
 package interfaces
 
 import (
-	"github.com/tomvodi/limepipes/internal/common/music_model"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/musicmodel"
 	"github.com/tomvodi/limepipes/internal/musicxml/model"
 )
 
 type MusicxmlExporter interface {
-	Export(musicModel music_model.MusicModel) (*model.Score, error)
+	Export(musicModel musicmodel.MusicModel) (*model.Score, error)
 }

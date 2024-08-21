@@ -7,8 +7,6 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/tomvodi/limepipes/internal/api"
 	"github.com/tomvodi/limepipes/internal/api_gen"
-	"github.com/tomvodi/limepipes/internal/bww"
-	"github.com/tomvodi/limepipes/internal/common/music_model/helper"
 	"github.com/tomvodi/limepipes/internal/config"
 	"github.com/tomvodi/limepipes/internal/database"
 	"github.com/tomvodi/limepipes/internal/health"
@@ -55,21 +53,16 @@ func main() {
 		panic(fmt.Sprintf("failed initializing database: %s", err.Error()))
 	}
 
-	bwwParser := bww.NewBwwParser()
-	bwwFileTuneSplitter := bww.NewBwwFileTuneSplitter()
 	ginValidator := api.NewGinValidator()
 	apiModelValidator := api.NewApiModelValidator(ginValidator)
 	dbService := database.NewDbDataService(db, apiModelValidator)
-	tuneFixer := helper.NewTuneFixer()
 	healthChecker, err := health.NewHealthCheck(cfg.HealthConfig(), db)
 	if err != nil {
 		panic(fmt.Sprintf("failed initializing health check: %s", err.Error()))
 	}
 	apiHandler := api.NewApiHandler(
 		dbService,
-		bwwParser,
-		bwwFileTuneSplitter,
-		tuneFixer,
+		pluginLoader,
 		healthChecker,
 	)
 	engine := setupGinEngine()
