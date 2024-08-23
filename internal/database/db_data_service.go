@@ -9,11 +9,12 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/measure"
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
 	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
 	"github.com/tomvodi/limepipes/internal/common"
+
 	"github.com/tomvodi/limepipes/internal/database/model"
-	"github.com/tomvodi/limepipes/internal/database/model/file_type"
 	"github.com/tomvodi/limepipes/internal/interfaces"
 	"gorm.io/gorm"
 	"strings"
@@ -143,7 +144,7 @@ func (d *dbService) getTuneByTitle(title string) (*apimodel.Tune, error) {
 	return apiTune, nil
 }
 
-func (d *dbService) getImportFileByHash(fHash string) (*model.ImportFile, error) {
+func (d *dbService) GetImportFileByHash(fHash string) (*model.ImportFile, error) {
 	var importFile = &model.ImportFile{
 		Hash: fHash,
 	}
@@ -154,15 +155,18 @@ func (d *dbService) getImportFileByHash(fHash string) (*model.ImportFile, error)
 	return importFile, nil
 }
 
-func (d *dbService) getOrCreateImportFile(
+func (d *dbService) hasImportFile(
 	fileInfo *common.ImportFileInfo,
-) (*model.ImportFile, error) {
-	importFile, err := d.getImportFileByHash(fileInfo.Hash)
+) (bool, error) {
+	_, err := d.GetImportFileByHash(fileInfo.Hash)
 	if errors.Is(err, common.NotFound) {
-		return d.createImportFile(fileInfo)
+		return false, nil
+	}
+	if err != nil {
+		return false, err
 	}
 
-	return importFile, err
+	return true, err
 }
 
 func (d *dbService) createImportFile(importFile *common.ImportFileInfo) (*model.ImportFile, error) {
@@ -587,17 +591,25 @@ func tunesOrderedByIds(tunes []model.Tune, tuneIds []uuid.UUID) []model.Tune {
 func (d *dbService) ImportTunes(
 	tunes []*messages.ImportedTune,
 	fileInfo *common.ImportFileInfo,
-) ([]*apimodel.ImportTune, error) {
+) ([]*apimodel.ImportTune, *apimodel.BasicMusicSet, error) {
 	var apiTunes []*apimodel.ImportTune
 
-	err := d.db.Transaction(func(tx *gorm.DB) error {
-		var importFile *model.ImportFile
-		var err error
-		if fileInfo != nil {
-			importFile, err = d.getOrCreateImportFile(fileInfo)
-			if err != nil {
-				return err
-			}
+	if fileInfo == nil {
+		return nil, nil, fmt.Errorf("no file info given")
+	}
+	fileExists, err := d.hasImportFile(fileInfo)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if fileExists {
+		return nil, nil, fmt.Errorf("file %s already imported", fileInfo.Name)
+	}
+
+	err = d.db.Transaction(func(tx *gorm.DB) error {
+		importFile, err := d.createImportFile(fileInfo)
+		if err != nil {
+			return err
 		}
 
 		for _, impTune := range tunes {
@@ -612,9 +624,8 @@ func (d *dbService) ImportTunes(
 				impTune := &apimodel.ImportTune{}
 				err := copier.Copy(impTune, alreadyImportedTune)
 				if err != nil {
-					return fmt.Errorf("failed creating import impTune from already imported impTune: %s", err.Error())
+					return fmt.Errorf("failed creating import tune from already imported tune: %s", err.Error())
 				}
-				impTune.ImportedToDatabase = false
 				apiTunes = append(apiTunes, impTune)
 				continue
 			}
@@ -655,17 +666,16 @@ func (d *dbService) ImportTunes(
 
 			if impTune.TuneFileData != nil {
 				tuneFile = &model.TuneFile{
-					Type: file_type.Bww,
-					Data: impTune.TuneFileData,
+					Type:           fileInfo.FileType,
+					Data:           impTune.TuneFileData,
+					SingleTuneData: true,
 				}
 				if err = d.AddFileToTune(apiTune.Id, tuneFile); err != nil {
 					return err
 				}
 			}
 
-			importTune := &apimodel.ImportTune{
-				ImportedToDatabase: true,
-			}
+			importTune := &apimodel.ImportTune{}
 			err = copier.Copy(&importTune, apiTune)
 			if err != nil {
 				return err
@@ -673,6 +683,8 @@ func (d *dbService) ImportTunes(
 			setMessagesToApiTune(importTune, newTune)
 			apiTunes = append(apiTunes, importTune)
 		}
+
+		var musicSet *apimodel.BasicMusicSet
 
 		if len(tunes) > 1 {
 			var apiSet *apimodel.MusicSet
@@ -695,24 +707,20 @@ func (d *dbService) ImportTunes(
 				}
 			}
 
-			basicSet := &apimodel.BasicMusicSet{}
-			err = copier.Copy(basicSet, apiSet)
+			musicSet = &apimodel.BasicMusicSet{}
+			err = copier.Copy(musicSet, apiSet)
 			if err != nil {
 				return fmt.Errorf("failed creating basic music set from music set")
-			}
-
-			for _, apiTune := range apiTunes {
-				apiTune.Set = basicSet
 			}
 		}
 
 		return nil
 	})
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	return apiTunes, nil
+	return apiTunes, nil, nil
 }
 
 func musicSetTitleFromTunes(tunes []*apimodel.ImportTune) string {

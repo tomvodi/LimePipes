@@ -318,35 +318,35 @@ func (_c *ApiHandler_Home_Call) RunAndReturn(run func(*gin.Context)) *ApiHandler
 	return _c
 }
 
-// ImportBww provides a mock function with given fields: c
-func (_m *ApiHandler) ImportBww(c *gin.Context) {
+// ImportFile provides a mock function with given fields: c
+func (_m *ApiHandler) ImportFile(c *gin.Context) {
 	_m.Called(c)
 }
 
-// ApiHandler_ImportBww_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ImportBww'
-type ApiHandler_ImportBww_Call struct {
+// ApiHandler_ImportFile_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ImportFile'
+type ApiHandler_ImportFile_Call struct {
 	*mock.Call
 }
 
-// ImportBww is a helper method to define mock.On call
+// ImportFile is a helper method to define mock.On call
 //   - c *gin.Context
-func (_e *ApiHandler_Expecter) ImportBww(c interface{}) *ApiHandler_ImportBww_Call {
-	return &ApiHandler_ImportBww_Call{Call: _e.mock.On("ImportBww", c)}
+func (_e *ApiHandler_Expecter) ImportFile(c interface{}) *ApiHandler_ImportFile_Call {
+	return &ApiHandler_ImportFile_Call{Call: _e.mock.On("ImportFile", c)}
 }
 
-func (_c *ApiHandler_ImportBww_Call) Run(run func(c *gin.Context)) *ApiHandler_ImportBww_Call {
+func (_c *ApiHandler_ImportFile_Call) Run(run func(c *gin.Context)) *ApiHandler_ImportFile_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(*gin.Context))
 	})
 	return _c
 }
 
-func (_c *ApiHandler_ImportBww_Call) Return() *ApiHandler_ImportBww_Call {
+func (_c *ApiHandler_ImportFile_Call) Return() *ApiHandler_ImportFile_Call {
 	_c.Call.Return()
 	return _c
 }
 
-func (_c *ApiHandler_ImportBww_Call) RunAndReturn(run func(*gin.Context)) *ApiHandler_ImportBww_Call {
+func (_c *ApiHandler_ImportFile_Call) RunAndReturn(run func(*gin.Context)) *ApiHandler_ImportFile_Call {
 	_c.Call.Return(run)
 	return _c
 }

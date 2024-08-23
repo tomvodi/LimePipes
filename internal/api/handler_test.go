@@ -9,11 +9,18 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/mock"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
+	pmocks "github.com/tomvodi/limepipes-plugin-api/plugin/v1/interfaces/mocks"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
 	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
+	"github.com/tomvodi/limepipes/internal/common"
 	"github.com/tomvodi/limepipes/internal/database/model"
 	"github.com/tomvodi/limepipes/internal/interfaces/mocks"
 	"github.com/tomvodi/limepipes/internal/utils"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
 )
@@ -25,6 +32,8 @@ var _ = Describe("Api handler", func() {
 	var api *apiHandler
 	var testId1 uuid.UUID
 	var dataService *mocks.DataService
+	var pluginLoader *mocks.PluginLoader
+	var lpPlugin *pmocks.LimePipesPlugin
 
 	BeforeEach(func() {
 		testId1 = uuid.MustParse("00000000-0000-0000-0000-000000000001")
@@ -32,8 +41,11 @@ var _ = Describe("Api handler", func() {
 		httpRec = httptest.NewRecorder()
 		c, _ = gin.CreateTestContext(httpRec)
 		dataService = mocks.NewDataService(GinkgoT())
+		pluginLoader = mocks.NewPluginLoader(GinkgoT())
+		lpPlugin = pmocks.NewLimePipesPlugin(GinkgoT())
 		api = &apiHandler{
-			service: dataService,
+			service:      dataService,
+			pluginLoader: pluginLoader,
 		}
 	})
 
@@ -59,7 +71,7 @@ var _ = Describe("Api handler", func() {
 				tune = apimodel.CreateTune{
 					Title: "test title",
 				}
-				MockJsonPost(c, http.MethodPost, tune)
+				mockJsonPost(c, http.MethodPost, tune)
 			})
 
 			When("service returns an error on creation", func() {
@@ -111,7 +123,7 @@ var _ = Describe("Api handler", func() {
 				uuid.MustParse(tuneIds[0]),
 				uuid.MustParse(tuneIds[1]),
 			}
-			MockJsonPost(c, http.MethodPut, tuneIds)
+			mockJsonPost(c, http.MethodPut, tuneIds)
 
 			c.Params = gin.Params{
 				{Key: "setId", Value: setId.String()},
@@ -135,9 +147,210 @@ var _ = Describe("Api handler", func() {
 			})
 		})
 	})
+
+	Context("ImportFile", func() {
+		JustBeforeEach(func() {
+			api.ImportFile(c)
+		})
+
+		When("fieldname is wrong", func() {
+			BeforeEach(func() {
+				c.Request = multipartRequestForFile(
+					"wrongfieldname",
+					"test.bww",
+					[]byte("test file content"),
+					"/imports",
+					http.MethodPost,
+				)
+			})
+
+			It("should return BadRequest", func() {
+				api.ImportFile(c)
+				Expect(httpRec.Code).To(Equal(http.StatusBadRequest))
+			})
+		})
+
+		When("file has no extension", func() {
+			BeforeEach(func() {
+				c.Request = multipartRequestForFile(
+					"file",
+					"test",
+					[]byte("test file content"),
+					"/imports",
+					http.MethodPost,
+				)
+			})
+
+			It("should return BadRequest", func() {
+				api.ImportFile(c)
+				Expect(httpRec.Code).To(Equal(http.StatusBadRequest))
+			})
+		})
+
+		When("file extension is not supported", func() {
+			BeforeEach(func() {
+				c.Request = multipartRequestForFile(
+					"file",
+					"test.abc",
+					[]byte("test file content"),
+					"/imports",
+					http.MethodPost,
+				)
+				pluginLoader.EXPECT().FileTypeForFileExtension(".abc").
+					Return(file_type.Type_Unknown, fmt.Errorf("file extension .abc is not supported"))
+			})
+
+			It("should return BadRequest", func() {
+				api.ImportFile(c)
+				Expect(httpRec.Code).To(Equal(http.StatusBadRequest))
+			})
+		})
+
+		When("file was already imported", func() {
+			BeforeEach(func() {
+				c.Request = multipartRequestForFile(
+					"file",
+					"test.bww",
+					[]byte("test file content"),
+					"/imports",
+					http.MethodPost,
+				)
+				pluginLoader.EXPECT().FileTypeForFileExtension(".bww").
+					Return(file_type.Type_BWW, nil)
+				dataService.EXPECT().GetImportFileByHash("60f5237ed4049f0382661ef009d2bc42e48c3ceb3edb6600f7024e7ab3b838f3").
+					Return(nil, nil)
+			})
+
+			It("should return a http conflict", func() {
+				api.ImportFile(c)
+				Expect(httpRec.Code).To(Equal(http.StatusConflict))
+			})
+		})
+
+		When("there is no plugin for the file extension", func() {
+			BeforeEach(func() {
+				c.Request = multipartRequestForFile(
+					"file",
+					"test.bww",
+					[]byte("test file content"),
+					"/imports",
+					http.MethodPost,
+				)
+				pluginLoader.EXPECT().FileTypeForFileExtension(".bww").
+					Return(file_type.Type_BWW, nil)
+				dataService.EXPECT().GetImportFileByHash("60f5237ed4049f0382661ef009d2bc42e48c3ceb3edb6600f7024e7ab3b838f3").
+					Return(nil, common.NotFound)
+				pluginLoader.EXPECT().PluginForFileExtension(".bww").
+					Return(nil, fmt.Errorf("no plugin found for file extension .bww"))
+			})
+
+			It("should return InternalServerError", func() {
+				api.ImportFile(c)
+				Expect(httpRec.Code).To(Equal(http.StatusInternalServerError))
+			})
+		})
+
+		When("plugin fails parsing the file", func() {
+			BeforeEach(func() {
+				c.Request = multipartRequestForFile(
+					"file",
+					"test.bww",
+					[]byte("test file content"),
+					"/imports",
+					http.MethodPost,
+				)
+				pluginLoader.EXPECT().FileTypeForFileExtension(".bww").
+					Return(file_type.Type_BWW, nil)
+				dataService.EXPECT().GetImportFileByHash("60f5237ed4049f0382661ef009d2bc42e48c3ceb3edb6600f7024e7ab3b838f3").
+					Return(nil, common.NotFound)
+				pluginLoader.EXPECT().PluginForFileExtension(".bww").
+					Return(lpPlugin, nil)
+				lpPlugin.EXPECT().Import([]byte("test file content")).
+					Return(nil, fmt.Errorf("failed parsing file test.bww: xxx"))
+			})
+
+			It("should return InternalServerError", func() {
+				api.ImportFile(c)
+				Expect(httpRec.Code).To(Equal(http.StatusInternalServerError))
+			})
+		})
+
+		When("plugin successfully parses the file", func() {
+			BeforeEach(func() {
+				c.Request = multipartRequestForFile(
+					"file",
+					"test.bww",
+					[]byte("test file content"),
+					"/imports",
+					http.MethodPost,
+				)
+				pluginLoader.EXPECT().FileTypeForFileExtension(".bww").
+					Return(file_type.Type_BWW, nil)
+				dataService.EXPECT().GetImportFileByHash("60f5237ed4049f0382661ef009d2bc42e48c3ceb3edb6600f7024e7ab3b838f3").
+					Return(nil, common.NotFound)
+				pluginLoader.EXPECT().PluginForFileExtension(".bww").
+					Return(lpPlugin, nil)
+				importTunes := []*messages.ImportedTune{
+					{
+						Tune: &tune.Tune{
+							Title: "test title",
+						},
+						TuneFileData: []byte("test file content"),
+					},
+				}
+				lpPlugin.EXPECT().Import([]byte("test file content")).
+					Return(&messages.ImportFileResponse{
+						ImportedTunes: importTunes,
+					}, nil)
+				dataService.EXPECT().ImportTunes(importTunes, mock.Anything).
+					Return([]*apimodel.ImportTune{
+						{
+							Id:    testId1,
+							Title: "test tune",
+						},
+					},
+						&apimodel.BasicMusicSet{
+							Id:    testId1,
+							Title: "test music set",
+						}, nil)
+			})
+
+			It("should return ok and the imported tunes", func() {
+				api.ImportFile(c)
+				Expect(httpRec.Code).To(Equal(http.StatusOK))
+				data, err := io.ReadAll(httpRec.Body)
+				Expect(err).ShouldNot(HaveOccurred())
+				Expect(string(data)).To(Equal("{\"name\":\"test.bww\",\"set\":{\"id\":\"00000000-0000-0000-0000-000000000001\",\"title\":\"test music set\"},\"tunes\":[{\"id\":\"00000000-0000-0000-0000-000000000001\",\"title\":\"test tune\"}]}{\"name\":\"test.bww\",\"set\":{\"id\":\"00000000-0000-0000-0000-000000000001\",\"title\":\"test music set\"},\"tunes\":[{\"id\":\"00000000-0000-0000-0000-000000000001\",\"title\":\"test tune\"}]}"))
+			})
+		})
+	})
 })
 
-func MockJsonPost(c *gin.Context, method string, content interface{}) {
+func multipartRequestForFile(
+	fieldname string,
+	filename string,
+	content []byte,
+	endpoint string,
+	httpMethod string,
+) *http.Request {
+	body := new(bytes.Buffer)
+	mulWriter := multipart.NewWriter(body)
+	dataPart, err := mulWriter.CreateFormFile(fieldname, filename)
+	Expect(err).NotTo(HaveOccurred())
+
+	_, err = dataPart.Write(content)
+	Expect(err).NotTo(HaveOccurred())
+	err = mulWriter.Close()
+	Expect(err).NotTo(HaveOccurred())
+
+	r, err := http.NewRequest(httpMethod, endpoint, body)
+	Expect(err).NotTo(HaveOccurred())
+	r.Header.Set("Content-Type", mulWriter.FormDataContentType())
+
+	return r
+}
+
+func mockJsonPost(c *gin.Context, method string, content interface{}) {
 	c.Request = &http.Request{
 		Method: method,
 		Header: make(http.Header),

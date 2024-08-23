@@ -21,17 +21,24 @@ Content-Type: application/json
   "arranger": "Mr. Arrange - updated"
 }
 
-### Add files to tune
-POST https://{{host}}/imports/bww
+### Import scotland the brave
+POST https://{{host}}/imports
 Content-Type: multipart/form-data; boundary=WebAppBoundary
 
 --WebAppBoundary
-Content-Disposition: form-data; filename="scotland_the_brave.bww"
+Content-Disposition: form-data; name="file"; filename="scotland_the_brave.bww"
 
 < ./scotland_the_brave.bww
 
+--WebAppBoundary--
+
+
+### Import highroad to linton
+POST https://{{host}}/imports
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
 --WebAppBoundary
-Content-Disposition: form-data; filename="the_high_road_to_linton_kate_dalrymple_jock_wilsons_ball.bww"
+Content-Disposition: form-data; name="file"; filename="scotland_the_brave.bww"
 
 < ./the_high_road_to_linton_kate_dalrymple_jock_wilsons_ball.bww
 

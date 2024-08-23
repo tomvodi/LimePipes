@@ -9,9 +9,11 @@
 
 package apimodel
 
-type ParseResult struct {
+type ImportInfo struct {
 
-	Success bool `json:"success,omitempty"`
+	Warnings []string `json:"warnings,omitempty"`
 
-	Message string `json:"message,omitempty"`
+	Errors []string `json:"errors,omitempty"`
+
+	Infos []string `json:"infos,omitempty"`
 }

@@ -6,7 +6,7 @@ import (
 	apimodel "github.com/tomvodi/limepipes/internal/api_gen/apimodel"
 	common "github.com/tomvodi/limepipes/internal/common"
 
-	file_type "github.com/tomvodi/limepipes/internal/database/model/file_type"
+	file_type "github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
 
 	messages "github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
 
@@ -393,6 +393,64 @@ func (_c *DataService_DeleteTune_Call) RunAndReturn(run func(uuid.UUID) error) *
 	return _c
 }
 
+// GetImportFileByHash provides a mock function with given fields: fHash
+func (_m *DataService) GetImportFileByHash(fHash string) (*model.ImportFile, error) {
+	ret := _m.Called(fHash)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetImportFileByHash")
+	}
+
+	var r0 *model.ImportFile
+	var r1 error
+	if rf, ok := ret.Get(0).(func(string) (*model.ImportFile, error)); ok {
+		return rf(fHash)
+	}
+	if rf, ok := ret.Get(0).(func(string) *model.ImportFile); ok {
+		r0 = rf(fHash)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*model.ImportFile)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(fHash)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// DataService_GetImportFileByHash_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetImportFileByHash'
+type DataService_GetImportFileByHash_Call struct {
+	*mock.Call
+}
+
+// GetImportFileByHash is a helper method to define mock.On call
+//   - fHash string
+func (_e *DataService_Expecter) GetImportFileByHash(fHash interface{}) *DataService_GetImportFileByHash_Call {
+	return &DataService_GetImportFileByHash_Call{Call: _e.mock.On("GetImportFileByHash", fHash)}
+}
+
+func (_c *DataService_GetImportFileByHash_Call) Run(run func(fHash string)) *DataService_GetImportFileByHash_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(string))
+	})
+	return _c
+}
+
+func (_c *DataService_GetImportFileByHash_Call) Return(_a0 *model.ImportFile, _a1 error) *DataService_GetImportFileByHash_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *DataService_GetImportFileByHash_Call) RunAndReturn(run func(string) (*model.ImportFile, error)) *DataService_GetImportFileByHash_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // GetMusicSet provides a mock function with given fields: id
 func (_m *DataService) GetMusicSet(id uuid.UUID) (*apimodel.MusicSet, error) {
 	ret := _m.Called(id)
@@ -627,7 +685,7 @@ func (_c *DataService_GetTuneFiles_Call) RunAndReturn(run func(uuid.UUID) ([]*mo
 }
 
 // ImportTunes provides a mock function with given fields: tunes, fileInfo
-func (_m *DataService) ImportTunes(tunes []*messages.ImportedTune, fileInfo *common.ImportFileInfo) ([]*apimodel.ImportTune, error) {
+func (_m *DataService) ImportTunes(tunes []*messages.ImportedTune, fileInfo *common.ImportFileInfo) ([]*apimodel.ImportTune, *apimodel.BasicMusicSet, error) {
 	ret := _m.Called(tunes, fileInfo)
 
 	if len(ret) == 0 {
@@ -635,8 +693,9 @@ func (_m *DataService) ImportTunes(tunes []*messages.ImportedTune, fileInfo *com
 	}
 
 	var r0 []*apimodel.ImportTune
-	var r1 error
-	if rf, ok := ret.Get(0).(func([]*messages.ImportedTune, *common.ImportFileInfo) ([]*apimodel.ImportTune, error)); ok {
+	var r1 *apimodel.BasicMusicSet
+	var r2 error
+	if rf, ok := ret.Get(0).(func([]*messages.ImportedTune, *common.ImportFileInfo) ([]*apimodel.ImportTune, *apimodel.BasicMusicSet, error)); ok {
 		return rf(tunes, fileInfo)
 	}
 	if rf, ok := ret.Get(0).(func([]*messages.ImportedTune, *common.ImportFileInfo) []*apimodel.ImportTune); ok {
@@ -647,13 +706,21 @@ func (_m *DataService) ImportTunes(tunes []*messages.ImportedTune, fileInfo *com
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func([]*messages.ImportedTune, *common.ImportFileInfo) error); ok {
+	if rf, ok := ret.Get(1).(func([]*messages.ImportedTune, *common.ImportFileInfo) *apimodel.BasicMusicSet); ok {
 		r1 = rf(tunes, fileInfo)
 	} else {
-		r1 = ret.Error(1)
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).(*apimodel.BasicMusicSet)
+		}
 	}
 
-	return r0, r1
+	if rf, ok := ret.Get(2).(func([]*messages.ImportedTune, *common.ImportFileInfo) error); ok {
+		r2 = rf(tunes, fileInfo)
+	} else {
+		r2 = ret.Error(2)
+	}
+
+	return r0, r1, r2
 }
 
 // DataService_ImportTunes_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ImportTunes'
@@ -675,12 +742,12 @@ func (_c *DataService_ImportTunes_Call) Run(run func(tunes []*messages.ImportedT
 	return _c
 }
 
-func (_c *DataService_ImportTunes_Call) Return(_a0 []*apimodel.ImportTune, _a1 error) *DataService_ImportTunes_Call {
-	_c.Call.Return(_a0, _a1)
+func (_c *DataService_ImportTunes_Call) Return(_a0 []*apimodel.ImportTune, _a1 *apimodel.BasicMusicSet, _a2 error) *DataService_ImportTunes_Call {
+	_c.Call.Return(_a0, _a1, _a2)
 	return _c
 }
 
-func (_c *DataService_ImportTunes_Call) RunAndReturn(run func([]*messages.ImportedTune, *common.ImportFileInfo) ([]*apimodel.ImportTune, error)) *DataService_ImportTunes_Call {
+func (_c *DataService_ImportTunes_Call) RunAndReturn(run func([]*messages.ImportedTune, *common.ImportFileInfo) ([]*apimodel.ImportTune, *apimodel.BasicMusicSet, error)) *DataService_ImportTunes_Call {
 	_c.Call.Return(run)
 	return _c
 }

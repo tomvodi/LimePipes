@@ -5,15 +5,13 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/rs/zerolog/log"
 	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
 	api_interfaces "github.com/tomvodi/limepipes/internal/api_gen/interfaces"
 	"github.com/tomvodi/limepipes/internal/common"
 	"github.com/tomvodi/limepipes/internal/interfaces"
 	"io"
-	"mime/multipart"
 	"net/http"
-	"net/http/httputil"
+	"path/filepath"
 )
 
 type apiHandler struct {
@@ -37,95 +35,99 @@ func (a *apiHandler) Health(c *gin.Context) {
 	handleFunc(c)
 }
 
-func (a *apiHandler) ImportBww(c *gin.Context) {
-	logReq, err := httputil.DumpRequest(c.Request, true)
-	if err != nil {
-		log.Err(err).Msg("failed dumping request")
-	}
-	log.Info().Msgf("request: %s", string(logReq))
-
-	form, err := c.MultipartForm()
+func (a *apiHandler) ImportFile(c *gin.Context) {
+	iFile, err := c.FormFile("file")
 	if err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
 		return
 	}
 
-	var allFiles []*multipart.FileHeader
-	for _, fh := range form.File {
-		allFiles = append(allFiles, fh...)
+	fExt := filepath.Ext(iFile.Filename)
+	if fExt == "" {
+		c.JSON(http.StatusBadRequest,
+			apimodel.Error{
+				Message: "import file does not have an extension",
+			},
+		)
+		return
 	}
 
-	var importFiles []*apimodel.ImportFile
-	for _, file := range allFiles {
-		importFile, err := a.importBwwFile(file)
-		if err != nil {
-			httpErrorResponse(c, http.StatusInternalServerError, err)
-			return
-		}
-
-		importFiles = append(importFiles, importFile)
-	}
-	c.JSON(http.StatusOK, importFiles)
-}
-
-func (a *apiHandler) importBwwFile(
-	file *multipart.FileHeader,
-) (*apimodel.ImportFile, error) {
-	fileReader, err := file.Open()
+	fType, err := a.pluginLoader.FileTypeForFileExtension(fExt)
 	if err != nil {
-		return nil, fmt.Errorf("failed open file %s for reading", file.Filename)
+		c.JSON(http.StatusBadRequest,
+			apimodel.Error{
+				Message: fmt.Sprintf("file extension %s is currently not supported: %s", fExt, err.Error()),
+			},
+		)
+		return
+	}
+
+	fileReader, err := iFile.Open()
+	if err != nil {
+		c.JSON(http.StatusBadRequest,
+			apimodel.Error{
+				Message: fmt.Sprintf("failed open file %s for reading", iFile.Filename),
+			},
+		)
+		return
 	}
 	defer fileReader.Close()
 
 	fileData, err := io.ReadAll(fileReader)
 	if err != nil {
-		return nil, fmt.Errorf("failed reading file %s: %s", file.Filename, err.Error())
+		c.JSON(http.StatusInternalServerError,
+			fmt.Sprintf("failed reading file %s: %s", iFile.Filename, err.Error()))
+		return
 	}
 
-	importFile := &apimodel.ImportFile{
-		Name: file.Filename,
-		Result: apimodel.ParseResult{
-			Success: false,
-		},
-	}
-
-	bwwPlugin, err := a.pluginLoader.PluginForFileExtension(".bww")
+	fInfo, err := common.NewImportFileInfo(iFile.Filename, fType, fileData)
 	if err != nil {
-		importFile.Result = apimodel.ParseResult{
-			Message: err.Error(),
-		}
-		return importFile, err
+		c.JSON(http.StatusInternalServerError,
+			fmt.Sprintf("failed creating import file info for file %s: %s", iFile.Filename, err.Error()))
+		return
+	}
+	_, err = a.service.GetImportFileByHash(fInfo.Hash)
+
+	if !errors.Is(err, common.NotFound) {
+		c.JSON(http.StatusConflict,
+			fmt.Sprintf("file %s was already imported", iFile.Filename))
+		return
 	}
 
-	importTunes, err := bwwPlugin.Import(fileData)
+	importTunes, importSet, err := a.importFile(fInfo, fExt)
 	if err != nil {
-		importFile.Result = apimodel.ParseResult{
-			Message: err.Error(),
-		}
-		return importFile, err
+		httpErrorResponse(c, http.StatusInternalServerError, err)
+		return
 	}
 
-	info, err := common.NewImportFileInfo(file.Filename, fileData)
+	importResponse := &apimodel.ImportFile{
+		Name:  iFile.Filename,
+		Set:   *importSet,
+		Tunes: importTunes,
+	}
+
+	c.JSON(http.StatusOK, importResponse)
+}
+
+func (a *apiHandler) importFile(
+	fInfo *common.ImportFileInfo,
+	fileExt string,
+) ([]*apimodel.ImportTune, *apimodel.BasicMusicSet, error) {
+	filePlugin, err := a.pluginLoader.PluginForFileExtension(fileExt)
 	if err != nil {
-		return nil, err
+		return nil, nil, fmt.Errorf("fileData extension %s is currently not supported (no plugin): %s", fileExt, err.Error())
 	}
 
-	apiImpTunes, err := a.service.ImportTunes(importTunes.ImportedTunes, info)
+	parsedTunes, err := filePlugin.Import(fInfo.Data)
 	if err != nil {
-		importFile.Result = apimodel.ParseResult{
-			Message: err.Error(),
-		}
-		return importFile, err
+		return nil, nil, fmt.Errorf("failed parsing fileData %s: %s", fInfo.Name, err.Error())
 	}
 
-	importFile.Result.Success = true
-	importFile.Tunes = apiImpTunes
-	return importFile, nil
+	return a.service.ImportTunes(parsedTunes.ImportedTunes, fInfo)
 }
 
 func httpErrorResponse(c *gin.Context, code int, err error) {
 	c.JSON(code, apimodel.Error{
-		Code:    int32(code),
 		Message: err.Error(),
 	})
 }
@@ -137,7 +139,6 @@ func handleResponseForError(c *gin.Context, err error) {
 	}
 
 	c.JSON(code, apimodel.Error{
-		Code:    int32(code),
 		Message: err.Error(),
 	})
 }

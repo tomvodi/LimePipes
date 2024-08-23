@@ -52,9 +52,9 @@ type ApiHandler interface {
     // Welcome to the Set and Tune API 
      Home(c *gin.Context)
 
-    // ImportBww Post /imports/bww
-    // Import tunes/sets from one or more bww files 
-     ImportBww(c *gin.Context)
+    // ImportFile Post /imports
+    // Import tunes/sets from a file 
+     ImportFile(c *gin.Context)
 
     // ListSets Get /sets
     // List all sets 

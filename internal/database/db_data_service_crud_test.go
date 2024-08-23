@@ -5,12 +5,13 @@ import (
 	"github.com/google/uuid"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/helper"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
 	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
 	"github.com/tomvodi/limepipes/internal/common"
 	"github.com/tomvodi/limepipes/internal/config"
 	"github.com/tomvodi/limepipes/internal/database/model"
-	"github.com/tomvodi/limepipes/internal/database/model/file_type"
 	"github.com/tomvodi/limepipes/internal/interfaces/mocks"
 	"gorm.io/gorm"
 )
@@ -255,7 +256,7 @@ var _ = Describe("DbDataService", func() {
 			var returnTuneFile *model.TuneFile
 
 			BeforeEach(func() {
-				testTune = model.TestMusicModelTune("test tune")
+				testTune = model.TestImportedTune("test tune")
 				tuneFile, err = model.TuneFileFromTune(testTune.Tune)
 				Expect(err).ShouldNot(HaveOccurred())
 				err = service.AddFileToTune(tune.Id, tuneFile)
@@ -267,19 +268,19 @@ var _ = Describe("DbDataService", func() {
 
 			When("retrieving that tune file again", func() {
 				BeforeEach(func() {
-					returnTuneFile, err = service.GetTuneFile(tune.Id, file_type.MusicModelTune)
+					returnTuneFile, err = service.GetTuneFile(tune.Id, file_type.Type_MUSIC_MODEL)
 				})
 
 				It("should contain that same music model tune", func() {
 					returnTune, err := returnTuneFile.MusicModelTune()
 					Expect(err).ShouldNot(HaveOccurred())
-					Expect(returnTune).Should(Equal(testTune))
+					Expect(returnTune).Should(BeComparableTo(testTune, helper.MusicModelCompareOptions))
 				})
 			})
 
 			When("deleting that file", func() {
 				BeforeEach(func() {
-					err = service.DeleteFileFromTune(tune.Id, file_type.MusicModelTune)
+					err = service.DeleteFileFromTune(tune.Id, file_type.Type_MUSIC_MODEL)
 				})
 
 				It("should succeed", func() {

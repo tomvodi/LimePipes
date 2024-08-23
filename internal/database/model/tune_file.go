@@ -6,19 +6,25 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
-	"github.com/tomvodi/limepipes/internal/database/model/file_type"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
 )
 
 type TuneFile struct {
 	TuneID uuid.UUID      `gorm:"primaryKey"`
 	Type   file_type.Type `gorm:"primaryKey"`
-	Data   []byte
+
+	// SingleTuneData is true if the data is for a single tune and not the whole file
+	// e.g. for a music model tune from a .bww file which supports multiple tunes in one file,
+	// there can be a tune file data for the whole file and one for the single tune.
+	SingleTuneData bool `gorm:"primaryKey"`
+
+	Data []byte
 }
 
 func (t *TuneFile) MusicModelTune() (*tune.Tune, error) {
-	if t.Type != file_type.MusicModelTune {
+	if t.Type != file_type.Type_MUSIC_MODEL {
 		return nil, fmt.Errorf("tune file has type %s not type %s",
-			t.Type.String(), file_type.MusicModelTune.String(),
+			t.Type.String(), file_type.Type_MUSIC_MODEL.String(),
 		)
 	}
 
@@ -29,13 +35,13 @@ func (t *TuneFile) MusicModelTune() (*tune.Tune, error) {
 	buf := bytes.NewBuffer(t.Data)
 	dec := gob.NewDecoder(buf)
 
-	tune := &tune.Tune{}
+	tn := &tune.Tune{}
 
-	if err := dec.Decode(tune); err != nil {
+	if err := dec.Decode(tn); err != nil {
 		return nil, err
 	}
 
-	return tune, nil
+	return tn, nil
 }
 
 func TuneFileFromTune(tune *tune.Tune) (*TuneFile, error) {
@@ -47,7 +53,7 @@ func TuneFileFromTune(tune *tune.Tune) (*TuneFile, error) {
 	}
 
 	tf := &TuneFile{
-		Type: file_type.MusicModelTune,
+		Type: file_type.Type_MUSIC_MODEL,
 		Data: buf.Bytes(),
 	}
 

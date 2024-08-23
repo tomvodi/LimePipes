@@ -11,8 +11,5 @@ package apimodel
 
 type Error struct {
 
-	// HTTP status code
-	Code int32 `json:"code"`
-
 	Message string `json:"message"`
 }

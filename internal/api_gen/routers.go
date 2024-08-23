@@ -124,10 +124,10 @@ func getRoutes(handleFunctions ApiHandleFunctions) []Route {
 			handleFunctions.ApiHandler.Home,
 		},
 		{
-			"ImportBww",
+			"ImportFile",
 			http.MethodPost,
-			"/imports/bww",
-			handleFunctions.ApiHandler.ImportBww,
+			"/imports",
+			handleFunctions.ApiHandler.ImportFile,
 		},
 		{
 			"ListSets",

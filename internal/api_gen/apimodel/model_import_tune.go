@@ -25,11 +25,6 @@ type ImportTune struct {
 
 	Arranger string `json:"arranger,omitempty"`
 
-	Set *BasicMusicSet `json:"set,omitempty"`
-
-	// true, if tune was imported into database, false if a tune with this title was already there
-	ImportedToDatabase bool `json:"importedToDatabase,omitempty"`
-
 	Warnings []string `json:"warnings,omitempty"`
 
 	Errors []string `json:"errors,omitempty"`
