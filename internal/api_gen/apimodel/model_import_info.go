@@ -11,9 +11,6 @@ package apimodel
 
 type ImportInfo struct {
 
-	// true if entity was already imported
-	AlreadyImported bool `json:"alreadyImported,omitempty"`
-
 	Warnings []string `json:"warnings,omitempty"`
 
 	Errors []string `json:"errors,omitempty"`

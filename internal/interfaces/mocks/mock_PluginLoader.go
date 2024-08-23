@@ -3,8 +3,11 @@
 package mocks
 
 import (
-	mock "github.com/stretchr/testify/mock"
+	file_type "github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
+
 	messages "github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
+
+	mock "github.com/stretchr/testify/mock"
 
 	v1interfaces "github.com/tomvodi/limepipes-plugin-api/plugin/v1/interfaces"
 )
@@ -20,6 +23,62 @@ type PluginLoader_Expecter struct {
 
 func (_m *PluginLoader) EXPECT() *PluginLoader_Expecter {
 	return &PluginLoader_Expecter{mock: &_m.Mock}
+}
+
+// FileTypeForFileExtension provides a mock function with given fields: fileExtension
+func (_m *PluginLoader) FileTypeForFileExtension(fileExtension string) (file_type.Type, error) {
+	ret := _m.Called(fileExtension)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FileTypeForFileExtension")
+	}
+
+	var r0 file_type.Type
+	var r1 error
+	if rf, ok := ret.Get(0).(func(string) (file_type.Type, error)); ok {
+		return rf(fileExtension)
+	}
+	if rf, ok := ret.Get(0).(func(string) file_type.Type); ok {
+		r0 = rf(fileExtension)
+	} else {
+		r0 = ret.Get(0).(file_type.Type)
+	}
+
+	if rf, ok := ret.Get(1).(func(string) error); ok {
+		r1 = rf(fileExtension)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// PluginLoader_FileTypeForFileExtension_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FileTypeForFileExtension'
+type PluginLoader_FileTypeForFileExtension_Call struct {
+	*mock.Call
+}
+
+// FileTypeForFileExtension is a helper method to define mock.On call
+//   - fileExtension string
+func (_e *PluginLoader_Expecter) FileTypeForFileExtension(fileExtension interface{}) *PluginLoader_FileTypeForFileExtension_Call {
+	return &PluginLoader_FileTypeForFileExtension_Call{Call: _e.mock.On("FileTypeForFileExtension", fileExtension)}
+}
+
+func (_c *PluginLoader_FileTypeForFileExtension_Call) Run(run func(fileExtension string)) *PluginLoader_FileTypeForFileExtension_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(string))
+	})
+	return _c
+}
+
+func (_c *PluginLoader_FileTypeForFileExtension_Call) Return(_a0 file_type.Type, _a1 error) *PluginLoader_FileTypeForFileExtension_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *PluginLoader_FileTypeForFileExtension_Call) RunAndReturn(run func(string) (file_type.Type, error)) *PluginLoader_FileTypeForFileExtension_Call {
+	_c.Call.Return(run)
+	return _c
 }
 
 // LoadPluginsFromDir provides a mock function with given fields: pluginsDir
