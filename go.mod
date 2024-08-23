@@ -21,7 +21,7 @@ require (
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
-	github.com/tomvodi/limepipes-plugin-api v0.0.0-20240823063106-89f4ecb27e7b
+	github.com/tomvodi/limepipes-plugin-api v0.0.0-20240823091250-4b97c450b940
 	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56
 	gorm.io/driver/postgres v1.5.9
 	gorm.io/gorm v1.25.11
