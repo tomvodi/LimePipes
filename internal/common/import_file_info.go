@@ -13,7 +13,10 @@ type ImportFileInfo struct {
 	Data         []byte
 }
 
-func NewImportFileInfoFromLocalFile(originalPath string, fType file_type.Type) (*ImportFileInfo, error) {
+func NewImportFileInfoFromLocalFile(
+	originalPath string,
+	fType file_type.Type,
+) (*ImportFileInfo, error) {
 	fHash, err := HashFromFile(originalPath)
 	if err != nil {
 		return nil, err

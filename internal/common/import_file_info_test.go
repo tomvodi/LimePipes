@@ -2,6 +2,7 @@ package common
 
 import (
 	. "github.com/onsi/gomega"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
 	"github.com/tomvodi/limepipes/internal/utils"
 	"testing"
 )
@@ -28,6 +29,7 @@ func Test_NewImportFileInfoFromLocalFile(t *testing.T) {
 					Name:         "test",
 					Hash:         "534b1d50f10ee4ea30604ce01660e2429682fe6e53a4ef6a9d01c835ef73b866",
 					Data:         []byte(`Bagpipe Reader:1.0`),
+					FileType:     file_type.Type_BWW,
 				}
 				f.wantErr = false
 			},
@@ -42,7 +44,7 @@ func Test_NewImportFileInfoFromLocalFile(t *testing.T) {
 				tt.prepare(f)
 			}
 
-			fileInfo, err := NewImportFileInfoFromLocalFile(f.originalPath)
+			fileInfo, err := NewImportFileInfoFromLocalFile(f.originalPath, file_type.Type_BWW)
 			if f.wantErr {
 				g.Expect(err).Should(HaveOccurred())
 			} else {
@@ -77,6 +79,7 @@ func Test_NewImportFileInfo(t *testing.T) {
 					Name:         "test",
 					Hash:         "534b1d50f10ee4ea30604ce01660e2429682fe6e53a4ef6a9d01c835ef73b866",
 					Data:         f.fileData,
+					FileType:     file_type.Type_BWW,
 				}
 				f.wantErr = false
 			},
@@ -91,7 +94,7 @@ func Test_NewImportFileInfo(t *testing.T) {
 				tt.prepare(f)
 			}
 
-			fileInfo, err := NewImportFileInfo(f.fileName, f.fileData)
+			fileInfo, err := NewImportFileInfo(f.fileName, file_type.Type_BWW, f.fileData)
 			if f.wantErr {
 				g.Expect(err).Should(HaveOccurred())
 			} else {

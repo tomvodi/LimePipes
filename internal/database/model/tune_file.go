@@ -44,7 +44,7 @@ func (t *TuneFile) MusicModelTune() (*tune.Tune, error) {
 	return tn, nil
 }
 
-func TuneFileFromTune(tune *tune.Tune) (*TuneFile, error) {
+func TuneFileFromMusicModelTune(tune *tune.Tune) (*TuneFile, error) {
 	var buf bytes.Buffer
 	enc := gob.NewEncoder(&buf)
 
