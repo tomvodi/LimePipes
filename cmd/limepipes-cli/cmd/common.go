@@ -4,19 +4,12 @@ import (
 	"fmt"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
+	"github.com/tomvodi/limepipes/cmd/limepipes-cli/import_type"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
 )
-
-const (
-	ImportTypeBww string = "bww"
-)
-
-var allImportTypes = []string{
-	ImportTypeBww,
-}
 
 var (
 	recursive       bool
@@ -27,9 +20,9 @@ var (
 
 func addImportFileTypes(cmd *cobra.Command) {
 
-	cmd.Flags().StringSliceVarP(&importTypes, "import-file-types", "i", []string{ImportTypeBww},
+	cmd.Flags().StringSliceVarP(&importTypes, "import-file-types", "i", []string{import_type.BWW.String()},
 		fmt.Sprintf("only import files of a specific type. Can be specified with a comma separated list like "+
-			"-i=bww,xml. Valid file types are (%s).", strings.Join(allImportTypes, ", ")),
+			"-i=bww,xml. Valid file types are (%s).", strings.Join(import_type.TypeStrings(), ", ")),
 	)
 }
 
@@ -61,7 +54,7 @@ func hasInvalidImportTypes() []string {
 	var invalidImportTypes []string
 	for _, importType := range importTypes {
 		isValidImportType := false
-		for _, allImportType := range allImportTypes {
+		for _, allImportType := range import_type.TypeStrings() {
 			if allImportType == importType {
 				isValidImportType = true
 				break
