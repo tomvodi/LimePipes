@@ -91,7 +91,7 @@ var _ = Describe("DbDataService", func() {
 			When("retrieving the music set by tune ids", func() {
 				var foundMusicSet *apimodel.MusicSet
 				BeforeEach(func() {
-					foundMusicSet, err = service.getMusicSetByTuneIds([]uuid.UUID{
+					foundMusicSet, err = service.getMusicSetByTuneIDs([]uuid.UUID{
 						expectedTuneOrder[0].Id,
 						expectedTuneOrder[1].Id,
 						expectedTuneOrder[2].Id,

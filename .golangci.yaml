@@ -16,29 +16,46 @@ issues:
 
 linter-settings:
   revive:
-    ignore-generated-header: true
-    severity: warning
+    enable-all-rules: true
+    ignore-generated-header: false
+    severity: error
     rules:
+      - name: argument-limit
+        arguments: [3]
       - name: blank-imports
+      - name: cognitive-complexity
+        arguments: [7]
       - name: context-as-argument
       - name: context-keys-type
       - name: dot-imports
+      - name: early-return
+      - name: empty-block
       - name: error-return
       - name: error-strings
       - name: error-naming
+      - name: errorf
       - name: exported
+      - name: function-result-limit
+        arguments: [3]
+      - name: import-shadowing
       - name: increment-decrement
-      - name: var-naming
-      - name: var-declaration
+      - name: indent-error-flow
+      - name: max-control-nesting
+        arguments: [3]
+      - name: modifies-parameter
       - name: package-comments
+        severity: warning
       - name: range
       - name: receiver-naming
+      - name: redefines-builtin-id
+      - name: struct-tag
+      - name: superfluous-else
+      - name: time-equal
       - name: time-naming
       - name: unexported-return
-      - name: indent-error-flow
-      - name: errorf
-      - name: empty-block
-      - name: superfluous-else
-      - name: unused-parameter
+      - name: unhandled-error
       - name: unreachable-code
-      - name: redefines-builtin-id
+      - name: unused-parameter
+      - name: use-any
+      - name: var-declaration
+      - name: var-naming
