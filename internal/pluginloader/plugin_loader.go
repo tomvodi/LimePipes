@@ -1,4 +1,4 @@
-package plugin_loader
+package pluginloader
 
 import (
 	"errors"
@@ -42,11 +42,11 @@ func (l *loader) FileTypeForFileExtension(fileExtension string) (file_type.Type,
 }
 
 func (l *loader) UnloadPlugins() error {
-	for pId, client := range l.pluginClients {
-		delete(l.plugins, pId)
+	for pID, client := range l.pluginClients {
+		delete(l.plugins, pID)
 
 		client.Kill()
-		delete(l.pluginClients, pId)
+		delete(l.pluginClients, pID)
 	}
 
 	return nil
@@ -60,8 +60,8 @@ func (l *loader) LoadPluginsFromDir(
 	pluginsDir string,
 ) error {
 	allPlugins := l.buildPluginSet()
-	for plugId, plug := range allPlugins {
-		err := l.loadPlugin(pluginsDir, plugId, plug)
+	for pID, plug := range allPlugins {
+		err := l.loadPlugin(pluginsDir, pID, plug)
 		if err != nil {
 			return err
 		}
@@ -79,11 +79,11 @@ func (l *loader) buildPluginSet() plugin.PluginSet {
 
 func (l *loader) loadPlugin(
 	pluginDir string,
-	pluginId string,
+	pluginID string,
 	goPlug plugin.Plugin,
 ) error {
 	hcLogger := wzerolog.Wrap(log.Logger)
-	pluginExeName := fmt.Sprintf("limepipes-plugin-%s", pluginId)
+	pluginExeName := fmt.Sprintf("limepipes-plugin-%s", pluginID)
 	pluginExePath := filepath.Join(pluginDir, pluginExeName)
 
 	if _, err := os.Stat(pluginExePath); errors.Is(err, os.ErrNotExist) {
@@ -93,7 +93,7 @@ func (l *loader) loadPlugin(
 	clientConf := &plugin.ClientConfig{
 		HandshakeConfig: common.HandshakeConfig,
 		Plugins: plugin.PluginSet{
-			pluginId: goPlug,
+			pluginID: goPlug,
 		},
 		Cmd:              exec.Command("sh", "-c", pluginExePath),
 		AllowedProtocols: []plugin.Protocol{plugin.ProtocolGRPC},
@@ -109,24 +109,24 @@ func (l *loader) loadPlugin(
 	}
 
 	// Request the plugin
-	raw, err := rpcClient.Dispense(pluginId)
+	raw, err := rpcClient.Dispense(pluginID)
 	if err != nil {
 		return err
 	}
 
 	lpPlugin, ok := raw.(plugininterfaces.LimePipesPlugin)
 	if !ok {
-		return fmt.Errorf("plugin %s is not of type LimePipesPlugin", pluginId)
+		return fmt.Errorf("plugin %s is not of type LimePipesPlugin", pluginID)
 	}
 
 	pInfo, err := lpPlugin.PluginInfo()
 	if err != nil {
-		return fmt.Errorf("failed getting plugin info from '%s': %v", pluginId, err)
+		return fmt.Errorf("failed getting plugin info from '%s': %v", pluginID, err)
 	}
 
-	l.pluginClients[pluginId] = client
-	l.plugins[pluginId] = lpPlugin
-	l.pluginInfos[pluginId] = pInfo
+	l.pluginClients[pluginID] = client
+	l.plugins[pluginID] = lpPlugin
+	l.pluginInfos[pluginID] = pInfo
 
 	return nil
 }

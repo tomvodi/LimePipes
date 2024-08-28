@@ -8,7 +8,7 @@ import (
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/helper"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
-	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
+	"github.com/tomvodi/limepipes/internal/apigen/apimodel"
 	"github.com/tomvodi/limepipes/internal/common"
 	"github.com/tomvodi/limepipes/internal/config"
 	"github.com/tomvodi/limepipes/internal/database/model"
@@ -18,12 +18,13 @@ import (
 
 var _ = Describe("DbDataService", func() {
 	var err error
+	var cfg *config.Config
 	var service *dbService
 	var gormDb *gorm.DB
 	var validator *mocks.ApiModelValidator
 
 	BeforeEach(func() {
-		cfg, err := config.InitTest()
+		cfg, err = config.InitTest()
 		Expect(err).ShouldNot(HaveOccurred())
 		gormDb, err = GetInitTestPostgreSQLDB(cfg.DbConfig(), "testdb")
 		validator = mocks.NewApiModelValidator(GinkgoT())
@@ -120,18 +121,6 @@ var _ = Describe("DbDataService", func() {
 					Title: "title",
 				}))
 		})
-
-		When("getting it again by title", func() {
-			var returnedTune *apimodel.Tune
-			BeforeEach(func() {
-				returnedTune, err = service.getTuneByTitle(tune.Title)
-			})
-
-			It("should return the same tune", func() {
-				Expect(err).ShouldNot(HaveOccurred())
-				Expect(returnedTune).Should(Equal(tune))
-			})
-		})
 	})
 
 	Context("creating a valid tune with all fields", func() {
@@ -164,18 +153,6 @@ var _ = Describe("DbDataService", func() {
 			var returnedTune *apimodel.Tune
 			BeforeEach(func() {
 				returnedTune, err = service.GetTune(tune.Id)
-			})
-
-			It("should return the same tune", func() {
-				Expect(err).ShouldNot(HaveOccurred())
-				Expect(returnedTune).To(Equal(tune))
-			})
-		})
-
-		When("getting it again by title", func() {
-			var returnedTune *apimodel.Tune
-			BeforeEach(func() {
-				returnedTune, err = service.getTuneByTitle(tune.Title)
 			})
 
 			It("should return the same tune", func() {
@@ -335,7 +312,7 @@ var _ = Describe("DbDataService", func() {
 				})
 
 				It("should return a not found error", func() {
-					Expect(err).To(Equal(common.NotFound))
+					Expect(err).To(Equal(common.ErrNotFound))
 				})
 			})
 		})
@@ -489,7 +466,7 @@ var _ = Describe("DbDataService", func() {
 				})
 
 				It("should return a not found error", func() {
-					Expect(err).To(Equal(common.NotFound))
+					Expect(err).To(Equal(common.ErrNotFound))
 				})
 			})
 		})

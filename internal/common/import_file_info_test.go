@@ -12,7 +12,6 @@ func Test_NewImportFileInfoFromLocalFile(t *testing.T) {
 	g := NewGomegaWithT(t)
 	type fields struct {
 		originalPath string
-		name         string
 		want         *ImportFileInfo
 		wantErr      bool
 	}
@@ -36,7 +35,7 @@ func Test_NewImportFileInfoFromLocalFile(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+		t.Run(tt.name, func(*testing.T) {
 
 			f := &fields{}
 
@@ -61,7 +60,6 @@ func Test_NewImportFileInfo(t *testing.T) {
 	type fields struct {
 		fileName string
 		fileData []byte
-		name     string
 		want     *ImportFileInfo
 		wantErr  bool
 	}
@@ -86,7 +84,7 @@ func Test_NewImportFileInfo(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+		t.Run(tt.name, func(*testing.T) {
 
 			f := &fields{}
 

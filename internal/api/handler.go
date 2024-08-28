@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
-	api_interfaces "github.com/tomvodi/limepipes/internal/api_gen/interfaces"
+	"github.com/tomvodi/limepipes/internal/apigen/apimodel"
+	api_interfaces "github.com/tomvodi/limepipes/internal/apigen/interfaces"
 	"github.com/tomvodi/limepipes/internal/common"
 	"github.com/tomvodi/limepipes/internal/interfaces"
 	"io"
@@ -88,7 +88,7 @@ func (a *apiHandler) ImportFile(c *gin.Context) {
 	}
 	_, err = a.service.GetImportFileByHash(fInfo.Hash)
 
-	if !errors.Is(err, common.NotFound) {
+	if !errors.Is(err, common.ErrNotFound) {
 		c.JSON(http.StatusConflict,
 			fmt.Sprintf("file %s was already imported", iFile.Filename))
 		return
@@ -134,7 +134,7 @@ func httpErrorResponse(c *gin.Context, code int, err error) {
 
 func handleResponseForError(c *gin.Context, err error) {
 	code := http.StatusInternalServerError
-	if errors.Is(err, common.NotFound) {
+	if errors.Is(err, common.ErrNotFound) {
 		code = http.StatusNotFound
 	}
 
@@ -164,13 +164,13 @@ func (a *apiHandler) CreateTune(c *gin.Context) {
 }
 
 func (a *apiHandler) GetTune(c *gin.Context) {
-	tuneId, err := uuid.Parse(c.Param("tuneId"))
+	tuneID, err := uuid.Parse(c.Param("tuneID"))
 	if err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
 		return
 	}
 
-	tune, err := a.service.GetTune(tuneId)
+	tune, err := a.service.GetTune(tuneID)
 	if err != nil {
 		handleResponseForError(c, err)
 		return
@@ -195,13 +195,13 @@ func (a *apiHandler) UpdateTune(c *gin.Context) {
 		return
 	}
 
-	tuneId, err := uuid.Parse(c.Param("tuneId"))
+	tuneID, err := uuid.Parse(c.Param("tuneID"))
 	if err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
 		return
 	}
 
-	tune, err := a.service.UpdateTune(tuneId, updateTune)
+	tune, err := a.service.UpdateTune(tuneID, updateTune)
 	if err != nil {
 		handleResponseForError(c, err)
 		return
@@ -211,13 +211,13 @@ func (a *apiHandler) UpdateTune(c *gin.Context) {
 }
 
 func (a *apiHandler) DeleteTune(c *gin.Context) {
-	tuneId, err := uuid.Parse(c.Param("tuneId"))
+	tuneID, err := uuid.Parse(c.Param("tuneID"))
 	if err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
 		return
 	}
 
-	if err := a.service.DeleteTune(tuneId); err != nil {
+	if err := a.service.DeleteTune(tuneID); err != nil {
 		handleResponseForError(c, err)
 		return
 	}
@@ -243,13 +243,13 @@ func (a *apiHandler) CreateSet(c *gin.Context) {
 }
 
 func (a *apiHandler) GetSet(c *gin.Context) {
-	setId, err := uuid.Parse(c.Param("setId"))
+	setID, err := uuid.Parse(c.Param("setID"))
 	if err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
 		return
 	}
 
-	set, err := a.service.GetMusicSet(setId)
+	set, err := a.service.GetMusicSet(setID)
 	if err != nil {
 		handleResponseForError(c, err)
 		return
@@ -274,12 +274,12 @@ func (a *apiHandler) UpdateSet(c *gin.Context) {
 		return
 	}
 
-	setId, err := uuid.Parse(c.Param("setId"))
+	setID, err := uuid.Parse(c.Param("setID"))
 	if err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
 		return
 	}
-	set, err := a.service.UpdateMusicSet(setId, updateSet)
+	set, err := a.service.UpdateMusicSet(setID, updateSet)
 	if err != nil {
 		handleResponseForError(c, err)
 		return
@@ -289,13 +289,13 @@ func (a *apiHandler) UpdateSet(c *gin.Context) {
 }
 
 func (a *apiHandler) DeleteSet(c *gin.Context) {
-	setId, err := uuid.Parse(c.Param("setId"))
+	setID, err := uuid.Parse(c.Param("setID"))
 	if err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
 		return
 	}
 
-	if err := a.service.DeleteMusicSet(setId); err != nil {
+	if err := a.service.DeleteMusicSet(setID); err != nil {
 		handleResponseForError(c, err)
 		return
 	}
@@ -304,19 +304,19 @@ func (a *apiHandler) DeleteSet(c *gin.Context) {
 }
 
 func (a *apiHandler) AssignTunesToSet(c *gin.Context) {
-	var tuneIds []uuid.UUID
-	if err := c.ShouldBindJSON(&tuneIds); err != nil {
+	var tuneIDs []uuid.UUID
+	if err := c.ShouldBindJSON(&tuneIDs); err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
 		return
 	}
 
-	setId, err := uuid.Parse(c.Param("setId"))
+	setID, err := uuid.Parse(c.Param("setID"))
 	if err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
 		return
 	}
 
-	set, err := a.service.AssignTunesToMusicSet(setId, tuneIds)
+	set, err := a.service.AssignTunesToMusicSet(setID, tuneIDs)
 	if err != nil {
 		handleResponseForError(c, err)
 		return
@@ -325,7 +325,7 @@ func (a *apiHandler) AssignTunesToSet(c *gin.Context) {
 	c.JSON(http.StatusOK, set)
 }
 
-func NewApiHandler(
+func NewAPIHandler(
 	service interfaces.DataService,
 	pluginLoader interfaces.PluginLoader,
 	healthChecker interfaces.HealthChecker,

@@ -2,7 +2,7 @@ testonly: False
 with-expecter: True
 packages:
   github.com/tomvodi/limepipes/internal/interfaces:
-  github.com/tomvodi/limepipes/internal/api_gen/interfaces:
+  github.com/tomvodi/limepipes/internal/apigen/interfaces:
 all: True
 dir: "{{.InterfaceDir}}/mocks"
 outpkg: "mocks"

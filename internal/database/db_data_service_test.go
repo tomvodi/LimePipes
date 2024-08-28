@@ -2,7 +2,7 @@ package database
 
 import (
 	. "github.com/onsi/gomega"
-	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
+	"github.com/tomvodi/limepipes/internal/apigen/apimodel"
 	"github.com/tomvodi/limepipes/internal/utils"
 	"testing"
 )
@@ -106,7 +106,7 @@ func Test_musicSetTitleFromTunes(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+		t.Run(tt.name, func(*testing.T) {
 
 			f := &fields{}
 

@@ -1,8 +1,8 @@
 package interfaces
 
-import "github.com/tomvodi/limepipes/internal/api_gen/apimodel"
+import "github.com/tomvodi/limepipes/internal/apigen/apimodel"
 
-type ApiModelValidator interface {
+type APIModelValidator interface {
 	ValidateUpdateTune(tuneUpd apimodel.UpdateTune) error
 	ValidateUpdateSet(tuneUpd apimodel.UpdateSet) error
 }

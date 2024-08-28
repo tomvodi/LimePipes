@@ -1,10 +1,10 @@
 package config
 
 type Config struct {
-	ServerUrl string `mapstructure:"API_SERVER_URL"`
+	ServerURL string `mapstructure:"API_SERVER_URL"`
 
-	TlsCertPath    string `mapstructure:"TLS_CERT_PATH"`
-	TlsCertKeyPath string `mapstructure:"TLS_CERT_KEY_PATH"`
+	TLSCertPath    string `mapstructure:"TLS_CERT_PATH"`
+	TLSCertKeyPath string `mapstructure:"TLS_CERT_KEY_PATH"`
 
 	DbHost     string `mapstructure:"DB_HOST"`
 	DbPort     string `mapstructure:"DB_PORT"`

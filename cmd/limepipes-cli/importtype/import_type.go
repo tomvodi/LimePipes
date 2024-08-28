@@ -1,4 +1,4 @@
-package import_type
+package importtype
 
 //go:generate go run github.com/dmarkham/enumer -type=Type -transform=snake
 

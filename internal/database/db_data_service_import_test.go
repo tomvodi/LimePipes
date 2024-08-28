@@ -7,7 +7,7 @@ import (
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
-	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
+	"github.com/tomvodi/limepipes/internal/apigen/apimodel"
 	"github.com/tomvodi/limepipes/internal/common"
 	"github.com/tomvodi/limepipes/internal/config"
 	"github.com/tomvodi/limepipes/internal/database/model"
@@ -216,8 +216,8 @@ var _ = Describe("DbDataService Import", func() {
 
 				When("I retrieve the set", func() {
 					BeforeEach(func() {
-						setId := returnSet.Id
-						musicSet, err = service.GetMusicSet(setId)
+						setID := returnSet.Id
+						musicSet, err = service.GetMusicSet(setID)
 					})
 
 					It("should successfully got that set", func() {
@@ -256,8 +256,8 @@ var _ = Describe("DbDataService Import", func() {
 
 				When("I retrieve the set", func() {
 					BeforeEach(func() {
-						setId := returnSet.Id
-						musicSet, err = service.GetMusicSet(setId)
+						setID := returnSet.Id
+						musicSet, err = service.GetMusicSet(setID)
 					})
 
 					It("should successfully got that set", func() {

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-GEN_PKG_NAME=api_gen
-API_GEN_DIR=./internal/api_gen
+GEN_PKG_NAME=apigen
+API_GEN_DIR=./internal/apigen
 API_MODEL_DIR=${API_GEN_DIR}/apimodel
 API_INTERFACES_DIR=${API_GEN_DIR}/interfaces
 

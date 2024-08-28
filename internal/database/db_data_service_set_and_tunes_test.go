@@ -4,7 +4,7 @@ import (
 	"github.com/google/uuid"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
+	"github.com/tomvodi/limepipes/internal/apigen/apimodel"
 	"github.com/tomvodi/limepipes/internal/config"
 	"github.com/tomvodi/limepipes/internal/interfaces/mocks"
 	"gorm.io/gorm"
@@ -12,6 +12,7 @@ import (
 
 var _ = Describe("DbDataService", func() {
 	var err error
+	var cfg *config.Config
 	var service *dbService
 	var gormDb *gorm.DB
 	var validator *mocks.ApiModelValidator
@@ -21,7 +22,8 @@ var _ = Describe("DbDataService", func() {
 	var musicSet *apimodel.MusicSet
 
 	BeforeEach(func() {
-		cfg, err := config.InitTest()
+
+		cfg, err = config.InitTest()
 		Expect(err).ShouldNot(HaveOccurred())
 		gormDb, err = GetInitTestPostgreSQLDB(cfg.DbConfig(), "testdb")
 		validator = mocks.NewApiModelValidator(GinkgoT())
@@ -58,15 +60,15 @@ var _ = Describe("DbDataService", func() {
 					*tune3,
 					*tune1,
 				}
-				var tuneIds []uuid.UUID
+				var tuneIDs []uuid.UUID
 				for _, tune := range expectedTuneOrder {
-					tuneIds = append(tuneIds, tune.Id)
+					tuneIDs = append(tuneIDs, tune.Id)
 				}
 
 				musicSet, err = service.CreateMusicSet(
 					apimodel.CreateSet{
 						Title: "test music set",
-						Tunes: tuneIds,
+						Tunes: tuneIDs,
 					},
 					nil,
 				)
@@ -110,14 +112,14 @@ var _ = Describe("DbDataService", func() {
 						*tune2,
 						*tune1,
 					}
-					var tuneIds []uuid.UUID
+					var tuneIDs []uuid.UUID
 					for _, tune := range expectedTuneOrder {
-						tuneIds = append(tuneIds, tune.Id)
+						tuneIDs = append(tuneIDs, tune.Id)
 					}
 
 					updateSet := apimodel.UpdateSet{
 						Title: "test music set",
-						Tunes: tuneIds,
+						Tunes: tuneIDs,
 					}
 					validator.EXPECT().ValidateUpdateSet(updateSet).Return(nil)
 

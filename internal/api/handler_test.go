@@ -14,7 +14,7 @@ import (
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
 	pmocks "github.com/tomvodi/limepipes-plugin-api/plugin/v1/interfaces/mocks"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
-	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
+	"github.com/tomvodi/limepipes/internal/apigen/apimodel"
 	"github.com/tomvodi/limepipes/internal/common"
 	"github.com/tomvodi/limepipes/internal/database/model"
 	"github.com/tomvodi/limepipes/internal/interfaces/mocks"
@@ -30,13 +30,13 @@ var _ = Describe("Api handler", func() {
 	var c *gin.Context
 	var httpRec *httptest.ResponseRecorder
 	var api *apiHandler
-	var testId1 uuid.UUID
+	var testID1 uuid.UUID
 	var dataService *mocks.DataService
 	var pluginLoader *mocks.PluginLoader
 	var lpPlugin *pmocks.LimePipesPlugin
 
 	BeforeEach(func() {
-		testId1 = uuid.MustParse("00000000-0000-0000-0000-000000000001")
+		testID1 = uuid.MustParse("00000000-0000-0000-0000-000000000001")
 
 		httpRec = httptest.NewRecorder()
 		c, _ = gin.CreateTestContext(httpRec)
@@ -71,7 +71,7 @@ var _ = Describe("Api handler", func() {
 				tune = apimodel.CreateTune{
 					Title: "test title",
 				}
-				mockJsonPost(c, http.MethodPost, tune)
+				mockJSONPost(c, http.MethodPost, tune)
 			})
 
 			When("service returns an error on creation", func() {
@@ -89,7 +89,7 @@ var _ = Describe("Api handler", func() {
 				BeforeEach(func() {
 					dataService.EXPECT().CreateTune(tune, (*model.ImportFile)(nil)).
 						Return(&apimodel.Tune{
-							Id:    testId1,
+							Id:    testID1,
 							Title: tune.Title,
 						}, nil)
 				})
@@ -105,36 +105,36 @@ var _ = Describe("Api handler", func() {
 	})
 
 	Context("Assign tunes to a set", func() {
-		var tuneIds []string
-		var tuneIdsUuid []uuid.UUID
-		var setId uuid.UUID
+		var tuneIDs []string
+		var tuneIDsUUID []uuid.UUID
+		var setID uuid.UUID
 
 		JustBeforeEach(func() {
 			api.AssignTunesToSet(c)
 		})
 
 		BeforeEach(func() {
-			setId = testId1
-			tuneIds = []string{
+			setID = testID1
+			tuneIDs = []string{
 				"00000000-0000-0000-0000-000000000002",
 				"00000000-0000-0000-0000-000000000003",
 			}
-			tuneIdsUuid = []uuid.UUID{
-				uuid.MustParse(tuneIds[0]),
-				uuid.MustParse(tuneIds[1]),
+			tuneIDsUUID = []uuid.UUID{
+				uuid.MustParse(tuneIDs[0]),
+				uuid.MustParse(tuneIDs[1]),
 			}
-			mockJsonPost(c, http.MethodPut, tuneIds)
+			mockJSONPost(c, http.MethodPut, tuneIDs)
 
 			c.Params = gin.Params{
-				{Key: "setId", Value: setId.String()},
+				{Key: "setID", Value: setID.String()},
 			}
 		})
 
 		When("service successfully assignes tunes", func() {
 			BeforeEach(func() {
-				dataService.EXPECT().AssignTunesToMusicSet(setId, tuneIdsUuid).
+				dataService.EXPECT().AssignTunesToMusicSet(setID, tuneIDsUUID).
 					Return(&apimodel.MusicSet{
-						Id:    setId,
+						Id:    setID,
 						Title: "set 1",
 					}, nil)
 			})
@@ -239,7 +239,7 @@ var _ = Describe("Api handler", func() {
 				pluginLoader.EXPECT().FileTypeForFileExtension(".bww").
 					Return(file_type.Type_BWW, nil)
 				dataService.EXPECT().GetImportFileByHash("60f5237ed4049f0382661ef009d2bc42e48c3ceb3edb6600f7024e7ab3b838f3").
-					Return(nil, common.NotFound)
+					Return(nil, common.ErrNotFound)
 				pluginLoader.EXPECT().PluginForFileExtension(".bww").
 					Return(nil, fmt.Errorf("no plugin found for file extension .bww"))
 			})
@@ -262,7 +262,7 @@ var _ = Describe("Api handler", func() {
 				pluginLoader.EXPECT().FileTypeForFileExtension(".bww").
 					Return(file_type.Type_BWW, nil)
 				dataService.EXPECT().GetImportFileByHash("60f5237ed4049f0382661ef009d2bc42e48c3ceb3edb6600f7024e7ab3b838f3").
-					Return(nil, common.NotFound)
+					Return(nil, common.ErrNotFound)
 				pluginLoader.EXPECT().PluginForFileExtension(".bww").
 					Return(lpPlugin, nil)
 				lpPlugin.EXPECT().Import([]byte("test file content")).
@@ -287,7 +287,7 @@ var _ = Describe("Api handler", func() {
 				pluginLoader.EXPECT().FileTypeForFileExtension(".bww").
 					Return(file_type.Type_BWW, nil)
 				dataService.EXPECT().GetImportFileByHash("60f5237ed4049f0382661ef009d2bc42e48c3ceb3edb6600f7024e7ab3b838f3").
-					Return(nil, common.NotFound)
+					Return(nil, common.ErrNotFound)
 				pluginLoader.EXPECT().PluginForFileExtension(".bww").
 					Return(lpPlugin, nil)
 				importTunes := []*messages.ImportedTune{
@@ -305,12 +305,12 @@ var _ = Describe("Api handler", func() {
 				dataService.EXPECT().ImportTunes(importTunes, mock.Anything).
 					Return([]*apimodel.ImportTune{
 						{
-							Id:    testId1,
+							Id:    testID1,
 							Title: "test tune",
 						},
 					},
 						&apimodel.BasicMusicSet{
-							Id:    testId1,
+							Id:    testID1,
 							Title: "test music set",
 						}, nil)
 			})
@@ -350,7 +350,7 @@ func multipartRequestForFile(
 	return r
 }
 
-func mockJsonPost(c *gin.Context, method string, content interface{}) {
+func mockJSONPost(c *gin.Context, method string, content any) {
 	c.Request = &http.Request{
 		Method: method,
 		Header: make(http.Header),

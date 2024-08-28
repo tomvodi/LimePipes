@@ -9,7 +9,7 @@ import (
 	"github.com/tomvodi/limepipes/internal/config"
 	"github.com/tomvodi/limepipes/internal/database"
 	"github.com/tomvodi/limepipes/internal/interfaces"
-	"github.com/tomvodi/limepipes/internal/plugin_loader"
+	"github.com/tomvodi/limepipes/internal/pluginloader"
 	"github.com/tomvodi/limepipes/internal/utils"
 	"gorm.io/gorm"
 	"os"
@@ -17,7 +17,7 @@ import (
 )
 
 var (
-	verbose bool
+	argVerbose bool
 )
 
 // importCmd represents the import command
@@ -30,14 +30,14 @@ subdirectories when given the recursive flag.
 If a given file that has an extension which is not in the import-file-types, it will be ignored. 
 `,
 	Args: cobra.MinimumNArgs(1),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, paths []string) error {
 		utils.SetupConsoleLogger()
 		cfg, err := config.Init()
 		if err != nil {
 			return fmt.Errorf("failed init configuration: %s", err.Error())
 		}
 
-		pluginLoader := plugin_loader.NewPluginLoader()
+		pluginLoader := pluginloader.NewPluginLoader()
 		err = pluginLoader.LoadPluginsFromDir(cfg.PluginsDirectoryPath)
 		if err != nil {
 			log.Fatal().Err(err).Msg("failed loading plugins")
@@ -55,7 +55,7 @@ If a given file that has an extension which is not in the import-file-types, it 
 			return fmt.Errorf("failed initializing database: %s", err.Error())
 		}
 		ginValidator := api.NewGinValidator()
-		apiModelValidator := api.NewApiModelValidator(ginValidator)
+		apiModelValidator := api.NewAPIModelValidator(ginValidator)
 		dbService := database.NewDbDataService(db, apiModelValidator)
 
 		err = checkForInvalidImportTypes()
@@ -63,7 +63,7 @@ If a given file that has an extension which is not in the import-file-types, it 
 			return err
 		}
 
-		allFiles, err := getAllFilesFromArgs(args)
+		allFiles, err := getAllFilesFromPaths(paths)
 		if err != nil {
 			return fmt.Errorf("failed getting files: %s", err.Error())
 		}
@@ -74,48 +74,48 @@ If a given file that has an extension which is not in the import-file-types, it 
 		for i, file := range allFiles {
 			fExt := filepath.Ext(file)
 			if fExt == "" {
-				if skipFailedFiles {
+				if argSkipFailedFiles {
 					log.Error().Err(err).Msgf("import file %s does not have an extension", file)
 					continue
-				} else {
-					return err
 				}
+
+				return err
 			}
 
 			filePlugin, err := pluginLoader.PluginForFileExtension(".bww")
 			if err != nil {
-				if skipFailedFiles {
+				if argSkipFailedFiles {
 					log.Error().Err(err).Msgf("failed getting plugin for file %s with extension %s",
 						file, fExt)
 					continue
-				} else {
-					return err
 				}
+
+				return err
 			}
 
 			fileData, err := os.ReadFile(file)
 			if err != nil {
-				if skipFailedFiles {
+				if argSkipFailedFiles {
 					log.Error().Err(err).Msgf("failed reading file %s", file)
 					continue
-				} else {
-					return err
 				}
+
+				return err
 			}
 
 			log.Info().Msgf("importing file %d/%d %s", i+1, allFileCnt, file)
 
 			tunesImport, err := filePlugin.Import(fileData)
 			if err != nil {
-				if skipFailedFiles {
+				if argSkipFailedFiles {
 					log.Error().Err(err).Msgf("failed parsing file %s", file)
 					continue
-				} else {
-					return fmt.Errorf("failed parsing file %s: %v", file, err)
 				}
+
+				return fmt.Errorf("failed parsing file %s: %v", file, err)
 			}
 
-			if verbose {
+			if argVerbose {
 				log.Info().Msgf("(%d/%d) successfully parsed %d tunes from file %s",
 					i+1,
 					allFileCnt,
@@ -126,33 +126,33 @@ If a given file that has an extension which is not in the import-file-types, it 
 
 			fType, err := pluginLoader.FileTypeForFileExtension(fExt)
 			if err != nil {
-				if skipFailedFiles {
+				if argSkipFailedFiles {
 					log.Error().Err(err).Msgf("failed getting file type for file %s with extension %s",
 						file, fExt)
 					continue
-				} else {
-					return err
 				}
+
+				return err
 			}
 
 			fInfo, err := common.NewImportFileInfoFromLocalFile(file, fType)
 			if err != nil {
-				if skipFailedFiles {
+				if argSkipFailedFiles {
 					log.Error().Err(err).Msg("failed creating import file info")
 					continue
-				} else {
-					return err
 				}
+
+				return err
 			}
 
 			_, _, err = dbService.ImportTunes(tunesImport.ImportedTunes, fInfo)
 			if err != nil {
-				if skipFailedFiles {
+				if argSkipFailedFiles {
 					log.Error().Err(err).Msg("failed importing tunes")
 					continue
-				} else {
-					return fmt.Errorf("failed importing tunes: %s", err.Error())
 				}
+
+				return fmt.Errorf("failed importing tunes: %s", err.Error())
 			}
 		}
 

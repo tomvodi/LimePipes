@@ -11,18 +11,18 @@ func TestWriteScore(t *testing.T) {
 		PartList: model.ScorePartList{
 			Parts: []model.ScorePart{
 				{
-					Id:   "P1",
+					ID:   "P1",
 					Name: "Bagpipe",
 					Instrument: model.ScoreInstrument{
-						Id:   "P1-I1",
+						ID:   "P1-I1",
 						Name: "Bagpipe",
 					},
 					MidiDevice: model.MidiDevice{
-						Id:   "P1-I1",
+						ID:   "P1-I1",
 						Port: 1,
 					},
 					MidiInstrument: model.MidiInstrument{
-						Id:       "P1-I1",
+						ID:       "P1-I1",
 						Channel:  1,
 						Programm: 110,
 						Volume:   78.7402,

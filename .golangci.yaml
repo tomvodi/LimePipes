@@ -14,9 +14,9 @@ issues:
       source: ". \"github.com/onsi/(ginkgo/v2|gomega)\""
       text: "dot-imports: should not use dot imports"
 
-linter-settings:
+linters-settings:
   revive:
-    enable-all-rules: true
+    enable-all-rules: false
     ignore-generated-header: false
     severity: error
     rules:
@@ -25,6 +25,8 @@ linter-settings:
       - name: blank-imports
       - name: cognitive-complexity
         arguments: [7]
+        exclude:
+          - "TEST"
       - name: context-as-argument
       - name: context-keys-type
       - name: dot-imports

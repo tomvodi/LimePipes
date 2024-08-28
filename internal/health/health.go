@@ -48,9 +48,9 @@ func (h *healthCheck) init() error {
 			},
 		),
 		healthlib.WithStatusListener(
-			func(ctx context.Context, state healthlib.CheckerState) {
+			func(_ context.Context, state healthlib.CheckerState) {
 				log.Info().Msgf(
-					fmt.Sprintf("health status changed to %s", state.Status),
+					"health status changed to %s", state.Status,
 				)
 			}),
 	)
