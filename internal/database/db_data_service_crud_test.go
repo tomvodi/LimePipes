@@ -13,10 +13,11 @@ import (
 	"github.com/tomvodi/limepipes/internal/config"
 	"github.com/tomvodi/limepipes/internal/database/model"
 	"github.com/tomvodi/limepipes/internal/interfaces/mocks"
+	"golang.org/x/exp/slices"
 	"gorm.io/gorm"
 )
 
-var _ = Describe("DbDataService", func() {
+var _ = Describe("DbDataService CRUD", func() {
 	var err error
 	var cfg *config.Config
 	var service *dbService
@@ -448,6 +449,69 @@ var _ = Describe("DbDataService", func() {
 
 			It("should fail", func() {
 				Expect(err).Should(HaveOccurred())
+			})
+		})
+
+		When("adding a tune to that set", func() {
+			var tune1, tune2 *apimodel.Tune
+			var apiMusicSet *apimodel.MusicSet
+			var tuneIDs []uuid.UUID
+
+			BeforeEach(func() {
+				tune1, err = service.CreateTune(apimodel.CreateTune{
+					Title: "tune1",
+				}, nil)
+				Expect(err).NotTo(HaveOccurred())
+				tune2, err = service.CreateTune(apimodel.CreateTune{
+					Title: "tune2",
+				}, nil)
+				Expect(err).NotTo(HaveOccurred())
+				tuneIDs = []uuid.UUID{tune1.Id, tune2.Id}
+				_, err = service.AssignTunesToMusicSet(musicSet.Id, tuneIDs)
+			})
+
+			It("should add those tunes", func() {
+				Expect(err).ShouldNot(HaveOccurred())
+			})
+
+			When("retrieving the music set with tunes", func() {
+				BeforeEach(func() {
+					apiMusicSet, err = service.GetMusicSet(musicSet.Id)
+				})
+
+				It("should contain those tunes", func() {
+					Expect(err).ShouldNot(HaveOccurred())
+					Expect(apiMusicSet.Tunes).To(HaveLen(2))
+					Expect(apiMusicSet.Tunes[0].Id).Should(Equal(tune1.Id))
+					Expect(apiMusicSet.Tunes[1].Id).Should(Equal(tune2.Id))
+				})
+			})
+
+			When("updating that music set with the tunes in another order", func() {
+				var upd apimodel.UpdateSet
+				var reverseIDs []uuid.UUID
+				BeforeEach(func() {
+					reverseIDs = make([]uuid.UUID, len(tuneIDs))
+					copy(reverseIDs, tuneIDs)
+					slices.Reverse(reverseIDs)
+					upd = apimodel.UpdateSet{
+						Title:       "new title",
+						Description: "new description",
+						Creator:     "new creator",
+						Tunes:       reverseIDs,
+					}
+					validator.EXPECT().ValidateUpdateSet(upd).Return(nil)
+					apiMusicSet, err = service.UpdateMusicSet(musicSet.Id, upd)
+				})
+
+				It("should succeed", func() {
+					Expect(err).ShouldNot(HaveOccurred())
+					Expect(apiMusicSet.Tunes).To(HaveLen(2))
+					Expect(apiMusicSet.Tunes[0].Id).
+						Should(Equal(reverseIDs[0]))
+					Expect(apiMusicSet.Tunes[1].Id).
+						Should(Equal(reverseIDs[1]))
+				})
 			})
 		})
 
