@@ -2,6 +2,6 @@ package interfaces
 
 import "github.com/gin-gonic/gin"
 
-type ApiRouter interface {
+type APIRouter interface {
 	GetEngine() *gin.Engine
 }

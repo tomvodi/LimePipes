@@ -11,7 +11,7 @@ import (
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
-	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
+	"github.com/tomvodi/limepipes/internal/apigen/apimodel"
 	"github.com/tomvodi/limepipes/internal/common"
 
 	"github.com/tomvodi/limepipes/internal/database/model"
@@ -22,7 +22,7 @@ import (
 
 type dbService struct {
 	db        *gorm.DB
-	validator interfaces.ApiModelValidator
+	validator interfaces.APIModelValidator
 }
 
 func (d *dbService) Tunes() ([]*apimodel.Tune, error) {
@@ -40,32 +40,16 @@ func (d *dbService) Tunes() ([]*apimodel.Tune, error) {
 }
 
 func (d *dbService) CreateTune(
-	tune apimodel.CreateTune,
+	ct apimodel.CreateTune,
 	importFile *model.ImportFile,
 ) (*apimodel.Tune, error) {
-	if strings.TrimSpace(tune.Title) == "" {
-		return nil, fmt.Errorf("can't create tune without a title")
+	if strings.TrimSpace(ct.Title) == "" {
+		return nil, fmt.Errorf("can'ct create tune without a title")
 	}
 
-	dbTune := model.Tune{}
-	if importFile != nil {
-		dbTune.ImportFileId = importFile.ID
-	}
-	var tuneType *model.TuneType
-	var err error
-	if tune.Type != "" {
-		tuneType, err = d.getOrCreateTuneType(tune.Type)
-		if err != nil {
-			return &apimodel.Tune{}, err
-		}
-	}
-
-	err = copier.Copy(&dbTune, &tune)
+	dbTune, err := d.initDbTuneForCreation(ct, importFile)
 	if err != nil {
-		return &apimodel.Tune{}, fmt.Errorf("could not create db object")
-	}
-	if tuneType != nil {
-		dbTune.TuneTypeId = &tuneType.ID
+		return nil, err
 	}
 
 	if err = d.db.Create(&dbTune).Error; err != nil {
@@ -76,69 +60,58 @@ func (d *dbService) CreateTune(
 	if err := copier.Copy(apiTune, &dbTune); err != nil {
 		return nil, err
 	}
-	if tuneType != nil {
-		apiTune.Type = tuneType.Name
+	if dbTune.TuneType != nil {
+		apiTune.Type = dbTune.TuneType.Name
 	}
 
 	return apiTune, nil
+}
+
+func (d *dbService) initDbTuneForCreation(
+	ct apimodel.CreateTune,
+	importFile *model.ImportFile,
+) (*model.Tune, error) {
+	dbTune := &model.Tune{}
+	if importFile != nil {
+		dbTune.ImportFileID = importFile.ID
+	}
+	var tuneType *model.TuneType
+	var err error
+	if ct.Type != "" {
+		tuneType, err = d.getOrCreateTuneType(ct.Type)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	err = copier.Copy(&dbTune, &ct)
+	if err != nil {
+		return nil, fmt.Errorf("could not create db tune object: %v", err)
+	}
+	if tuneType != nil {
+		dbTune.TuneTypeID = &tuneType.ID
+		dbTune.TuneType = tuneType
+	}
+
+	return dbTune, nil
 }
 
 func (d *dbService) GetTune(id uuid.UUID) (*apimodel.Tune, error) {
-	var tune = &model.Tune{}
+	var t = &model.Tune{}
 	if err := d.db.
 		Preload("Sets").
 		Preload("TuneType").
-		First(tune, id).Error; err != nil {
-		return &apimodel.Tune{}, common.NotFound
+		First(t, id).Error; err != nil {
+		return &apimodel.Tune{}, common.ErrNotFound
 	}
 
 	apiTune := &apimodel.Tune{}
-	err := copier.Copy(apiTune, tune)
+	err := copier.Copy(apiTune, t)
 	if err != nil {
 		return &apimodel.Tune{}, err
 	}
-	if tune.TuneType != nil {
-		apiTune.Type = tune.TuneType.Name
-	}
-
-	return apiTune, nil
-}
-
-// getTuneFromDb returns a tune from the database if it is identical
-// this means it has the same title, composer, type and arranger
-func (d *dbService) getIdenticalTuneFromDb(tune *tune.Tune) (*apimodel.Tune, error) {
-	dbTune, err := d.getTuneByTitle(tune.Title)
-	if err != nil {
-		return nil, err
-	}
-
-	if dbTune.Composer == tune.Composer &&
-		dbTune.Arranger == tune.Arranger &&
-		dbTune.Type == tune.Type {
-		return dbTune, nil
-	}
-
-	return nil, common.NotFound
-}
-
-func (d *dbService) getTuneByTitle(title string) (*apimodel.Tune, error) {
-	var tune = &model.Tune{
-		Title: title,
-	}
-	if err := d.db.
-		Preload("TuneType").
-		Where(tune).
-		First(tune).Error; err != nil {
-		return nil, common.NotFound
-	}
-
-	apiTune := &apimodel.Tune{}
-	err := copier.Copy(apiTune, tune)
-	if err != nil {
-		return nil, err
-	}
-	if tune.TuneType != nil {
-		apiTune.Type = tune.TuneType.Name
+	if t.TuneType != nil {
+		apiTune.Type = t.TuneType.Name
 	}
 
 	return apiTune, nil
@@ -149,7 +122,7 @@ func (d *dbService) GetImportFileByHash(fHash string) (*model.ImportFile, error)
 		Hash: fHash,
 	}
 	if err := d.db.Where(importFile).First(importFile).Error; err != nil {
-		return nil, common.NotFound
+		return nil, common.ErrNotFound
 	}
 
 	return importFile, nil
@@ -159,7 +132,7 @@ func (d *dbService) hasImportFile(
 	fileInfo *common.ImportFileInfo,
 ) (bool, error) {
 	_, err := d.GetImportFileByHash(fileInfo.Hash)
-	if errors.Is(err, common.NotFound) {
+	if errors.Is(err, common.ErrNotFound) {
 		return false, nil
 	}
 	if err != nil {
@@ -193,24 +166,24 @@ func (d *dbService) UpdateTune(id uuid.UUID, updateTune apimodel.UpdateTune) (*a
 		return nil, err
 	}
 
-	var tune = &model.Tune{}
-	if err := d.db.First(tune, id).Error; err != nil {
-		return nil, common.NotFound
+	var t = &model.Tune{}
+	if err := d.db.First(t, id).Error; err != nil {
+		return nil, common.ErrNotFound
 	}
 
-	var updateVals = map[string]interface{}{}
+	var updateVals = map[string]any{}
 	if err := mapstructure.Decode(&updateTune, &updateVals); err != nil {
 		return nil, err
 	}
-	updateVals["TuneTypeId"] = tuneType.ID
+	updateVals["TuneTypeID"] = tuneType.ID
 	delete(updateVals, "Type")
 
-	if err := d.db.Model(tune).Updates(updateVals).Error; err != nil {
+	if err := d.db.Model(t).Updates(updateVals).Error; err != nil {
 		return nil, err
 	}
 
 	apiTune := &apimodel.Tune{}
-	if err := copier.Copy(apiTune, tune); err != nil {
+	if err := copier.Copy(apiTune, t); err != nil {
 		return nil, err
 	}
 	apiTune.Type = tuneType.Name
@@ -219,12 +192,12 @@ func (d *dbService) UpdateTune(id uuid.UUID, updateTune apimodel.UpdateTune) (*a
 }
 
 func (d *dbService) DeleteTune(id uuid.UUID) error {
-	var tune = &model.Tune{}
-	if err := d.db.First(tune, id).Error; err != nil {
-		return common.NotFound
+	var t = &model.Tune{}
+	if err := d.db.First(t, id).Error; err != nil {
+		return common.ErrNotFound
 	}
 
-	if err := d.db.Delete(tune).Error; err != nil {
+	if err := d.db.Delete(t).Error; err != nil {
 		return err
 	}
 
@@ -234,10 +207,9 @@ func (d *dbService) DeleteTune(id uuid.UUID) error {
 func (d *dbService) getOrCreateTuneType(
 	name string,
 ) (*model.TuneType, error) {
-	var tuneType = &model.TuneType{}
-	var err error
-	tuneType, err = d.getTuneTypeByName(name)
-	if errors.Is(err, common.NotFound) {
+
+	tuneType, err := d.getTuneTypeByName(name)
+	if errors.Is(err, common.ErrNotFound) {
 		return d.createTuneType(name)
 	}
 
@@ -248,7 +220,7 @@ func (d *dbService) getTuneTypeByName(name string) (*model.TuneType, error) {
 	var tuneType = &model.TuneType{}
 	if err := d.db.Where("lower(name) = ?", strings.ToLower(name)).
 		First(tuneType).Error; err != nil {
-		return nil, common.NotFound
+		return nil, common.ErrNotFound
 	}
 
 	return tuneType, nil
@@ -276,13 +248,17 @@ func (d *dbService) MusicSets() ([]*apimodel.MusicSet, error) {
 		return nil, err
 	}
 
-	var apiSets []*apimodel.MusicSet
-	if err := copier.Copy(&apiSets, sets); err != nil {
-		return nil, err
+	apiSets := make([]*apimodel.MusicSet, len(sets))
+	for i, set := range sets {
+		var err error
+		apiSets[i], err = apiSetFromDbSet(&set)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	for _, apiSet := range apiSets {
-		if err := d.setTunesInApiSet(apiSet); err != nil {
+		if err := d.setTunesInAPISet(apiSet); err != nil {
 			return nil, err
 		}
 	}
@@ -298,25 +274,58 @@ func (d *dbService) CreateMusicSet(
 		return nil, fmt.Errorf("can't create music set without a title")
 	}
 
-	dbSet := model.MusicSet{}
-	if importFile != nil {
-		dbSet.ImportFileId = importFile.ID
-	}
-	if err := copier.Copy(&dbSet, &musicSet); err != nil {
-		return &apimodel.MusicSet{}, fmt.Errorf("could not create db object")
-	}
-
-	newTunes, err := d.dbTunesFromIds(musicSet.Tunes)
+	dbSet, err := d.initDbSetForCreation(musicSet, importFile)
 	if err != nil {
 		return nil, err
 	}
 
-	err = d.db.Transaction(func(tx *gorm.DB) error {
+	apiSet, err := d.createMusicSetWithTuneIDs(
+		dbSet,
+		musicSet.Tunes,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return apiSet, nil
+}
+
+func (d *dbService) initDbSetForCreation(
+	musicSet apimodel.CreateSet,
+	importFile *model.ImportFile,
+) (*model.MusicSet, error) {
+	dbSet := &model.MusicSet{}
+	if importFile != nil {
+		dbSet.ImportFileID = importFile.ID
+	}
+
+	err := copier.Copy(dbSet, &musicSet)
+	if err != nil {
+		return nil, fmt.Errorf("could not create db music set object: %v", err)
+	}
+
+	// reset tunes to nil as copier creates an empty tune object for every tune id
+	// this leads to a foreign key constraint violation
+	dbSet.Tunes = nil
+
+	return dbSet, nil
+}
+
+func (d *dbService) createMusicSetWithTuneIDs(
+	dbSet *model.MusicSet,
+	tuneIDs []uuid.UUID,
+) (*apimodel.MusicSet, error) {
+	mSetTunes, err := d.dbTunesFromIDs(tuneIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	err = d.db.Transaction(func(_ *gorm.DB) error {
 		if err = d.db.Create(&dbSet).Error; err != nil {
 			return err
 		}
 
-		if err := d.assignMusicSetTunes(dbSet.ID, musicSet.Tunes); err != nil {
+		if err := d.createMusicSetTuneRelations(dbSet.ID, tuneIDs); err != nil {
 			return err
 		}
 
@@ -326,9 +335,9 @@ func (d *dbService) CreateMusicSet(
 		return nil, err
 	}
 
-	dbSet.Tunes = newTunes
-	apiSet := &apimodel.MusicSet{}
-	if err := copier.Copy(apiSet, dbSet); err != nil {
+	dbSet.Tunes = mSetTunes
+	apiSet, err := apiSetFromDbSet(dbSet)
+	if err != nil {
 		return nil, err
 	}
 
@@ -338,22 +347,37 @@ func (d *dbService) CreateMusicSet(
 func (d *dbService) GetMusicSet(id uuid.UUID) (*apimodel.MusicSet, error) {
 	var set = &model.MusicSet{}
 	if err := d.db.First(set, id).Error; err != nil {
-		return &apimodel.MusicSet{}, common.NotFound
+		return &apimodel.MusicSet{}, common.ErrNotFound
 	}
 
-	apiSet := &apimodel.MusicSet{}
-	if err := copier.Copy(apiSet, set); err != nil {
+	apiSet, err := apiSetFromDbSet(set)
+	if err != nil {
 		return &apimodel.MusicSet{}, err
 	}
 
-	if err := d.setTunesInApiSet(apiSet); err != nil {
+	if err := d.setTunesInAPISet(apiSet); err != nil {
 		return &apimodel.MusicSet{}, err
 	}
 
 	return apiSet, nil
 }
 
-func (d *dbService) getMusicSetByTuneIds(tuneIds []uuid.UUID) (*apimodel.MusicSet, error) {
+func apiSetFromDbSet(dbSet *model.MusicSet) (*apimodel.MusicSet, error) {
+	apiSet := &apimodel.MusicSet{}
+	if err := copier.Copy(apiSet, dbSet); err != nil {
+		return nil, err
+	}
+	// Copier creates a default empty slice if the tunes are nil
+	// so we set it to nil if there are no tunes
+	if len(apiSet.Tunes) == 0 {
+		apiSet.Tunes = nil
+	}
+
+	return apiSet, nil
+}
+
+// returns that music set that contains all tunes in the given order
+func (d *dbService) getMusicSetByTuneIDs(tuneIDs []uuid.UUID) (*apimodel.MusicSet, error) {
 	allMusicSets, err := d.MusicSets()
 	if err != nil {
 		return nil, err
@@ -361,31 +385,37 @@ func (d *dbService) getMusicSetByTuneIds(tuneIds []uuid.UUID) (*apimodel.MusicSe
 
 	var matchingSet *apimodel.MusicSet
 	for _, set := range allMusicSets {
-		if len(set.Tunes) != len(tuneIds) {
-			continue
-		}
-
-		allTunesMatch := true
-		for i, tune := range set.Tunes {
-			if tuneIds[i] != tune.Id {
-				allTunesMatch = false
-				break
-			}
-		}
-		if allTunesMatch {
+		if musicSetHasTunesInOrder(set, tuneIDs) {
 			matchingSet = set
 			break
 		}
 	}
 
 	if matchingSet == nil {
-		return nil, common.NotFound
-	} else {
-		return matchingSet, nil
+		return nil, common.ErrNotFound
 	}
+
+	return matchingSet, nil
 }
 
-func (d *dbService) setTunesInApiSet(apiSet *apimodel.MusicSet) error {
+func musicSetHasTunesInOrder(
+	set *apimodel.MusicSet,
+	tuneIDs []uuid.UUID,
+) bool {
+	if len(set.Tunes) != len(tuneIDs) {
+		return false
+	}
+
+	for i, t := range set.Tunes {
+		if t.Id != tuneIDs[i] {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (d *dbService) setTunesInAPISet(apiSet *apimodel.MusicSet) error {
 	var setTunes []model.Tune
 	err := d.db.Joins("JOIN music_set_tunes mst on tunes.id = mst.tune_id").
 		Where("mst.music_set_id=?", apiSet.Id).
@@ -395,35 +425,88 @@ func (d *dbService) setTunesInApiSet(apiSet *apimodel.MusicSet) error {
 		return fmt.Errorf("failed getting music set tunes: %s", err.Error())
 	}
 
-	if err := copier.Copy(&apiSet.Tunes, &setTunes); err != nil {
-		return err
+	if len(setTunes) > 0 {
+		if err := copier.Copy(&apiSet.Tunes, &setTunes); err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
-func (d *dbService) UpdateMusicSet(id uuid.UUID, updateSet apimodel.UpdateSet) (*apimodel.MusicSet, error) {
-	if err := d.validator.ValidateUpdateSet(updateSet); err != nil {
+func (d *dbService) UpdateMusicSet(
+	id uuid.UUID,
+	updateSet apimodel.UpdateSet,
+) (*apimodel.MusicSet, error) {
+	var err error
+	if err = d.validator.ValidateUpdateSet(updateSet); err != nil {
 		return nil, err
 	}
 
-	var dbSet = &model.MusicSet{}
-	if err := d.db.Preload("Tunes").First(dbSet, id).Error; err != nil {
-		return nil, common.NotFound
-	}
-
-	var updateVals = map[string]interface{}{}
-	if err := mapstructure.Decode(&updateSet, &updateVals); err != nil {
-		return nil, err
-	}
-
-	newTunes, err := d.dbTunesFromIds(updateSet.Tunes)
+	// Check whether there is a music set with that id
+	_, err = d.GetMusicSet(id)
 	if err != nil {
 		return nil, err
 	}
 
-	err = d.db.Transaction(func(tx *gorm.DB) error {
-		if err := d.deleteMusicSetTunes(dbSet); err != nil {
+	var updateVals = map[string]any{}
+	if err := mapstructure.Decode(&updateSet, &updateVals); err != nil {
+		return nil, err
+	}
+
+	// Check if all given tune IDs exist and are valid
+	newTunes, err := d.dbTunesFromIDs(updateSet.Tunes)
+	if err != nil {
+		return nil, err
+	}
+
+	var dbSet *model.MusicSet
+	dbSet, err = d.updateMusicSet(id, updateVals, newTunes)
+	if err != nil {
+		return nil, err
+	}
+
+	var apiSet *apimodel.MusicSet
+	apiSet, err = apiSetFromDbSet(dbSet)
+	if err != nil {
+		return nil, err
+	}
+
+	return apiSet, nil
+}
+
+func (d *dbService) updateMusicSet(
+	ID uuid.UUID,
+	updateVals map[string]any,
+	tunes []model.Tune,
+) (*model.MusicSet, error) {
+	var tuneIDs []uuid.UUID
+	for _, t := range tunes {
+		tuneIDs = append(tuneIDs, t.ID)
+	}
+
+	dbSet := &model.MusicSet{
+		BaseModel: model.BaseModel{
+			ID: ID,
+		},
+	}
+
+	err := d.updateMusicSetInDb(dbSet, updateVals, tuneIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	dbSet.Tunes = tunes
+	return dbSet, nil
+}
+
+func (d *dbService) updateMusicSetInDb(
+	dbSet *model.MusicSet,
+	updateVals map[string]any,
+	tuneIDs []uuid.UUID,
+) error {
+	return d.db.Transaction(func(_ *gorm.DB) error {
+		if err := d.deleteMusicSetTuneRelations(dbSet); err != nil {
 			return err
 		}
 
@@ -431,33 +514,22 @@ func (d *dbService) UpdateMusicSet(id uuid.UUID, updateSet apimodel.UpdateSet) (
 			return err
 		}
 
-		if err := d.assignMusicSetTunes(dbSet.ID, updateSet.Tunes); err != nil {
+		if err := d.createMusicSetTuneRelations(dbSet.ID, tuneIDs); err != nil {
 			return err
 		}
 
 		return nil
 	})
-	if err != nil {
-		return nil, err
-	}
-
-	dbSet.Tunes = newTunes
-	apiSet := &apimodel.MusicSet{}
-	if err := copier.Copy(apiSet, dbSet); err != nil {
-		return nil, err
-	}
-
-	return apiSet, nil
 }
 
 func (d *dbService) DeleteMusicSet(id uuid.UUID) error {
 	var set = &model.MusicSet{}
 	if err := d.db.Preload("Tunes").First(set, id).Error; err != nil {
-		return common.NotFound
+		return common.ErrNotFound
 	}
 
-	err := d.db.Transaction(func(tx *gorm.DB) error {
-		if err := d.deleteMusicSetTunes(set); err != nil {
+	err := d.db.Transaction(func(_ *gorm.DB) error {
+		if err := d.deleteMusicSetTuneRelations(set); err != nil {
 			return err
 		}
 
@@ -472,31 +544,20 @@ func (d *dbService) DeleteMusicSet(id uuid.UUID) error {
 }
 
 func (d *dbService) AssignTunesToMusicSet(
-	setId uuid.UUID,
-	tuneIds []uuid.UUID,
+	setID uuid.UUID,
+	tuneIDs []uuid.UUID,
 ) (*apimodel.MusicSet, error) {
 	set := &model.MusicSet{}
-	if err := d.db.Preload("Tunes").First(set, setId).Error; err != nil {
-		return nil, common.NotFound
+	if err := d.db.Preload("Tunes").First(set, setID).Error; err != nil {
+		return nil, common.ErrNotFound
 	}
 
-	newTunes, err := d.dbTunesFromIds(tuneIds)
+	newTunes, err := d.dbTunesFromIDs(tuneIDs)
 	if err != nil {
 		return nil, err
 	}
 
-	// delete old music set -> tune relations and create new ones
-	err = d.db.Transaction(func(tx *gorm.DB) error {
-		if err := d.deleteMusicSetTunes(set); err != nil {
-			return err
-		}
-
-		if err := d.assignMusicSetTunes(set.ID, tuneIds); err != nil {
-			return err
-		}
-
-		return nil
-	})
+	err = d.replaceMusicSetTuneRelations(set, tuneIDs)
 	if err != nil {
 		return nil, err
 	}
@@ -512,40 +573,52 @@ func (d *dbService) AssignTunesToMusicSet(
 	return apiSet, nil
 }
 
-// dbTunesFromIds returns the database tune objects in the same order as the
-// given tuneIds. If there is an id that belongs to a non existing tune,
+func (d *dbService) replaceMusicSetTuneRelations(
+	set *model.MusicSet,
+	tuneIDs []uuid.UUID,
+) error {
+	// delete old music set-tune relations and create new ones
+	err := d.db.Transaction(func(_ *gorm.DB) error {
+		if err := d.deleteMusicSetTuneRelations(set); err != nil {
+			return err
+		}
+
+		if err := d.createMusicSetTuneRelations(set.ID, tuneIDs); err != nil {
+			return err
+		}
+
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// dbTunesFromIDs returns the database tune objects in the same order as the
+// given tuneIDs. If there is an id that belongs to a non existing tune,
 // an error will be returned.
-func (d *dbService) dbTunesFromIds(tuneIds []uuid.UUID) ([]model.Tune, error) {
-	if len(tuneIds) == 0 {
+func (d *dbService) dbTunesFromIDs(tuneIDs []uuid.UUID) ([]model.Tune, error) {
+	if len(tuneIDs) == 0 {
 		return nil, nil
 	}
 
-	var distinctTuneIds []uuid.UUID
-	for _, id := range tuneIds {
-		inDistinct := false
-		for _, distTuneId := range distinctTuneIds {
-			if id == distTuneId {
-				inDistinct = true
-			}
-		}
-		if !inDistinct {
-			distinctTuneIds = append(distinctTuneIds, id)
-		}
-	}
+	distinctTuneIDs := common.RemoveDuplicates(tuneIDs)
 
 	var dbTunes []model.Tune
-	if err := d.db.Where("id IN (?)", distinctTuneIds).Find(&dbTunes).Error; err != nil {
+	if err := d.db.Where("id IN (?)", distinctTuneIDs).Find(&dbTunes).Error; err != nil {
 		return nil, err
 	}
 
-	if len(dbTunes) != len(distinctTuneIds) {
+	if len(dbTunes) != len(distinctTuneIDs) {
 		return nil, fmt.Errorf("not all tune IDs are from valid tunes")
 	}
 
-	return tunesOrderedByIds(dbTunes, tuneIds), nil
+	return tunesOrderedByIDs(dbTunes, tuneIDs), nil
 }
 
-func (d *dbService) deleteMusicSetTunes(set *model.MusicSet) error {
+func (d *dbService) deleteMusicSetTuneRelations(set *model.MusicSet) error {
 	err := d.db.Where(&model.MusicSetTunes{
 		MusicSetID: set.ID,
 	}).Delete(&model.MusicSetTunes{}).Error
@@ -560,11 +633,11 @@ func (d *dbService) deleteMusicSetTunes(set *model.MusicSet) error {
 	return nil
 }
 
-func (d *dbService) assignMusicSetTunes(setId uuid.UUID, tuneIds []uuid.UUID) error {
-	for i, tuneId := range tuneIds {
+func (d *dbService) createMusicSetTuneRelations(setID uuid.UUID, tuneIDs []uuid.UUID) error {
+	for i, tuneID := range tuneIDs {
 		setTune := &model.MusicSetTunes{
-			MusicSetID: setId,
-			TuneID:     tuneId,
+			MusicSetID: setID,
+			TuneID:     tuneID,
 			Order:      uint(i + 1),
 		}
 		if err := d.db.Create(setTune).Error; err != nil {
@@ -575,12 +648,12 @@ func (d *dbService) assignMusicSetTunes(setId uuid.UUID, tuneIds []uuid.UUID) er
 	return nil
 }
 
-func tunesOrderedByIds(tunes []model.Tune, tuneIds []uuid.UUID) []model.Tune {
-	var orderedTunes = make([]model.Tune, len(tuneIds))
-	for i, id := range tuneIds {
-		for _, tune := range tunes {
-			if tune.ID == id {
-				orderedTunes[i] = tune
+func tunesOrderedByIDs(tunes []model.Tune, tuneIDs []uuid.UUID) []model.Tune {
+	var orderedTunes = make([]model.Tune, len(tuneIDs))
+	for i, id := range tuneIDs {
+		for _, t := range tunes {
+			if t.ID == id {
+				orderedTunes[i] = t
 				break
 			}
 		}
@@ -592,135 +665,229 @@ func (d *dbService) ImportTunes(
 	tunes []*messages.ImportedTune,
 	fileInfo *common.ImportFileInfo,
 ) ([]*apimodel.ImportTune, *apimodel.BasicMusicSet, error) {
-	var apiTunes []*apimodel.ImportTune
-
 	if fileInfo == nil {
 		return nil, nil, fmt.Errorf("no file info given")
 	}
-	fileExists, err := d.hasImportFile(fileInfo)
+	fileWasAlreadyImported, err := d.hasImportFile(fileInfo)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	if fileExists {
+	if fileWasAlreadyImported {
 		return nil, nil, fmt.Errorf("file %s already imported", fileInfo.Name)
 	}
 
-	err = d.db.Transaction(func(tx *gorm.DB) error {
-		importFile, err := d.createImportFile(fileInfo)
+	return d.importTunesToDatabase(tunes, fileInfo)
+}
+
+func (d *dbService) importTunesToDatabase(
+	tunes []*messages.ImportedTune,
+	fInfo *common.ImportFileInfo,
+) ([]*apimodel.ImportTune, *apimodel.BasicMusicSet, error) {
+	var apiTunes []*apimodel.ImportTune
+	var musicSet *apimodel.BasicMusicSet
+
+	dbTx := func(_ *gorm.DB) error {
+		importFile, err := d.createImportFile(fInfo)
 		if err != nil {
 			return err
 		}
 
-		for _, impTune := range tunes {
-			newTune := impTune.Tune
-			timeSigStr := ""
-			timeSig := newTune.FirstTimeSignature()
-			if timeSig != nil {
-				timeSigStr = timeSig.DisplayString()
-			}
-			alreadyImportedTune := apiTuneWithTitle(newTune.Title, apiTunes)
-			if alreadyImportedTune != nil {
-				impTune := &apimodel.ImportTune{}
-				err := copier.Copy(impTune, alreadyImportedTune)
-				if err != nil {
-					return fmt.Errorf("failed creating import tune from already imported tune: %s", err.Error())
-				}
-				apiTunes = append(apiTunes, impTune)
-				continue
-			}
-
-			// when impTune has the same title but for example another arranger,
-			// the impTune should be added to database
-			tuneInDb, err := d.getIdenticalTuneFromDb(newTune)
-			if err == nil {
-				tune := &apimodel.ImportTune{}
-				err = copier.Copy(tune, tuneInDb)
-				if err != nil {
-					return fmt.Errorf("failed creating import newTune: %s", err.Error())
-				}
-
-				apiTunes = append(apiTunes, tune)
-				continue
-			}
-
-			createTune := apimodel.CreateTune{
-				Title:    newTune.Title,
-				Type:     newTune.Type,
-				TimeSig:  timeSigStr,
-				Composer: newTune.Composer,
-				Arranger: newTune.Arranger,
-			}
-			apiTune, err := d.CreateTune(createTune, importFile)
-			if err != nil {
-				return err
-			}
-			tuneFile, err := model.TuneFileFromTune(newTune)
-			if err != nil {
-				return err
-			}
-
-			if err = d.AddFileToTune(apiTune.Id, tuneFile); err != nil {
-				return err
-			}
-
-			if impTune.TuneFileData != nil {
-				tuneFile = &model.TuneFile{
-					Type:           fileInfo.FileType,
-					Data:           impTune.TuneFileData,
-					SingleTuneData: true,
-				}
-				if err = d.AddFileToTune(apiTune.Id, tuneFile); err != nil {
-					return err
-				}
-			}
-
-			importTune := &apimodel.ImportTune{}
-			err = copier.Copy(&importTune, apiTune)
-			if err != nil {
-				return err
-			}
-			setMessagesToApiTune(importTune, newTune)
-			apiTunes = append(apiTunes, importTune)
+		apiTunes, err = d.importTunes(tunes, importFile, fInfo.FileType)
+		if err != nil {
+			return err
 		}
 
-		var musicSet *apimodel.BasicMusicSet
-
-		if len(tunes) > 1 {
-			var apiSet *apimodel.MusicSet
-			var err error
-			var tuneIds []uuid.UUID
-			for _, apiTune := range apiTunes {
-				tuneIds = append(tuneIds, apiTune.Id)
-			}
-
-			musicSetTitle := musicSetTitleFromTunes(apiTunes)
-			apiSet, err = d.getMusicSetByTuneIds(tuneIds)
-			if errors.Is(err, common.NotFound) { // music set not yet in db
-				createSet := apimodel.CreateSet{
-					Title: musicSetTitle,
-					Tunes: tuneIds,
-				}
-				apiSet, err = d.CreateMusicSet(createSet, importFile)
-				if err != nil {
-					return fmt.Errorf("failed creating set for file %s: %s", fileInfo.Name, err.Error())
-				}
-			}
-
-			musicSet = &apimodel.BasicMusicSet{}
-			err = copier.Copy(musicSet, apiSet)
-			if err != nil {
-				return fmt.Errorf("failed creating basic music set from music set")
-			}
+		musicSet, err = d.createMusicSetForTunes(apiTunes, importFile)
+		if err != nil {
+			return err
 		}
 
 		return nil
-	})
+	}
+
+	err := d.db.Transaction(dbTx)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	return apiTunes, nil, nil
+	return apiTunes, musicSet, nil
+}
+
+func (d *dbService) importTunes(
+	tunes []*messages.ImportedTune,
+	importFile *model.ImportFile,
+	fType file_type.Type,
+) ([]*apimodel.ImportTune, error) {
+	var apiTunes []*apimodel.ImportTune
+	for _, impTune := range tunes {
+		importTune, err := d.importTune(impTune, importFile, fType)
+		if err != nil {
+			return nil, err
+		}
+		apiTunes = append(apiTunes, importTune)
+	}
+
+	return apiTunes, nil
+}
+
+// importTune imports a single tune to the database if it not already exists.
+// If it already exists, it returns the existing tune.
+func (d *dbService) importTune(
+	impTune *messages.ImportedTune,
+	importFile *model.ImportFile,
+	fType file_type.Type,
+) (*apimodel.ImportTune, error) {
+	existingTune, err := d.getImportTuneBySingleFileData(
+		impTune.TuneFileData,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if existingTune != nil {
+		return existingTune, nil
+	}
+
+	apiTune, err := d.createTuneWithFiles(impTune, importFile, fType)
+	if err != nil {
+		return nil, err
+	}
+
+	importTune := &apimodel.ImportTune{}
+	err = copier.Copy(&importTune, apiTune)
+	if err != nil {
+		return nil, err
+	}
+	setMessagesToAPITune(importTune, impTune.Tune)
+
+	return importTune, nil
+}
+
+func (d *dbService) createTuneWithFiles(
+	impTune *messages.ImportedTune,
+	importFile *model.ImportFile,
+	fType file_type.Type,
+) (*apimodel.Tune, error) {
+	t := impTune.Tune
+	createTune := apimodel.CreateTune{}
+	err := copier.Copy(&createTune, t)
+	if err != nil {
+		return nil, err
+	}
+	createTune.TimeSig = timeSigDisplayStringFromTune(t)
+
+	apiTune, err := d.CreateTune(createTune, importFile)
+	if err != nil {
+		return nil, err
+	}
+	muMoTuneFile, err := model.TuneFileFromMusicModelTune(t)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = d.AddFileToTune(apiTune.Id, muMoTuneFile); err != nil {
+		return nil, err
+	}
+
+	if impTune.TuneFileData != nil {
+		muMoTuneFile = &model.TuneFile{
+			Type:           fType,
+			Data:           impTune.TuneFileData,
+			SingleTuneData: true,
+		}
+		if err = d.AddFileToTune(apiTune.Id, muMoTuneFile); err != nil {
+			return nil, err
+		}
+	}
+
+	return apiTune, nil
+}
+
+func timeSigDisplayStringFromTune(
+	t *tune.Tune,
+) string {
+	timeSig := t.FirstTimeSignature()
+	if timeSig == nil {
+		return ""
+	}
+	return timeSig.DisplayString()
+}
+
+// getImportTuneBySingleFileData returns the imported tune from the database if there is one with the
+// same single tune file data. If there is none, it returns nil.
+// If the passed file data is empty, it returns an error.
+func (d *dbService) getImportTuneBySingleFileData(
+	fileData []byte,
+) (*apimodel.ImportTune, error) {
+	hasData, err := d.hasSingleTuneFileData(fileData)
+	if err != nil {
+		return nil, err
+	}
+
+	if !hasData {
+		return nil, nil
+	}
+
+	alreadyImportedTune, err := d.getTuneWithSingleFileData(fileData)
+	if err != nil {
+		return nil, err
+	}
+
+	if alreadyImportedTune != nil {
+		impTune := &apimodel.ImportTune{}
+		err = copier.Copy(impTune, alreadyImportedTune)
+		if err != nil {
+			return nil, fmt.Errorf("failed creating import tune from already imported tune: %s", err.Error())
+		}
+
+		return impTune, nil
+	}
+
+	return nil, nil
+}
+
+// createMusicSetForTunes creates a music set for the given tunes if it does not already exist.
+// It searches for a music set that contains all tunes in the given order. If it finds one,
+// it returns that set. If not, it creates a new music set.
+// It only creates a music set if there are more than one tunes given, otherwise it returns nil.
+func (d *dbService) createMusicSetForTunes(
+	tunes []*apimodel.ImportTune,
+	importFile *model.ImportFile,
+) (*apimodel.BasicMusicSet, error) {
+	if len(tunes) <= 1 {
+		return nil, nil
+	}
+
+	var apiSet *apimodel.MusicSet
+	var err error
+	var tuneIDs []uuid.UUID
+	for _, t := range tunes {
+		tuneIDs = append(tuneIDs, t.Id)
+	}
+
+	musicSetTitle := musicSetTitleFromTunes(tunes)
+	apiSet, err = d.getMusicSetByTuneIDs(tuneIDs)
+	if errors.Is(err, common.ErrNotFound) { // music set not yet in db
+		createSet := apimodel.CreateSet{
+			Title: musicSetTitle,
+			Tunes: tuneIDs,
+		}
+		apiSet, err = d.CreateMusicSet(createSet, importFile)
+		if err != nil {
+			return nil, fmt.Errorf("failed creating set for file %s: %s",
+				importFile.Name,
+				err.Error(),
+			)
+		}
+	}
+
+	musicSet := &apimodel.BasicMusicSet{}
+	err = copier.Copy(musicSet, apiSet)
+	if err != nil {
+		return nil, fmt.Errorf("failed creating basic music set from music set")
+	}
+
+	return musicSet, nil
 }
 
 func musicSetTitleFromTunes(tunes []*apimodel.ImportTune) string {
@@ -742,11 +909,11 @@ func musicSetTitleFromTunes(tunes []*apimodel.ImportTune) string {
 	}
 
 	var tuneTypes []string
-	for _, tune := range tunes {
-		if strings.TrimSpace(tune.Type) == "" {
+	for _, t := range tunes {
+		if strings.TrimSpace(t.Type) == "" {
 			tuneTypes = append(tuneTypes, "Unknown Type")
 		} else {
-			tuneTypes = append(tuneTypes, tune.Type)
+			tuneTypes = append(tuneTypes, t.Type)
 		}
 	}
 
@@ -755,15 +922,15 @@ func musicSetTitleFromTunes(tunes []*apimodel.ImportTune) string {
 
 func tuneTypesAndTimeSigsAreTheSame(tunes []*apimodel.ImportTune) bool {
 	var timeSig, tuneType string
-	for i, tune := range tunes {
+	for i, t := range tunes {
 		if i == 0 {
-			timeSig = tune.TimeSig
-			tuneType = tune.Type
+			timeSig = t.TimeSig
+			tuneType = t.Type
 			continue
 		}
 
-		if tune.TimeSig != timeSig ||
-			tune.Type != tuneType {
+		if t.TimeSig != timeSig ||
+			t.Type != tuneType {
 			return false
 		}
 	}
@@ -773,13 +940,13 @@ func tuneTypesAndTimeSigsAreTheSame(tunes []*apimodel.ImportTune) bool {
 
 func tuneTypesAreTheSame(tunes []*apimodel.ImportTune) bool {
 	var tuneType string
-	for i, tune := range tunes {
+	for i, t := range tunes {
 		if i == 0 {
-			tuneType = tune.Type
+			tuneType = t.Type
 			continue
 		}
 
-		if tune.Type != tuneType {
+		if t.Type != tuneType {
 			return false
 		}
 	}
@@ -801,25 +968,62 @@ func isMsr(tunes []*apimodel.ImportTune) bool {
 	return false
 }
 
-func apiTuneWithTitle(
-	title string,
-	apiTunes []*apimodel.ImportTune,
-) *apimodel.ImportTune {
-	if apiTunes == nil {
-		return nil
+// hasSingleTuneFileData true if a tune with the same single tune file data exists in the database.
+func (d *dbService) hasSingleTuneFileData(
+	data []byte,
+) (bool, error) {
+	if len(data) == 0 {
+		return false, nil
 	}
 
-	for _, tune := range apiTunes {
-		if tune.Title == title {
-			return tune
-		}
+	_, err := d.getSingleTuneFileByData(data)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return false, nil
 	}
-	return nil
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
 }
 
-func setMessagesToApiTune(apiTune *apimodel.ImportTune, tune *tune.Tune) {
-	messages := tune.ImportMessages()
-	for _, message := range messages {
+// getTuneWithSingleFileData returns the tune with the same single tune file data in database
+func (d *dbService) getTuneWithSingleFileData(
+	data []byte,
+) (*apimodel.Tune, error) {
+	if len(data) == 0 {
+		return nil, fmt.Errorf("no file data given to search for")
+	}
+
+	tf, err := d.getSingleTuneFileByData(data)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil // no tune with this data found => return nil for tune
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	ft, err := d.GetTune(tf.TuneID)
+	if err != nil {
+		return nil, err
+	}
+
+	return ft, nil
+}
+
+func (d *dbService) getSingleTuneFileByData(data []byte) (*model.TuneFile, error) {
+	tf := &model.TuneFile{}
+	if err := d.db.Where("data = ? AND single_tune_data IS TRUE", data).
+		First(tf).Error; err != nil {
+		return nil, err
+	}
+
+	return tf, nil
+}
+
+func setMessagesToAPITune(apiTune *apimodel.ImportTune, modelTune *tune.Tune) {
+	im := modelTune.ImportMessages()
+	for _, message := range im {
 		switch message.Severity {
 		case measure.Severity_Error:
 			apiTune.Errors = append(apiTune.Errors, message.Text)
@@ -831,40 +1035,40 @@ func setMessagesToApiTune(apiTune *apimodel.ImportTune, tune *tune.Tune) {
 	}
 }
 
-func (d *dbService) GetTuneFile(tuneId uuid.UUID, fType file_type.Type) (*model.TuneFile, error) {
+func (d *dbService) GetTuneFile(tuneID uuid.UUID, fType file_type.Type) (*model.TuneFile, error) {
 	tuneFile := &model.TuneFile{
-		TuneID: tuneId,
+		TuneID: tuneID,
 		Type:   fType,
 	}
 
 	if err := d.db.First(tuneFile).Error; err != nil {
-		return nil, common.NotFound
+		return nil, common.ErrNotFound
 	}
 
 	return tuneFile, nil
 }
 
-func (d *dbService) GetTuneFiles(tuneId uuid.UUID) ([]*model.TuneFile, error) {
-	var tune = &model.Tune{}
-	if err := d.db.First(tune, tuneId).Error; err != nil {
-		return nil, common.NotFound
+func (d *dbService) GetTuneFiles(tuneID uuid.UUID) ([]*model.TuneFile, error) {
+	var t = &model.Tune{}
+	if err := d.db.First(t, tuneID).Error; err != nil {
+		return nil, common.ErrNotFound
 	}
 
 	var tuneFiles []*model.TuneFile
-	if err := d.db.Where("tune_id = ?", tuneId).Find(&tuneFiles).Error; err != nil {
+	if err := d.db.Where("tune_id = ?", tuneID).Find(&tuneFiles).Error; err != nil {
 		return nil, err
 	}
 
 	return tuneFiles, nil
 }
 
-func (d *dbService) AddFileToTune(tuneId uuid.UUID, tFile *model.TuneFile) error {
-	var tune = &model.Tune{}
-	if err := d.db.First(tune, tuneId).Error; err != nil {
-		return common.NotFound
+func (d *dbService) AddFileToTune(tuneID uuid.UUID, tFile *model.TuneFile) error {
+	var t = &model.Tune{}
+	if err := d.db.First(t, tuneID).Error; err != nil {
+		return common.ErrNotFound
 	}
 
-	tFile.TuneID = tuneId
+	tFile.TuneID = tuneID
 
 	if err := d.db.Create(tFile).Error; err != nil {
 		return err
@@ -873,9 +1077,9 @@ func (d *dbService) AddFileToTune(tuneId uuid.UUID, tFile *model.TuneFile) error
 	return nil
 }
 
-func (d *dbService) DeleteFileFromTune(tuneId uuid.UUID, fType file_type.Type) error {
+func (d *dbService) DeleteFileFromTune(tuneID uuid.UUID, fType file_type.Type) error {
 	tuneFile := &model.TuneFile{
-		TuneID: tuneId,
+		TuneID: tuneID,
 		Type:   fType,
 	}
 	if err := d.db.Delete(tuneFile).Error; err != nil {
@@ -887,7 +1091,7 @@ func (d *dbService) DeleteFileFromTune(tuneId uuid.UUID, fType file_type.Type) e
 
 func NewDbDataService(
 	db *gorm.DB,
-	validator interfaces.ApiModelValidator,
+	validator interfaces.APIModelValidator,
 ) interfaces.DataService {
 	return &dbService{
 		db:        db,

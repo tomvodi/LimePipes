@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/tomvodi/limepipes/internal/config"
 	"github.com/tomvodi/limepipes/internal/interfaces"
-	"github.com/tomvodi/limepipes/internal/plugin_loader"
+	"github.com/tomvodi/limepipes/internal/pluginloader"
 	"github.com/tomvodi/limepipes/internal/utils"
 	"os"
 	"path/filepath"
@@ -27,7 +27,7 @@ var parserCmd = &cobra.Command{
 When given directory paths, it will import all files of that directory. It will also include 
 subdirectories when given the recursive flag.
 If a given file that has an extension which is not in the import-file-types, it will be ignored.`,
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		utils.SetupConsoleLogger()
 		err := checkForInvalidImportTypes()
 		if err != nil {
@@ -39,7 +39,7 @@ If a given file that has an extension which is not in the import-file-types, it 
 			return fmt.Errorf("failed init configuration: %s", err.Error())
 		}
 
-		pluginLoader := plugin_loader.NewPluginLoader()
+		pluginLoader := pluginloader.NewPluginLoader()
 		err = pluginLoader.LoadPluginsFromDir(cfg.PluginsDirectoryPath)
 		if err != nil {
 			log.Fatal().Err(err).Msg("failed loading plugins")
@@ -56,11 +56,11 @@ If a given file that has an extension which is not in the import-file-types, it 
 			log.Fatal().Err(err).Msgf("failed getting plugin for extension .bww")
 		}
 
-		allFiles, err := getAllFilesFromArgs(args)
+		allFiles, err := getAllFilesFromPaths(args)
 		if err != nil {
 			return fmt.Errorf("failed getting files: %s", err.Error())
 		}
-		if verbose {
+		if argVerbose {
 			log.Info().Msg("Processing files: ")
 			for _, file := range allFiles {
 				log.Info().Msg(file)
@@ -79,7 +79,7 @@ If a given file that has an extension which is not in the import-file-types, it 
 			return fmt.Errorf("failed creating output directory: %s", err.Error())
 		}
 
-		if verbose {
+		if argVerbose {
 			log.Info().Msgf("successful parsed files will be moved to: %s", OutputDir)
 		}
 
@@ -90,17 +90,17 @@ If a given file that has an extension which is not in the import-file-types, it 
 				return err
 			}
 
-			if verbose {
+			if argVerbose {
 				log.Info().Msgf("parsing file %d/%d %s", i+1, allFileCnt, file)
 			}
 			tunesImport, err := bwwPlugin.Import(fileData)
 			if err != nil {
-				if skipFailedFiles {
+				if argSkipFailedFiles {
 					log.Error().Err(err).Msgf("failed parsing file %s", file)
 					continue
-				} else {
-					return fmt.Errorf("failed parsing file %s: %v", file, err)
 				}
+
+				return fmt.Errorf("failed parsing file %s: %v", file, err)
 			}
 
 			if err == nil {
@@ -112,7 +112,7 @@ If a given file that has an extension which is not in the import-file-types, it 
 				}
 			}
 
-			if verbose {
+			if argVerbose {
 				log.Info().Msgf("(%d/%d) successfully parsed %d tunes from file %s",
 					i+1,
 					allFileCnt,

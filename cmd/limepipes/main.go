@@ -6,12 +6,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 	"github.com/tomvodi/limepipes/internal/api"
-	"github.com/tomvodi/limepipes/internal/api_gen"
+	"github.com/tomvodi/limepipes/internal/apigen"
 	"github.com/tomvodi/limepipes/internal/config"
 	"github.com/tomvodi/limepipes/internal/database"
 	"github.com/tomvodi/limepipes/internal/health"
 	"github.com/tomvodi/limepipes/internal/interfaces"
-	"github.com/tomvodi/limepipes/internal/plugin_loader"
+	"github.com/tomvodi/limepipes/internal/pluginloader"
 	"github.com/tomvodi/limepipes/internal/utils"
 	"gorm.io/gorm"
 )
@@ -35,7 +35,7 @@ func main() {
 		log.Fatal().Err(err).Msg("failed init configuration")
 	}
 
-	pluginLoader := plugin_loader.NewPluginLoader()
+	pluginLoader := pluginloader.NewPluginLoader()
 	err = pluginLoader.LoadPluginsFromDir(cfg.PluginsDirectoryPath)
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed loading plugins")
@@ -54,25 +54,25 @@ func main() {
 	}
 
 	ginValidator := api.NewGinValidator()
-	apiModelValidator := api.NewApiModelValidator(ginValidator)
+	apiModelValidator := api.NewAPIModelValidator(ginValidator)
 	dbService := database.NewDbDataService(db, apiModelValidator)
 	healthChecker, err := health.NewHealthCheck(cfg.HealthConfig(), db)
 	if err != nil {
 		panic(fmt.Sprintf("failed initializing health check: %s", err.Error()))
 	}
-	apiHandler := api.NewApiHandler(
+	apiHandler := api.NewAPIHandler(
 		dbService,
 		pluginLoader,
 		healthChecker,
 	)
 	engine := setupGinEngine()
-	router := api_gen.NewRouterWithGinEngine(
+	router := apigen.NewRouterWithGinEngine(
 		engine,
-		api_gen.ApiHandleFunctions{
+		apigen.ApiHandleFunctions{
 			ApiHandler: apiHandler,
 		},
 	)
 
-	log.Info().Msgf("listening on %s", cfg.ServerUrl)
-	log.Fatal().Err(router.RunTLS(cfg.ServerUrl, cfg.TlsCertPath, cfg.TlsCertKeyPath))
+	log.Info().Msgf("listening on %s", cfg.ServerURL)
+	log.Fatal().Err(router.RunTLS(cfg.ServerURL, cfg.TLSCertPath, cfg.TLSCertKeyPath))
 }

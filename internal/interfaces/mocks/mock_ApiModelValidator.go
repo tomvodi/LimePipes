@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	apimodel "github.com/tomvodi/limepipes/internal/api_gen/apimodel"
+	apimodel "github.com/tomvodi/limepipes/internal/apigen/apimodel"
 
 	mock "github.com/stretchr/testify/mock"
 )

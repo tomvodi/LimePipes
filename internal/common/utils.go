@@ -17,8 +17,8 @@ func FilenameFromPath(file string) string {
 	return strings.TrimSuffix(onlyFile, filepath.Ext(onlyFile))
 }
 
-func HashFromFile(filepath string) (string, error) {
-	f, err := os.Open(filepath)
+func HashFromFile(fp string) (string, error) {
+	f, err := os.Open(fp)
 	if err != nil {
 		return "", err
 	}
@@ -41,4 +41,16 @@ func HashFromData(data []byte) (string, error) {
 	}
 
 	return fmt.Sprintf("%x", hash.Sum(nil)), nil
+}
+
+func RemoveDuplicates[T comparable](sliceList []T) []T {
+	allKeys := make(map[T]bool)
+	list := []T{}
+	for _, item := range sliceList {
+		if _, value := allKeys[item]; !value {
+			allKeys[item] = true
+			list = append(list, item)
+		}
+	}
+	return list
 }

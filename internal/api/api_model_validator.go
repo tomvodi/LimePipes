@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/go-playground/validator/v10"
-	"github.com/tomvodi/limepipes/internal/api_gen/apimodel"
+	"github.com/tomvodi/limepipes/internal/apigen/apimodel"
 	"github.com/tomvodi/limepipes/internal/interfaces"
 )
 
@@ -18,9 +18,9 @@ func (v *apiModelValidator) ValidateUpdateSet(setUpd apimodel.UpdateSet) error {
 	return v.validator.Struct(setUpd)
 }
 
-func NewApiModelValidator(
+func NewAPIModelValidator(
 	validator *validator.Validate,
-) interfaces.ApiModelValidator {
+) interfaces.APIModelValidator {
 	return &apiModelValidator{
 		validator: validator,
 	}

@@ -21,18 +21,26 @@ func initViperConfigPaths(withParents bool) error {
 		return err
 	}
 
-	if filepath.Base(wd) != "limepipes" {
-		for i := 0; i < 3; i++ {
-			wd = filepath.Dir(wd)
+	addParentDirsUntilSourceRoot(wd, 3)
 
-			if filepath.Base(wd) == "limepipes" {
-				viper.AddConfigPath(wd)
+	return nil
+}
+
+// addParentDirsUntilSourceRoot goes maxDirUp directories up from the given dir
+// until it finds the source root directory called "limepipes" which then
+// it adds to the viper config paths.
+// If it doesn't find the source root directory, it will not add any paths.
+func addParentDirsUntilSourceRoot(dir string, maxDirUp int) {
+	if filepath.Base(dir) != "limepipes" {
+		for i := 0; i < maxDirUp; i++ {
+			dir = filepath.Dir(dir)
+
+			if filepath.Base(dir) == "limepipes" {
+				viper.AddConfigPath(dir)
 				break
 			}
 		}
 	}
-
-	return nil
 }
 
 func initViperConfig() {

@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	apimodel "github.com/tomvodi/limepipes/internal/api_gen/apimodel"
+	apimodel "github.com/tomvodi/limepipes/internal/apigen/apimodel"
 	common "github.com/tomvodi/limepipes/internal/common"
 
 	file_type "github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"

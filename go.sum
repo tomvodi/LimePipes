@@ -234,8 +234,6 @@ github.com/stretchr/testify v1.9.0 h1:HtqpIVDClZ4nwg75+f6Lvsy/wHu+3BoSGCbBAcpTsT
 github.com/stretchr/testify v1.9.0/go.mod h1:r2ic/lqez/lEtzL7wO/rwa5dbSLXVDPFyf8C91i36aY=
 github.com/subosito/gotenv v1.6.0 h1:9NlTDc1FTs4qu0DDq7AEtTPNw6SVm7uBMsUCUjABIf8=
 github.com/subosito/gotenv v1.6.0/go.mod h1:Dk4QP5c2W3ibzajGcXpNraDfq2IrhjMIvMSWPKKo0FU=
-github.com/tomvodi/limepipes-plugin-api v0.0.0-20240823063106-89f4ecb27e7b h1:vwk1e9k4j4eBZ9s6nEvP1Qyfq7Gva/PZCocQ8ndu8HM=
-github.com/tomvodi/limepipes-plugin-api v0.0.0-20240823063106-89f4ecb27e7b/go.mod h1:hJsT7DGbRLZGDavuFG/rNyYC9ofQQfkmP40xJ+BX7f0=
 github.com/tomvodi/limepipes-plugin-api v0.0.0-20240823091250-4b97c450b940 h1:sIEr4FP1RQRa/0HTM0whstf8PkoXDiZUQeGsKE1LzpE=
 github.com/tomvodi/limepipes-plugin-api v0.0.0-20240823091250-4b97c450b940/go.mod h1:hJsT7DGbRLZGDavuFG/rNyYC9ofQQfkmP40xJ+BX7f0=
 github.com/twitchyliquid64/golang-asm v0.15.1 h1:SU5vSMR7hnwNxj24w34ZyCi/FmDZTkS4MhqMhdFk5YI=
