@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
 	"github.com/tomvodi/limepipes/internal/apigen/apimodel"
 	api_interfaces "github.com/tomvodi/limepipes/internal/apigen/interfaces"
 	"github.com/tomvodi/limepipes/internal/common"
 	"github.com/tomvodi/limepipes/internal/interfaces"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"path/filepath"
 )
@@ -62,28 +64,12 @@ func (a *apiHandler) ImportFile(c *gin.Context) {
 		return
 	}
 
-	fileReader, err := iFile.Open()
+	fInfo, err := a.createImportFileInfo(iFile, fType)
 	if err != nil {
-		c.JSON(http.StatusBadRequest,
+		c.JSON(http.StatusInternalServerError,
 			apimodel.Error{
-				Message: fmt.Sprintf("failed open file %s for reading", iFile.Filename),
-			},
-		)
-		return
-	}
-	defer fileReader.Close()
-
-	fileData, err := io.ReadAll(fileReader)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError,
-			fmt.Sprintf("failed reading file %s: %s", iFile.Filename, err.Error()))
-		return
-	}
-
-	fInfo, err := common.NewImportFileInfo(iFile.Filename, fType, fileData)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError,
-			fmt.Sprintf("failed creating import file info for file %s: %s", iFile.Filename, err.Error()))
+				Message: err.Error(),
+			})
 		return
 	}
 	_, err = a.service.GetImportFileByHash(fInfo.Hash)
@@ -107,6 +93,29 @@ func (a *apiHandler) ImportFile(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, importResponse)
+}
+
+func (a *apiHandler) createImportFileInfo(
+	iFile *multipart.FileHeader,
+	fType file_type.Type,
+) (*common.ImportFileInfo, error) {
+	fileReader, err := iFile.Open()
+	if err != nil {
+		return nil, fmt.Errorf("failed open file %s for reading", iFile.Filename)
+	}
+	defer fileReader.Close()
+
+	fileData, err := io.ReadAll(fileReader)
+	if err != nil {
+		return nil, fmt.Errorf("failed reading file %s: %s", iFile.Filename, err.Error())
+	}
+
+	fInfo, err := common.NewImportFileInfo(iFile.Filename, fType, fileData)
+	if err != nil {
+		return nil, fmt.Errorf("failed creating import file info for file %s: %s", iFile.Filename, err.Error())
+	}
+
+	return fInfo, nil
 }
 
 func (a *apiHandler) importFile(

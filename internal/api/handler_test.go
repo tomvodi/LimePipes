@@ -25,6 +25,14 @@ import (
 	"net/http/httptest"
 )
 
+type multipartRequest struct {
+	Fieldname  string
+	Filename   string
+	Content    []byte
+	Endpoint   string
+	HTTPMethod string
+}
+
 var _ = Describe("Api handler", func() {
 	utils.SetupConsoleLogger()
 	var c *gin.Context
@@ -155,13 +163,13 @@ var _ = Describe("Api handler", func() {
 
 		When("fieldname is wrong", func() {
 			BeforeEach(func() {
-				c.Request = multipartRequestForFile(
-					"wrongfieldname",
-					"test.bww",
-					[]byte("test file content"),
-					"/imports",
-					http.MethodPost,
-				)
+				c.Request = multipartRequestForFile(multipartRequest{
+					Fieldname:  "wrongfieldname",
+					Filename:   "test.bww",
+					Content:    []byte("test file content"),
+					Endpoint:   "/imports",
+					HTTPMethod: http.MethodPost,
+				})
 			})
 
 			It("should return BadRequest", func() {
@@ -172,13 +180,13 @@ var _ = Describe("Api handler", func() {
 
 		When("file has no extension", func() {
 			BeforeEach(func() {
-				c.Request = multipartRequestForFile(
-					"file",
-					"test",
-					[]byte("test file content"),
-					"/imports",
-					http.MethodPost,
-				)
+				c.Request = multipartRequestForFile(multipartRequest{
+					Fieldname:  "file",
+					Filename:   "test",
+					Content:    []byte("test file content"),
+					Endpoint:   "/imports",
+					HTTPMethod: http.MethodPost,
+				})
 			})
 
 			It("should return BadRequest", func() {
@@ -189,13 +197,13 @@ var _ = Describe("Api handler", func() {
 
 		When("file extension is not supported", func() {
 			BeforeEach(func() {
-				c.Request = multipartRequestForFile(
-					"file",
-					"test.abc",
-					[]byte("test file content"),
-					"/imports",
-					http.MethodPost,
-				)
+				c.Request = multipartRequestForFile(multipartRequest{
+					Fieldname:  "file",
+					Filename:   "test.abc",
+					Content:    []byte("test file content"),
+					Endpoint:   "/imports",
+					HTTPMethod: http.MethodPost,
+				})
 				pluginLoader.EXPECT().FileTypeForFileExtension(".abc").
 					Return(file_type.Type_Unknown, fmt.Errorf("file extension .abc is not supported"))
 			})
@@ -208,13 +216,13 @@ var _ = Describe("Api handler", func() {
 
 		When("file was already imported", func() {
 			BeforeEach(func() {
-				c.Request = multipartRequestForFile(
-					"file",
-					"test.bww",
-					[]byte("test file content"),
-					"/imports",
-					http.MethodPost,
-				)
+				c.Request = multipartRequestForFile(multipartRequest{
+					Fieldname:  "file",
+					Filename:   "test.bww",
+					Content:    []byte("test file content"),
+					Endpoint:   "/imports",
+					HTTPMethod: http.MethodPost,
+				})
 				pluginLoader.EXPECT().FileTypeForFileExtension(".bww").
 					Return(file_type.Type_BWW, nil)
 				dataService.EXPECT().GetImportFileByHash("60f5237ed4049f0382661ef009d2bc42e48c3ceb3edb6600f7024e7ab3b838f3").
@@ -229,13 +237,13 @@ var _ = Describe("Api handler", func() {
 
 		When("there is no plugin for the file extension", func() {
 			BeforeEach(func() {
-				c.Request = multipartRequestForFile(
-					"file",
-					"test.bww",
-					[]byte("test file content"),
-					"/imports",
-					http.MethodPost,
-				)
+				c.Request = multipartRequestForFile(multipartRequest{
+					Fieldname:  "file",
+					Filename:   "test.bww",
+					Content:    []byte("test file content"),
+					Endpoint:   "/imports",
+					HTTPMethod: http.MethodPost,
+				})
 				pluginLoader.EXPECT().FileTypeForFileExtension(".bww").
 					Return(file_type.Type_BWW, nil)
 				dataService.EXPECT().GetImportFileByHash("60f5237ed4049f0382661ef009d2bc42e48c3ceb3edb6600f7024e7ab3b838f3").
@@ -252,13 +260,13 @@ var _ = Describe("Api handler", func() {
 
 		When("plugin fails parsing the file", func() {
 			BeforeEach(func() {
-				c.Request = multipartRequestForFile(
-					"file",
-					"test.bww",
-					[]byte("test file content"),
-					"/imports",
-					http.MethodPost,
-				)
+				c.Request = multipartRequestForFile(multipartRequest{
+					Fieldname:  "file",
+					Filename:   "test.bww",
+					Content:    []byte("test file content"),
+					Endpoint:   "/imports",
+					HTTPMethod: http.MethodPost,
+				})
 				pluginLoader.EXPECT().FileTypeForFileExtension(".bww").
 					Return(file_type.Type_BWW, nil)
 				dataService.EXPECT().GetImportFileByHash("60f5237ed4049f0382661ef009d2bc42e48c3ceb3edb6600f7024e7ab3b838f3").
@@ -277,13 +285,13 @@ var _ = Describe("Api handler", func() {
 
 		When("plugin successfully parses the file", func() {
 			BeforeEach(func() {
-				c.Request = multipartRequestForFile(
-					"file",
-					"test.bww",
-					[]byte("test file content"),
-					"/imports",
-					http.MethodPost,
-				)
+				c.Request = multipartRequestForFile(multipartRequest{
+					Fieldname:  "file",
+					Filename:   "test.bww",
+					Content:    []byte("test file content"),
+					Endpoint:   "/imports",
+					HTTPMethod: http.MethodPost,
+				})
 				pluginLoader.EXPECT().FileTypeForFileExtension(".bww").
 					Return(file_type.Type_BWW, nil)
 				dataService.EXPECT().GetImportFileByHash("60f5237ed4049f0382661ef009d2bc42e48c3ceb3edb6600f7024e7ab3b838f3").
@@ -327,23 +335,19 @@ var _ = Describe("Api handler", func() {
 })
 
 func multipartRequestForFile(
-	fieldname string,
-	filename string,
-	content []byte,
-	endpoint string,
-	httpMethod string,
+	req multipartRequest,
 ) *http.Request {
 	body := new(bytes.Buffer)
 	mulWriter := multipart.NewWriter(body)
-	dataPart, err := mulWriter.CreateFormFile(fieldname, filename)
+	dataPart, err := mulWriter.CreateFormFile(req.Fieldname, req.Filename)
 	Expect(err).NotTo(HaveOccurred())
 
-	_, err = dataPart.Write(content)
+	_, err = dataPart.Write(req.Content)
 	Expect(err).NotTo(HaveOccurred())
 	err = mulWriter.Close()
 	Expect(err).NotTo(HaveOccurred())
 
-	r, err := http.NewRequest(httpMethod, endpoint, body)
+	r, err := http.NewRequest(req.HTTPMethod, req.Endpoint, body)
 	Expect(err).NotTo(HaveOccurred())
 	r.Header.Set("Content-Type", mulWriter.FormDataContentType())
 
