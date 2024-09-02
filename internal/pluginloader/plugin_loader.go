@@ -11,20 +11,19 @@ import (
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/grpc_plugin"
 	plugininterfaces "github.com/tomvodi/limepipes-plugin-api/plugin/v1/interfaces"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
-	"github.com/tomvodi/limepipes/internal/interfaces"
 	"golang.org/x/exp/maps"
 	"os"
 	"os/exec"
 	"path/filepath"
 )
 
-type loader struct {
+type Loader struct {
 	pluginClients map[string]*plugin.Client
 	plugins       map[string]plugininterfaces.LimePipesPlugin
 	pluginInfos   map[string]*messages.PluginInfoResponse
 }
 
-func (l *loader) FileTypeForFileExtension(fileExtension string) (file_type.Type, error) {
+func (l *Loader) FileTypeForFileExtension(fileExtension string) (file_type.Type, error) {
 	if len(l.pluginInfos) == 0 {
 		return file_type.Type_Unknown, errors.New("no plugins loaded")
 	}
@@ -41,7 +40,7 @@ func (l *loader) FileTypeForFileExtension(fileExtension string) (file_type.Type,
 		fmt.Errorf("no plugin found that handles file extension '%s'", fileExtension)
 }
 
-func (l *loader) UnloadPlugins() error {
+func (l *Loader) UnloadPlugins() error {
 	for pID, client := range l.pluginClients {
 		delete(l.plugins, pID)
 
@@ -52,11 +51,11 @@ func (l *loader) UnloadPlugins() error {
 	return nil
 }
 
-func (l *loader) LoadedPlugins() []*messages.PluginInfoResponse {
+func (l *Loader) LoadedPlugins() []*messages.PluginInfoResponse {
 	return maps.Values(l.pluginInfos)
 }
 
-func (l *loader) LoadPluginsFromDir(
+func (l *Loader) LoadPluginsFromDir(
 	pluginsDir string,
 ) error {
 	allPlugins := l.buildPluginSet()
@@ -70,14 +69,14 @@ func (l *loader) LoadPluginsFromDir(
 	return nil
 }
 
-func (l *loader) buildPluginSet() plugin.PluginSet {
+func (l *Loader) buildPluginSet() plugin.PluginSet {
 	allPlugins := plugin.PluginSet{}
 	allPlugins["bww"] = grpc_plugin.NewGrpcPlugin(nil)
 
 	return allPlugins
 }
 
-func (l *loader) loadPlugin(
+func (l *Loader) loadPlugin(
 	pluginDir string,
 	pluginID string,
 	goPlug plugin.Plugin,
@@ -131,7 +130,10 @@ func (l *loader) loadPlugin(
 	return nil
 }
 
-func (l *loader) PluginForFileExtension(
+// PluginForFileExtension returns the plugin that can handle the given file extension.
+// nolint: ireturn
+// linter exception is ok here, as the PluginLoader interface returns an interface here
+func (l *Loader) PluginForFileExtension(
 	fileExtension string,
 ) (plugininterfaces.LimePipesPlugin, error) {
 	for s, pInfo := range l.pluginInfos {
@@ -145,8 +147,8 @@ func (l *loader) PluginForFileExtension(
 	return nil, fmt.Errorf("no plugin found for file extension '%s'", fileExtension)
 }
 
-func NewPluginLoader() interfaces.PluginLoader {
-	return &loader{
+func NewPluginLoader() *Loader {
+	return &Loader{
 		pluginClients: map[string]*plugin.Client{},
 		plugins:       map[string]plugininterfaces.LimePipesPlugin{},
 		pluginInfos:   map[string]*messages.PluginInfoResponse{},

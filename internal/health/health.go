@@ -7,19 +7,18 @@ import (
 	"github.com/alexliesenfeld/health/middleware"
 	"github.com/rs/zerolog/log"
 	"github.com/tomvodi/limepipes/internal/config"
-	"github.com/tomvodi/limepipes/internal/interfaces"
 	"gorm.io/gorm"
 	"net/http"
 	"time"
 )
 
-type healthCheck struct {
+type Check struct {
 	cfg         config.HealthConfig
 	gormDb      *gorm.DB
 	httpHandler http.Handler
 }
 
-func (h *healthCheck) GetCheckHandler() (http.Handler, error) {
+func (h *Check) GetCheckHandler() (http.Handler, error) {
 	if h.httpHandler == nil {
 		return nil, fmt.Errorf("health check handler not initialized")
 	}
@@ -27,7 +26,7 @@ func (h *healthCheck) GetCheckHandler() (http.Handler, error) {
 	return h.httpHandler, nil
 }
 
-func (h *healthCheck) init() error {
+func (h *Check) init() error {
 	db, err := h.gormDb.DB()
 	if err != nil {
 		return err
@@ -71,8 +70,8 @@ func (h *healthCheck) init() error {
 func NewHealthCheck(
 	cfg config.HealthConfig,
 	gormDb *gorm.DB,
-) (interfaces.HealthChecker, error) {
-	checker := &healthCheck{
+) (*Check, error) {
+	checker := &Check{
 		cfg:    cfg,
 		gormDb: gormDb,
 	}

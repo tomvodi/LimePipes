@@ -33,11 +33,11 @@ type multipartRequest struct {
 	HTTPMethod string
 }
 
-var _ = Describe("Api handler", func() {
+var _ = Describe("Api Handler", func() {
 	utils.SetupConsoleLogger()
 	var c *gin.Context
 	var httpRec *httptest.ResponseRecorder
-	var api *apiHandler
+	var api *Handler
 	var testID1 uuid.UUID
 	var dataService *mocks.DataService
 	var pluginLoader *mocks.PluginLoader
@@ -51,7 +51,7 @@ var _ = Describe("Api handler", func() {
 		dataService = mocks.NewDataService(GinkgoT())
 		pluginLoader = mocks.NewPluginLoader(GinkgoT())
 		lpPlugin = pmocks.NewLimePipesPlugin(GinkgoT())
-		api = &apiHandler{
+		api = &Handler{
 			service:      dataService,
 			pluginLoader: pluginLoader,
 		}
