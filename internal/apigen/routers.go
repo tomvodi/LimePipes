@@ -28,11 +28,6 @@ type Route struct {
 	HandlerFunc gin.HandlerFunc
 }
 
-// NewRouter returns a new router.
-func NewRouter(handleFunctions ApiHandleFunctions) *gin.Engine {
-	return NewRouterWithGinEngine(gin.Default(), handleFunctions)
-}
-
 // NewRouter add routes to existing gin engine.
 func NewRouterWithGinEngine(router *gin.Engine, handleFunctions ApiHandleFunctions) *gin.Engine {
 	for _, route := range getRoutes(handleFunctions) {

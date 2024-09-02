@@ -45,7 +45,7 @@ func HashFromData(data []byte) (string, error) {
 
 func RemoveDuplicates[T comparable](sliceList []T) []T {
 	allKeys := make(map[T]bool)
-	list := []T{}
+	var list []T
 	for _, item := range sliceList {
 		if _, value := allKeys[item]; !value {
 			allKeys[item] = true
