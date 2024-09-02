@@ -5,8 +5,6 @@ package mocks
 import (
 	file_type "github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
 
-	messages "github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
-
 	mock "github.com/stretchr/testify/mock"
 
 	v1interfaces "github.com/tomvodi/limepipes-plugin-api/plugin/v1/interfaces"
@@ -123,53 +121,6 @@ func (_c *PluginLoader_LoadPluginsFromDir_Call) Return(_a0 error) *PluginLoader_
 }
 
 func (_c *PluginLoader_LoadPluginsFromDir_Call) RunAndReturn(run func(string) error) *PluginLoader_LoadPluginsFromDir_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// LoadedPlugins provides a mock function with given fields:
-func (_m *PluginLoader) LoadedPlugins() []*messages.PluginInfoResponse {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for LoadedPlugins")
-	}
-
-	var r0 []*messages.PluginInfoResponse
-	if rf, ok := ret.Get(0).(func() []*messages.PluginInfoResponse); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*messages.PluginInfoResponse)
-		}
-	}
-
-	return r0
-}
-
-// PluginLoader_LoadedPlugins_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'LoadedPlugins'
-type PluginLoader_LoadedPlugins_Call struct {
-	*mock.Call
-}
-
-// LoadedPlugins is a helper method to define mock.On call
-func (_e *PluginLoader_Expecter) LoadedPlugins() *PluginLoader_LoadedPlugins_Call {
-	return &PluginLoader_LoadedPlugins_Call{Call: _e.mock.On("LoadedPlugins")}
-}
-
-func (_c *PluginLoader_LoadedPlugins_Call) Run(run func()) *PluginLoader_LoadedPlugins_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *PluginLoader_LoadedPlugins_Call) Return(_a0 []*messages.PluginInfoResponse) *PluginLoader_LoadedPlugins_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *PluginLoader_LoadedPlugins_Call) RunAndReturn(run func() []*messages.PluginInfoResponse) *PluginLoader_LoadedPlugins_Call {
 	_c.Call.Return(run)
 	return _c
 }

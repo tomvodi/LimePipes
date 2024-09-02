@@ -23,9 +23,6 @@ check-coverage: install-go-test-coverage
 lint:
 	golangci-lint run
 
-cover-html: test-cover
-	go tool cover -html=cover.out
-
 server:
 	./scripts/generate_server.sh
 

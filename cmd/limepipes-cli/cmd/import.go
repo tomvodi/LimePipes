@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/rs/zerolog/log"
+	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 	"github.com/tomvodi/limepipes/internal/api"
 	"github.com/tomvodi/limepipes/internal/common"
@@ -32,12 +33,24 @@ If a given file that has an extension which is not in the import-file-types, it 
 	Args: cobra.MinimumNArgs(1),
 	RunE: func(_ *cobra.Command, paths []string) error {
 		utils.SetupConsoleLogger()
+		fs := afero.NewOsFs()
+
 		cfg, err := config.Init()
 		if err != nil {
 			return fmt.Errorf("failed init configuration: %s", err.Error())
 		}
 
-		pluginLoader := pluginloader.NewPluginLoader()
+		// TODO: Load plugins from config
+		LoadPlugins := []string{
+			"bww",
+		}
+
+		var pluginProcHandler interfaces.PluginProcessHandler = pluginloader.NewProcessHandler(LoadPlugins)
+		var pluginLoader interfaces.PluginLoader = pluginloader.NewPluginLoader(
+			fs,
+			pluginProcHandler,
+			LoadPlugins,
+		)
 		err = pluginLoader.LoadPluginsFromDir(cfg.PluginsDirectoryPath)
 		if err != nil {
 			log.Fatal().Err(err).Msg("failed loading plugins")
