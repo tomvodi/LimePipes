@@ -1,3 +1,4 @@
+GOBIN ?= $$(go env GOPATH)/bin
 
 .PHONY: test test-cover lint cover-html server
 
@@ -10,8 +11,14 @@ mocks:
 test:
 	go test ./...
 
-test-cover:
-	go test ./... -coverprofile cover.out
+.PHONY: install-go-test-coverage
+install-go-test-coverage:
+	go install github.com/vladopajic/go-test-coverage/v2@latest
+
+.PHONY: check-coverage
+check-coverage: install-go-test-coverage
+	go test ./... -coverprofile=./cover.out -covermode=atomic -coverpkg=./...
+	${GOBIN}/go-test-coverage --config=./.testcoverage.yaml
 
 lint:
 	golangci-lint run
