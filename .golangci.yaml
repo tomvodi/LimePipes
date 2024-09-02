@@ -4,6 +4,7 @@ run:
 linters:
   enable:
     - revive
+    - ireturn
 
 issues:
   exclude-dirs:
