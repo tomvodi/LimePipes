@@ -22,13 +22,13 @@ var _ = Describe("DbDataService CRUD", func() {
 	var cfg *config.Config
 	var service *Service
 	var gormDb *gorm.DB
-	var validator *mocks.ApiModelValidator
+	var validator *mocks.APIModelValidator
 
 	BeforeEach(func() {
 		cfg, err = config.InitTest()
 		Expect(err).ShouldNot(HaveOccurred())
 		gormDb, err = GetInitTestPostgreSQLDB(cfg.DbConfig(), "testdb")
-		validator = mocks.NewApiModelValidator(GinkgoT())
+		validator = mocks.NewAPIModelValidator(GinkgoT())
 
 		service = &Service{
 			db:        gormDb,
