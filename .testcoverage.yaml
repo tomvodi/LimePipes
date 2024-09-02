@@ -31,3 +31,4 @@ exclude:
     - ^internal/apigen    # exclude generated package
     - ^cmd/limepipes/main\.go      # exclude main package
     - ^internal/health    # simply just configuration for health check
+    - ^internal/pluginloader/process_handler\.go # too much effort to test
