@@ -13,7 +13,7 @@ import (
 var _ = Describe("DbDataService", func() {
 	var err error
 	var cfg *config.Config
-	var service *dbService
+	var service *Service
 	var gormDb *gorm.DB
 	var validator *mocks.ApiModelValidator
 	var tune1 *apimodel.Tune
@@ -28,7 +28,7 @@ var _ = Describe("DbDataService", func() {
 		gormDb, err = GetInitTestPostgreSQLDB(cfg.DbConfig(), "testdb")
 		validator = mocks.NewApiModelValidator(GinkgoT())
 
-		service = &dbService{
+		service = &Service{
 			db:        gormDb,
 			validator: validator,
 		}

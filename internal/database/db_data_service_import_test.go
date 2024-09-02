@@ -20,7 +20,7 @@ var _ = Describe("DbDataService Import", func() {
 	var returnSet *apimodel.BasicMusicSet
 	var tuneFile *model.TuneFile
 	var tuneFileTune *tune.Tune
-	var service *dbService
+	var service *Service
 	var importTunes []*messages.ImportedTune
 	var musicSet *apimodel.MusicSet
 	var fileInfo *common.ImportFileInfo
@@ -32,7 +32,7 @@ var _ = Describe("DbDataService Import", func() {
 		gormDb, err = GetInitTestPostgreSQLDB(cfg.DbConfig(), "testdb")
 		Expect(err).ShouldNot(HaveOccurred())
 
-		service = &dbService{db: gormDb}
+		service = &Service{db: gormDb}
 	})
 
 	AfterEach(func() {

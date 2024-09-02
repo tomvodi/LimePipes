@@ -7,7 +7,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
 	"github.com/tomvodi/limepipes/internal/apigen/apimodel"
-	api_interfaces "github.com/tomvodi/limepipes/internal/apigen/interfaces"
 	"github.com/tomvodi/limepipes/internal/common"
 	"github.com/tomvodi/limepipes/internal/interfaces"
 	"io"
@@ -16,17 +15,17 @@ import (
 	"path/filepath"
 )
 
-type apiHandler struct {
+type Handler struct {
 	service       interfaces.DataService
 	pluginLoader  interfaces.PluginLoader
 	healthChecker interfaces.HealthChecker
 }
 
-func (a *apiHandler) Home(c *gin.Context) {
+func (a *Handler) Home(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-func (a *apiHandler) Health(c *gin.Context) {
+func (a *Handler) Health(c *gin.Context) {
 	handler, err := a.healthChecker.GetCheckHandler()
 	if err != nil {
 		httpErrorResponse(c, http.StatusInternalServerError, err)
@@ -37,7 +36,7 @@ func (a *apiHandler) Health(c *gin.Context) {
 	handleFunc(c)
 }
 
-func (a *apiHandler) ImportFile(c *gin.Context) {
+func (a *Handler) ImportFile(c *gin.Context) {
 	iFile, err := c.FormFile("file")
 	if err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
@@ -95,7 +94,7 @@ func (a *apiHandler) ImportFile(c *gin.Context) {
 	c.JSON(http.StatusOK, importResponse)
 }
 
-func (a *apiHandler) createImportFileInfo(
+func (a *Handler) createImportFileInfo(
 	iFile *multipart.FileHeader,
 	fType file_type.Type,
 ) (*common.ImportFileInfo, error) {
@@ -118,7 +117,7 @@ func (a *apiHandler) createImportFileInfo(
 	return fInfo, nil
 }
 
-func (a *apiHandler) importFile(
+func (a *Handler) importFile(
 	fInfo *common.ImportFileInfo,
 	fileExt string,
 ) ([]*apimodel.ImportTune, *apimodel.BasicMusicSet, error) {
@@ -152,11 +151,11 @@ func handleResponseForError(c *gin.Context, err error) {
 	})
 }
 
-func (a *apiHandler) Index(c *gin.Context) {
+func (a *Handler) Index(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{})
 }
 
-func (a *apiHandler) CreateTune(c *gin.Context) {
+func (a *Handler) CreateTune(c *gin.Context) {
 	var createTune apimodel.CreateTune
 	if err := c.ShouldBindJSON(&createTune); err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
@@ -172,7 +171,7 @@ func (a *apiHandler) CreateTune(c *gin.Context) {
 	c.JSON(http.StatusOK, tune)
 }
 
-func (a *apiHandler) GetTune(c *gin.Context) {
+func (a *Handler) GetTune(c *gin.Context) {
 	tuneID, err := uuid.Parse(c.Param("tuneID"))
 	if err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
@@ -188,7 +187,7 @@ func (a *apiHandler) GetTune(c *gin.Context) {
 	c.JSON(http.StatusOK, tune)
 }
 
-func (a *apiHandler) ListTunes(c *gin.Context) {
+func (a *Handler) ListTunes(c *gin.Context) {
 	tunes, err := a.service.Tunes()
 	if err != nil {
 		httpErrorResponse(c, http.StatusInternalServerError, err)
@@ -197,7 +196,7 @@ func (a *apiHandler) ListTunes(c *gin.Context) {
 	c.JSON(http.StatusOK, tunes)
 }
 
-func (a *apiHandler) UpdateTune(c *gin.Context) {
+func (a *Handler) UpdateTune(c *gin.Context) {
 	var updateTune apimodel.UpdateTune
 	if err := c.ShouldBindJSON(&updateTune); err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
@@ -219,7 +218,7 @@ func (a *apiHandler) UpdateTune(c *gin.Context) {
 	c.JSON(http.StatusOK, tune)
 }
 
-func (a *apiHandler) DeleteTune(c *gin.Context) {
+func (a *Handler) DeleteTune(c *gin.Context) {
 	tuneID, err := uuid.Parse(c.Param("tuneID"))
 	if err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
@@ -234,7 +233,7 @@ func (a *apiHandler) DeleteTune(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-func (a *apiHandler) CreateSet(c *gin.Context) {
+func (a *Handler) CreateSet(c *gin.Context) {
 	var createSet apimodel.CreateSet
 
 	if err := c.ShouldBindJSON(&createSet); err != nil {
@@ -251,7 +250,7 @@ func (a *apiHandler) CreateSet(c *gin.Context) {
 	c.JSON(http.StatusOK, set)
 }
 
-func (a *apiHandler) GetSet(c *gin.Context) {
+func (a *Handler) GetSet(c *gin.Context) {
 	setID, err := uuid.Parse(c.Param("setID"))
 	if err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
@@ -267,7 +266,7 @@ func (a *apiHandler) GetSet(c *gin.Context) {
 	c.JSON(http.StatusOK, set)
 }
 
-func (a *apiHandler) ListSets(c *gin.Context) {
+func (a *Handler) ListSets(c *gin.Context) {
 	sets, err := a.service.MusicSets()
 	if err != nil {
 		httpErrorResponse(c, http.StatusInternalServerError, err)
@@ -276,7 +275,7 @@ func (a *apiHandler) ListSets(c *gin.Context) {
 	c.JSON(http.StatusOK, sets)
 }
 
-func (a *apiHandler) UpdateSet(c *gin.Context) {
+func (a *Handler) UpdateSet(c *gin.Context) {
 	var updateSet apimodel.UpdateSet
 	if err := c.ShouldBindJSON(&updateSet); err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
@@ -297,7 +296,7 @@ func (a *apiHandler) UpdateSet(c *gin.Context) {
 	c.JSON(http.StatusOK, set)
 }
 
-func (a *apiHandler) DeleteSet(c *gin.Context) {
+func (a *Handler) DeleteSet(c *gin.Context) {
 	setID, err := uuid.Parse(c.Param("setID"))
 	if err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
@@ -312,7 +311,7 @@ func (a *apiHandler) DeleteSet(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-func (a *apiHandler) AssignTunesToSet(c *gin.Context) {
+func (a *Handler) AssignTunesToSet(c *gin.Context) {
 	var tuneIDs []uuid.UUID
 	if err := c.ShouldBindJSON(&tuneIDs); err != nil {
 		httpErrorResponse(c, http.StatusBadRequest, err)
@@ -338,8 +337,8 @@ func NewAPIHandler(
 	service interfaces.DataService,
 	pluginLoader interfaces.PluginLoader,
 	healthChecker interfaces.HealthChecker,
-) api_interfaces.ApiHandler {
-	return &apiHandler{
+) *Handler {
+	return &Handler{
 		service:       service,
 		pluginLoader:  pluginLoader,
 		healthChecker: healthChecker,
