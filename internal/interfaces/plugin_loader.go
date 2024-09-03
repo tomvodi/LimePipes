@@ -9,5 +9,6 @@ type PluginLoader interface {
 	LoadPluginsFromDir(pluginsDir string) error
 	UnloadPlugins() error
 	PluginForFileExtension(fileExtension string) (interfaces.LimePipesPlugin, error)
-	FileTypeForFileExtension(fileExtension string) (fileformat.Format, error)
+	FileExtensionsForFileFormat(format fileformat.Format) ([]string, error)
+	FileFormatForFileExtension(fileExtension string) (fileformat.Format, error)
 }

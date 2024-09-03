@@ -1,8 +1,8 @@
 package common
 
 import (
+	"github.com/spf13/afero"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/fileformat"
-	"os"
 )
 
 type ImportFileInfo struct {
@@ -14,15 +14,16 @@ type ImportFileInfo struct {
 }
 
 func NewImportFileInfoFromLocalFile(
+	afs afero.Fs,
 	originalPath string,
 	fFormat fileformat.Format,
 ) (*ImportFileInfo, error) {
-	fHash, err := HashFromFile(originalPath)
+	fHash, err := HashFromFile(afs, originalPath)
 	if err != nil {
 		return nil, err
 	}
 
-	fileData, err := os.ReadFile(originalPath)
+	fileData, err := afero.ReadFile(afs, originalPath)
 	if err != nil {
 		return nil, err
 	}

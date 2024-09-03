@@ -2,6 +2,7 @@ package common
 
 import (
 	. "github.com/onsi/gomega"
+	"github.com/spf13/afero"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/fileformat"
 	"github.com/tomvodi/limepipes/internal/utils"
 	"testing"
@@ -43,7 +44,11 @@ func Test_NewImportFileInfoFromLocalFile(t *testing.T) {
 				tt.prepare(f)
 			}
 
-			fileInfo, err := NewImportFileInfoFromLocalFile(f.originalPath, fileformat.Format_BWW)
+			fileInfo, err := NewImportFileInfoFromLocalFile(
+				afero.NewOsFs(),
+				f.originalPath,
+				fileformat.Format_BWW,
+			)
 			if f.wantErr {
 				g.Expect(err).Should(HaveOccurred())
 			} else {

@@ -15,13 +15,13 @@ import (
 )
 
 type Loader struct {
-	fs               afero.Fs
+	afs              afero.Fs
 	processHandler   interfaces.PluginProcessHandler
 	supportedPlugins []string
 	pluginInfos      map[string]*messages.PluginInfoResponse
 }
 
-func (l *Loader) FileTypeForFileExtension(fileExtension string) (fileformat.Format, error) {
+func (l *Loader) FileFormatForFileExtension(fileExtension string) (fileformat.Format, error) {
 	if len(l.pluginInfos) == 0 {
 		return fileformat.Format_Unknown, errors.New("no plugins loaded")
 	}
@@ -66,7 +66,7 @@ func (l *Loader) loadPlugin(
 	pluginExeName := fmt.Sprintf("limepipes-plugin-%s", pluginID)
 	pluginExePath := filepath.Join(pluginDir, pluginExeName)
 
-	if _, err := l.fs.Stat(pluginExePath); errors.Is(err, os.ErrNotExist) {
+	if _, err := l.afs.Stat(pluginExePath); errors.Is(err, os.ErrNotExist) {
 		return fmt.Errorf("plugin executable '%s' does not exist", pluginExePath)
 	}
 
@@ -110,13 +110,25 @@ func (l *Loader) PluginForFileExtension(
 	return nil, fmt.Errorf("no plugin found for file extension '%s'", fileExtension)
 }
 
+func (l *Loader) FileExtensionsForFileFormat(
+	format fileformat.Format,
+) ([]string, error) {
+	for _, pInfo := range l.pluginInfos {
+		if pInfo.FileFormat == format {
+			return pInfo.FileExtensions, nil
+		}
+	}
+
+	return nil, fmt.Errorf("no plugin found for file format '%s'", format.String())
+}
+
 func NewPluginLoader(
-	fs afero.Fs,
+	afs afero.Fs,
 	processHandler interfaces.PluginProcessHandler,
 	supportedPlugins []string,
 ) *Loader {
 	return &Loader{
-		fs:               fs,
+		afs:              afs,
 		processHandler:   processHandler,
 		supportedPlugins: supportedPlugins,
 		pluginInfos:      map[string]*messages.PluginInfoResponse{},

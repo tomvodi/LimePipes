@@ -32,7 +32,7 @@ var _ = Describe("Pluginloader", func() {
 		lpPlugin = pimocks.NewLimePipesPlugin(GinkgoT())
 
 		loader = &Loader{
-			fs:               fs,
+			afs:              fs,
 			processHandler:   processHandler,
 			supportedPlugins: []string{pluginID},
 			pluginInfos:      make(map[string]*messages.PluginInfoResponse),
@@ -118,7 +118,7 @@ var _ = Describe("Pluginloader", func() {
 					When("getting the file type for an unhandled file extension", func() {
 						var ff fileformat.Format
 						JustBeforeEach(func() {
-							ff, err = loader.FileTypeForFileExtension(".xxx")
+							ff, err = loader.FileFormatForFileExtension(".xxx")
 						})
 
 						It("should return an error", func() {
@@ -130,7 +130,7 @@ var _ = Describe("Pluginloader", func() {
 					When("getting the file type for a valid extension", func() {
 						var ff fileformat.Format
 						JustBeforeEach(func() {
-							ff, err = loader.FileTypeForFileExtension(".bww")
+							ff, err = loader.FileFormatForFileExtension(".bww")
 						})
 
 						It("should return the correct file type", func() {

@@ -53,7 +53,7 @@ func (a *Handler) ImportFile(c *gin.Context) {
 		return
 	}
 
-	fType, err := a.pluginLoader.FileTypeForFileExtension(fExt)
+	fType, err := a.pluginLoader.FileFormatForFileExtension(fExt)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
 			apimodel.Error{

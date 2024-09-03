@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"fmt"
+	"github.com/spf13/afero"
 	"io"
-	"os"
 	"path/filepath"
 	"strings"
 )
@@ -17,8 +17,11 @@ func FilenameFromPath(file string) string {
 	return strings.TrimSuffix(onlyFile, filepath.Ext(onlyFile))
 }
 
-func HashFromFile(fp string) (string, error) {
-	f, err := os.Open(fp)
+func HashFromFile(
+	afp afero.Fs,
+	fp string,
+) (string, error) {
+	f, err := afp.Open(fp)
 	if err != nil {
 		return "", err
 	}

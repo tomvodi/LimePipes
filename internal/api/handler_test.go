@@ -204,7 +204,7 @@ var _ = Describe("Api Handler", func() {
 					Endpoint:   "/imports",
 					HTTPMethod: http.MethodPost,
 				})
-				pluginLoader.EXPECT().FileTypeForFileExtension(".abc").
+				pluginLoader.EXPECT().FileFormatForFileExtension(".abc").
 					Return(fileformat.Format_Unknown, fmt.Errorf("file extension .abc is not supported"))
 			})
 
@@ -223,7 +223,7 @@ var _ = Describe("Api Handler", func() {
 					Endpoint:   "/imports",
 					HTTPMethod: http.MethodPost,
 				})
-				pluginLoader.EXPECT().FileTypeForFileExtension(".bww").
+				pluginLoader.EXPECT().FileFormatForFileExtension(".bww").
 					Return(fileformat.Format_BWW, nil)
 				dataService.EXPECT().GetImportFileByHash("60f5237ed4049f0382661ef009d2bc42e48c3ceb3edb6600f7024e7ab3b838f3").
 					Return(nil, nil)
@@ -244,7 +244,7 @@ var _ = Describe("Api Handler", func() {
 					Endpoint:   "/imports",
 					HTTPMethod: http.MethodPost,
 				})
-				pluginLoader.EXPECT().FileTypeForFileExtension(".bww").
+				pluginLoader.EXPECT().FileFormatForFileExtension(".bww").
 					Return(fileformat.Format_BWW, nil)
 				dataService.EXPECT().GetImportFileByHash("60f5237ed4049f0382661ef009d2bc42e48c3ceb3edb6600f7024e7ab3b838f3").
 					Return(nil, common.ErrNotFound)
@@ -267,7 +267,7 @@ var _ = Describe("Api Handler", func() {
 					Endpoint:   "/imports",
 					HTTPMethod: http.MethodPost,
 				})
-				pluginLoader.EXPECT().FileTypeForFileExtension(".bww").
+				pluginLoader.EXPECT().FileFormatForFileExtension(".bww").
 					Return(fileformat.Format_BWW, nil)
 				dataService.EXPECT().GetImportFileByHash("60f5237ed4049f0382661ef009d2bc42e48c3ceb3edb6600f7024e7ab3b838f3").
 					Return(nil, common.ErrNotFound)
@@ -292,7 +292,7 @@ var _ = Describe("Api Handler", func() {
 					Endpoint:   "/imports",
 					HTTPMethod: http.MethodPost,
 				})
-				pluginLoader.EXPECT().FileTypeForFileExtension(".bww").
+				pluginLoader.EXPECT().FileFormatForFileExtension(".bww").
 					Return(fileformat.Format_BWW, nil)
 				dataService.EXPECT().GetImportFileByHash("60f5237ed4049f0382661ef009d2bc42e48c3ceb3edb6600f7024e7ab3b838f3").
 					Return(nil, common.ErrNotFound)

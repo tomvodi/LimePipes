@@ -20,6 +20,7 @@ linters-settings:
     enable-all-rules: false
     ignore-generated-header: false
     severity: error
+    confidence: 0.8
     rules:
       - name: argument-limit
         arguments: [3]

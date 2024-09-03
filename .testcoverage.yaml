@@ -32,3 +32,9 @@ exclude:
     - ^cmd/limepipes/main\.go      # exclude main package
     - ^internal/health    # simply just configuration for health check
     - ^internal/pluginloader/process_handler\.go # too much effort to test
+    - ^cmd/limepipes-cli/cmd/arguments.go$ # only setup code
+    - ^cmd/limepipes-cli/cmd/import.go$ # only setup code
+    - ^cmd/limepipes-cli/cmd/parse.go$ # only setup code
+    - ^cmd/limepipes-cli/cmd/root.go$ # only setup code
+    - ^cmd/limepipes-cli/main.go$ # only setup code
+    - ^cmd/limepipes-cli/cmd/setup.go$ # only setup code

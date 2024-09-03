@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/afero"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/fileformat"
 	"github.com/tomvodi/limepipes/internal/api"
 	"github.com/tomvodi/limepipes/internal/apigen"
 	"github.com/tomvodi/limepipes/internal/config"
@@ -39,7 +40,7 @@ func main() {
 
 	// TODO: Load plugins from config
 	LoadPlugins := []string{
-		"bww",
+		fileformat.Format_BWW.String(),
 	}
 
 	var pluginProcHandler interfaces.PluginProcessHandler = pluginloader.NewProcessHandler(LoadPlugins)

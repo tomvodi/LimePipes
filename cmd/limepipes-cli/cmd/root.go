@@ -17,6 +17,9 @@ one run. With this command line tool it is possible to things like that.`,
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
+	opts := &Options{}
+	rootCmd.AddCommand(NewParseCmd(opts))
+	rootCmd.AddCommand(NewImportCmd(opts))
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
