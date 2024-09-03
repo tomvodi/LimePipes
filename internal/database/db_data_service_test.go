@@ -101,7 +101,7 @@ func Test_musicSetTitleFromTunes(t *testing.T) {
 						Type: "Jig",
 					},
 				}
-				f.want = "Slow Air - Unknown Type - Jig"
+				f.want = "Slow Air - Unknown Format - Jig"
 			},
 		},
 	}

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/spf13/afero"
-	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/fileformat"
 	plugininterfaces "github.com/tomvodi/limepipes-plugin-api/plugin/v1/interfaces"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
 	"github.com/tomvodi/limepipes/internal/interfaces"
@@ -21,20 +21,20 @@ type Loader struct {
 	pluginInfos      map[string]*messages.PluginInfoResponse
 }
 
-func (l *Loader) FileTypeForFileExtension(fileExtension string) (file_type.Type, error) {
+func (l *Loader) FileTypeForFileExtension(fileExtension string) (fileformat.Format, error) {
 	if len(l.pluginInfos) == 0 {
-		return file_type.Type_Unknown, errors.New("no plugins loaded")
+		return fileformat.Format_Unknown, errors.New("no plugins loaded")
 	}
 
 	for _, pInfo := range l.pluginInfos {
 		for _, ext := range pInfo.FileExtensions {
 			if ext == fileExtension {
-				return pInfo.FileType, nil
+				return pInfo.FileFormat, nil
 			}
 		}
 	}
 
-	return file_type.Type_Unknown,
+	return fileformat.Format_Unknown,
 		fmt.Errorf("no plugin found that handles file extension '%s'", fileExtension)
 }
 

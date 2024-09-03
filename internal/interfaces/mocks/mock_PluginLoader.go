@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	file_type "github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
+	fileformat "github.com/tomvodi/limepipes-plugin-api/plugin/v1/fileformat"
 
 	mock "github.com/stretchr/testify/mock"
 
@@ -24,22 +24,22 @@ func (_m *PluginLoader) EXPECT() *PluginLoader_Expecter {
 }
 
 // FileTypeForFileExtension provides a mock function with given fields: fileExtension
-func (_m *PluginLoader) FileTypeForFileExtension(fileExtension string) (file_type.Type, error) {
+func (_m *PluginLoader) FileTypeForFileExtension(fileExtension string) (fileformat.Format, error) {
 	ret := _m.Called(fileExtension)
 
 	if len(ret) == 0 {
 		panic("no return value specified for FileTypeForFileExtension")
 	}
 
-	var r0 file_type.Type
+	var r0 fileformat.Format
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (file_type.Type, error)); ok {
+	if rf, ok := ret.Get(0).(func(string) (fileformat.Format, error)); ok {
 		return rf(fileExtension)
 	}
-	if rf, ok := ret.Get(0).(func(string) file_type.Type); ok {
+	if rf, ok := ret.Get(0).(func(string) fileformat.Format); ok {
 		r0 = rf(fileExtension)
 	} else {
-		r0 = ret.Get(0).(file_type.Type)
+		r0 = ret.Get(0).(fileformat.Format)
 	}
 
 	if rf, ok := ret.Get(1).(func(string) error); ok {
@@ -69,12 +69,12 @@ func (_c *PluginLoader_FileTypeForFileExtension_Call) Run(run func(fileExtension
 	return _c
 }
 
-func (_c *PluginLoader_FileTypeForFileExtension_Call) Return(_a0 file_type.Type, _a1 error) *PluginLoader_FileTypeForFileExtension_Call {
+func (_c *PluginLoader_FileTypeForFileExtension_Call) Return(_a0 fileformat.Format, _a1 error) *PluginLoader_FileTypeForFileExtension_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *PluginLoader_FileTypeForFileExtension_Call) RunAndReturn(run func(string) (file_type.Type, error)) *PluginLoader_FileTypeForFileExtension_Call {
+func (_c *PluginLoader_FileTypeForFileExtension_Call) RunAndReturn(run func(string) (fileformat.Format, error)) *PluginLoader_FileTypeForFileExtension_Call {
 	_c.Call.Return(run)
 	return _c
 }

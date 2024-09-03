@@ -5,7 +5,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/spf13/afero"
-	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/fileformat"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/interfaces"
 	pimocks "github.com/tomvodi/limepipes-plugin-api/plugin/v1/interfaces/mocks"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
@@ -102,7 +102,7 @@ var _ = Describe("Pluginloader", func() {
 							Return(&messages.PluginInfoResponse{
 								Name:           pluginID,
 								Type:           messages.PluginType_INOUT,
-								FileType:       file_type.Type_BWW,
+								FileFormat:     fileformat.Format_BWW,
 								FileExtensions: []string{".bww", ".bmw"},
 							}, nil)
 					})
@@ -116,26 +116,26 @@ var _ = Describe("Pluginloader", func() {
 					})
 
 					When("getting the file type for an unhandled file extension", func() {
-						var ft file_type.Type
+						var ff fileformat.Format
 						JustBeforeEach(func() {
-							ft, err = loader.FileTypeForFileExtension(".xxx")
+							ff, err = loader.FileTypeForFileExtension(".xxx")
 						})
 
 						It("should return an error", func() {
 							Expect(err).Should(HaveOccurred())
-							Expect(ft).To(Equal(file_type.Type_Unknown))
+							Expect(ff).To(Equal(fileformat.Format_Unknown))
 						})
 					})
 
 					When("getting the file type for a valid extension", func() {
-						var ft file_type.Type
+						var ff fileformat.Format
 						JustBeforeEach(func() {
-							ft, err = loader.FileTypeForFileExtension(".bww")
+							ff, err = loader.FileTypeForFileExtension(".bww")
 						})
 
 						It("should return the correct file type", func() {
 							Expect(err).ShouldNot(HaveOccurred())
-							Expect(ft).To(Equal(file_type.Type_BWW))
+							Expect(ff).To(Equal(fileformat.Format_BWW))
 						})
 					})
 

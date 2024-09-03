@@ -9,7 +9,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/measure"
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
-	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/fileformat"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
 	"github.com/tomvodi/limepipes/internal/apigen/apimodel"
 	"github.com/tomvodi/limepipes/internal/common"
@@ -693,7 +693,7 @@ func (d *Service) importTunesToDatabase(
 			return err
 		}
 
-		apiTunes, err = d.importTunes(tunes, importFile, fInfo.FileType)
+		apiTunes, err = d.importTunes(tunes, importFile, fInfo.FileFormat)
 		if err != nil {
 			return err
 		}
@@ -717,11 +717,11 @@ func (d *Service) importTunesToDatabase(
 func (d *Service) importTunes(
 	tunes []*messages.ImportedTune,
 	importFile *model.ImportFile,
-	fType file_type.Type,
+	fFormat fileformat.Format,
 ) ([]*apimodel.ImportTune, error) {
 	var apiTunes []*apimodel.ImportTune
 	for _, impTune := range tunes {
-		importTune, err := d.importTune(impTune, importFile, fType)
+		importTune, err := d.importTune(impTune, importFile, fFormat)
 		if err != nil {
 			return nil, err
 		}
@@ -736,7 +736,7 @@ func (d *Service) importTunes(
 func (d *Service) importTune(
 	impTune *messages.ImportedTune,
 	importFile *model.ImportFile,
-	fType file_type.Type,
+	fFormat fileformat.Format,
 ) (*apimodel.ImportTune, error) {
 	existingTune, err := d.getImportTuneBySingleFileData(
 		impTune.TuneFileData,
@@ -748,7 +748,7 @@ func (d *Service) importTune(
 		return existingTune, nil
 	}
 
-	apiTune, err := d.createTuneWithFiles(impTune, importFile, fType)
+	apiTune, err := d.createTuneWithFiles(impTune, importFile, fFormat)
 	if err != nil {
 		return nil, err
 	}
@@ -766,7 +766,7 @@ func (d *Service) importTune(
 func (d *Service) createTuneWithFiles(
 	impTune *messages.ImportedTune,
 	importFile *model.ImportFile,
-	fType file_type.Type,
+	fFormat fileformat.Format,
 ) (*apimodel.Tune, error) {
 	t := impTune.Tune
 	createTune := apimodel.CreateTune{}
@@ -791,7 +791,7 @@ func (d *Service) createTuneWithFiles(
 
 	if impTune.TuneFileData != nil {
 		muMoTuneFile = &model.TuneFile{
-			Type:           fType,
+			Format:         fFormat,
 			Data:           impTune.TuneFileData,
 			SingleTuneData: true,
 		}
@@ -911,7 +911,7 @@ func musicSetTitleFromTunes(tunes []*apimodel.ImportTune) string {
 	var tuneTypes []string
 	for _, t := range tunes {
 		if strings.TrimSpace(t.Type) == "" {
-			tuneTypes = append(tuneTypes, "Unknown Type")
+			tuneTypes = append(tuneTypes, "Unknown Format")
 		} else {
 			tuneTypes = append(tuneTypes, t.Type)
 		}
@@ -1035,10 +1035,10 @@ func setMessagesToAPITune(apiTune *apimodel.ImportTune, modelTune *tune.Tune) {
 	}
 }
 
-func (d *Service) GetTuneFile(tuneID uuid.UUID, fType file_type.Type) (*model.TuneFile, error) {
+func (d *Service) GetTuneFile(tuneID uuid.UUID, fFormat fileformat.Format) (*model.TuneFile, error) {
 	tuneFile := &model.TuneFile{
 		TuneID: tuneID,
-		Type:   fType,
+		Format: fFormat,
 	}
 
 	if err := d.db.First(tuneFile).Error; err != nil {
@@ -1077,10 +1077,10 @@ func (d *Service) AddFileToTune(tuneID uuid.UUID, tFile *model.TuneFile) error {
 	return nil
 }
 
-func (d *Service) DeleteFileFromTune(tuneID uuid.UUID, fType file_type.Type) error {
+func (d *Service) DeleteFileFromTune(tuneID uuid.UUID, fFormat fileformat.Format) error {
 	tuneFile := &model.TuneFile{
 		TuneID: tuneID,
-		Type:   fType,
+		Format: fFormat,
 	}
 	if err := d.db.Delete(tuneFile).Error; err != nil {
 		return err

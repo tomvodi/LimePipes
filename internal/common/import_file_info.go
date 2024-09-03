@@ -1,13 +1,13 @@
 package common
 
 import (
-	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/fileformat"
 	"os"
 )
 
 type ImportFileInfo struct {
 	OriginalPath string
-	FileType     file_type.Type
+	FileFormat   fileformat.Format
 	Name         string
 	Hash         string
 	Data         []byte
@@ -15,7 +15,7 @@ type ImportFileInfo struct {
 
 func NewImportFileInfoFromLocalFile(
 	originalPath string,
-	fType file_type.Type,
+	fFormat fileformat.Format,
 ) (*ImportFileInfo, error) {
 	fHash, err := HashFromFile(originalPath)
 	if err != nil {
@@ -30,7 +30,7 @@ func NewImportFileInfoFromLocalFile(
 	fInfo := &ImportFileInfo{
 		OriginalPath: originalPath,
 		Name:         FilenameFromPath(originalPath),
-		FileType:     fType,
+		FileFormat:   fFormat,
 		Hash:         fHash,
 		Data:         fileData,
 	}
@@ -38,7 +38,11 @@ func NewImportFileInfoFromLocalFile(
 	return fInfo, nil
 }
 
-func NewImportFileInfo(fileName string, fType file_type.Type, fileData []byte) (*ImportFileInfo, error) {
+func NewImportFileInfo(
+	fileName string,
+	fFormat fileformat.Format,
+	fileData []byte,
+) (*ImportFileInfo, error) {
 	fHash, err := HashFromData(fileData)
 	if err != nil {
 		return nil, err
@@ -47,7 +51,7 @@ func NewImportFileInfo(fileName string, fType file_type.Type, fileData []byte) (
 	fInfo := &ImportFileInfo{
 		OriginalPath: fileName,
 		Name:         FilenameFromPath(fileName),
-		FileType:     fType,
+		FileFormat:   fFormat,
 		Hash:         fHash,
 		Data:         fileData,
 	}

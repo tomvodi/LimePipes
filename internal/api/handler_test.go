@@ -11,7 +11,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/mock"
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
-	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/fileformat"
 	pmocks "github.com/tomvodi/limepipes-plugin-api/plugin/v1/interfaces/mocks"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
 	"github.com/tomvodi/limepipes/internal/apigen/apimodel"
@@ -205,7 +205,7 @@ var _ = Describe("Api Handler", func() {
 					HTTPMethod: http.MethodPost,
 				})
 				pluginLoader.EXPECT().FileTypeForFileExtension(".abc").
-					Return(file_type.Type_Unknown, fmt.Errorf("file extension .abc is not supported"))
+					Return(fileformat.Format_Unknown, fmt.Errorf("file extension .abc is not supported"))
 			})
 
 			It("should return BadRequest", func() {
@@ -224,7 +224,7 @@ var _ = Describe("Api Handler", func() {
 					HTTPMethod: http.MethodPost,
 				})
 				pluginLoader.EXPECT().FileTypeForFileExtension(".bww").
-					Return(file_type.Type_BWW, nil)
+					Return(fileformat.Format_BWW, nil)
 				dataService.EXPECT().GetImportFileByHash("60f5237ed4049f0382661ef009d2bc42e48c3ceb3edb6600f7024e7ab3b838f3").
 					Return(nil, nil)
 			})
@@ -245,7 +245,7 @@ var _ = Describe("Api Handler", func() {
 					HTTPMethod: http.MethodPost,
 				})
 				pluginLoader.EXPECT().FileTypeForFileExtension(".bww").
-					Return(file_type.Type_BWW, nil)
+					Return(fileformat.Format_BWW, nil)
 				dataService.EXPECT().GetImportFileByHash("60f5237ed4049f0382661ef009d2bc42e48c3ceb3edb6600f7024e7ab3b838f3").
 					Return(nil, common.ErrNotFound)
 				pluginLoader.EXPECT().PluginForFileExtension(".bww").
@@ -268,7 +268,7 @@ var _ = Describe("Api Handler", func() {
 					HTTPMethod: http.MethodPost,
 				})
 				pluginLoader.EXPECT().FileTypeForFileExtension(".bww").
-					Return(file_type.Type_BWW, nil)
+					Return(fileformat.Format_BWW, nil)
 				dataService.EXPECT().GetImportFileByHash("60f5237ed4049f0382661ef009d2bc42e48c3ceb3edb6600f7024e7ab3b838f3").
 					Return(nil, common.ErrNotFound)
 				pluginLoader.EXPECT().PluginForFileExtension(".bww").
@@ -293,7 +293,7 @@ var _ = Describe("Api Handler", func() {
 					HTTPMethod: http.MethodPost,
 				})
 				pluginLoader.EXPECT().FileTypeForFileExtension(".bww").
-					Return(file_type.Type_BWW, nil)
+					Return(fileformat.Format_BWW, nil)
 				dataService.EXPECT().GetImportFileByHash("60f5237ed4049f0382661ef009d2bc42e48c3ceb3edb6600f7024e7ab3b838f3").
 					Return(nil, common.ErrNotFound)
 				pluginLoader.EXPECT().PluginForFileExtension(".bww").

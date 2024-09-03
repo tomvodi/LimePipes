@@ -5,7 +5,7 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/helper"
 	mumotune "github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
-	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/fileformat"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
 )
 
@@ -18,8 +18,8 @@ var _ = Describe("TuneFile", func() {
 	Context("having an empty tune file with correct type", func() {
 		BeforeEach(func() {
 			tf = &TuneFile{
-				Type: file_type.Type_MUSIC_MODEL,
-				Data: nil,
+				Format: fileformat.Format_MUSIC_MODEL,
+				Data:   nil,
 			}
 		})
 
@@ -41,7 +41,7 @@ var _ = Describe("TuneFile", func() {
 		})
 
 		It("should have the correct file type", func() {
-			Expect(tf.Type).Should(Equal(file_type.Type_MUSIC_MODEL))
+			Expect(tf.Format).Should(Equal(fileformat.Format_MUSIC_MODEL))
 		})
 
 		It("should not return an error", func() {
@@ -64,7 +64,7 @@ var _ = Describe("TuneFile", func() {
 
 		Context("the tune file has the wrong file type", func() {
 			BeforeEach(func() {
-				tf.Type = file_type.Type_BWW
+				tf.Format = fileformat.Format_BWW
 			})
 
 			When("getting the MusicModelTune from tune file", func() {

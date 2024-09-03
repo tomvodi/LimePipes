@@ -6,7 +6,7 @@ import (
 	apimodel "github.com/tomvodi/limepipes/internal/apigen/apimodel"
 	common "github.com/tomvodi/limepipes/internal/common"
 
-	file_type "github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
+	fileformat "github.com/tomvodi/limepipes-plugin-api/plugin/v1/fileformat"
 
 	messages "github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
 
@@ -255,7 +255,7 @@ func (_c *DataService_CreateTune_Call) RunAndReturn(run func(apimodel.CreateTune
 }
 
 // DeleteFileFromTune provides a mock function with given fields: tuneID, fType
-func (_m *DataService) DeleteFileFromTune(tuneID uuid.UUID, fType file_type.Type) error {
+func (_m *DataService) DeleteFileFromTune(tuneID uuid.UUID, fType fileformat.Format) error {
 	ret := _m.Called(tuneID, fType)
 
 	if len(ret) == 0 {
@@ -263,7 +263,7 @@ func (_m *DataService) DeleteFileFromTune(tuneID uuid.UUID, fType file_type.Type
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(uuid.UUID, file_type.Type) error); ok {
+	if rf, ok := ret.Get(0).(func(uuid.UUID, fileformat.Format) error); ok {
 		r0 = rf(tuneID, fType)
 	} else {
 		r0 = ret.Error(0)
@@ -279,14 +279,14 @@ type DataService_DeleteFileFromTune_Call struct {
 
 // DeleteFileFromTune is a helper method to define mock.On call
 //   - tuneID uuid.UUID
-//   - fType file_type.Type
+//   - fType fileformat.Format
 func (_e *DataService_Expecter) DeleteFileFromTune(tuneID interface{}, fType interface{}) *DataService_DeleteFileFromTune_Call {
 	return &DataService_DeleteFileFromTune_Call{Call: _e.mock.On("DeleteFileFromTune", tuneID, fType)}
 }
 
-func (_c *DataService_DeleteFileFromTune_Call) Run(run func(tuneID uuid.UUID, fType file_type.Type)) *DataService_DeleteFileFromTune_Call {
+func (_c *DataService_DeleteFileFromTune_Call) Run(run func(tuneID uuid.UUID, fType fileformat.Format)) *DataService_DeleteFileFromTune_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(uuid.UUID), args[1].(file_type.Type))
+		run(args[0].(uuid.UUID), args[1].(fileformat.Format))
 	})
 	return _c
 }
@@ -296,7 +296,7 @@ func (_c *DataService_DeleteFileFromTune_Call) Return(_a0 error) *DataService_De
 	return _c
 }
 
-func (_c *DataService_DeleteFileFromTune_Call) RunAndReturn(run func(uuid.UUID, file_type.Type) error) *DataService_DeleteFileFromTune_Call {
+func (_c *DataService_DeleteFileFromTune_Call) RunAndReturn(run func(uuid.UUID, fileformat.Format) error) *DataService_DeleteFileFromTune_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -568,7 +568,7 @@ func (_c *DataService_GetTune_Call) RunAndReturn(run func(uuid.UUID) (*apimodel.
 }
 
 // GetTuneFile provides a mock function with given fields: tuneID, fType
-func (_m *DataService) GetTuneFile(tuneID uuid.UUID, fType file_type.Type) (*model.TuneFile, error) {
+func (_m *DataService) GetTuneFile(tuneID uuid.UUID, fType fileformat.Format) (*model.TuneFile, error) {
 	ret := _m.Called(tuneID, fType)
 
 	if len(ret) == 0 {
@@ -577,10 +577,10 @@ func (_m *DataService) GetTuneFile(tuneID uuid.UUID, fType file_type.Type) (*mod
 
 	var r0 *model.TuneFile
 	var r1 error
-	if rf, ok := ret.Get(0).(func(uuid.UUID, file_type.Type) (*model.TuneFile, error)); ok {
+	if rf, ok := ret.Get(0).(func(uuid.UUID, fileformat.Format) (*model.TuneFile, error)); ok {
 		return rf(tuneID, fType)
 	}
-	if rf, ok := ret.Get(0).(func(uuid.UUID, file_type.Type) *model.TuneFile); ok {
+	if rf, ok := ret.Get(0).(func(uuid.UUID, fileformat.Format) *model.TuneFile); ok {
 		r0 = rf(tuneID, fType)
 	} else {
 		if ret.Get(0) != nil {
@@ -588,7 +588,7 @@ func (_m *DataService) GetTuneFile(tuneID uuid.UUID, fType file_type.Type) (*mod
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(uuid.UUID, file_type.Type) error); ok {
+	if rf, ok := ret.Get(1).(func(uuid.UUID, fileformat.Format) error); ok {
 		r1 = rf(tuneID, fType)
 	} else {
 		r1 = ret.Error(1)
@@ -604,14 +604,14 @@ type DataService_GetTuneFile_Call struct {
 
 // GetTuneFile is a helper method to define mock.On call
 //   - tuneID uuid.UUID
-//   - fType file_type.Type
+//   - fType fileformat.Format
 func (_e *DataService_Expecter) GetTuneFile(tuneID interface{}, fType interface{}) *DataService_GetTuneFile_Call {
 	return &DataService_GetTuneFile_Call{Call: _e.mock.On("GetTuneFile", tuneID, fType)}
 }
 
-func (_c *DataService_GetTuneFile_Call) Run(run func(tuneID uuid.UUID, fType file_type.Type)) *DataService_GetTuneFile_Call {
+func (_c *DataService_GetTuneFile_Call) Run(run func(tuneID uuid.UUID, fType fileformat.Format)) *DataService_GetTuneFile_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(uuid.UUID), args[1].(file_type.Type))
+		run(args[0].(uuid.UUID), args[1].(fileformat.Format))
 	})
 	return _c
 }
@@ -621,7 +621,7 @@ func (_c *DataService_GetTuneFile_Call) Return(_a0 *model.TuneFile, _a1 error) *
 	return _c
 }
 
-func (_c *DataService_GetTuneFile_Call) RunAndReturn(run func(uuid.UUID, file_type.Type) (*model.TuneFile, error)) *DataService_GetTuneFile_Call {
+func (_c *DataService_GetTuneFile_Call) RunAndReturn(run func(uuid.UUID, fileformat.Format) (*model.TuneFile, error)) *DataService_GetTuneFile_Call {
 	_c.Call.Return(run)
 	return _c
 }

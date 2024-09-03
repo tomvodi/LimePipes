@@ -5,7 +5,7 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/helper"
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
-	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/fileformat"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
 	"github.com/tomvodi/limepipes/internal/apigen/apimodel"
 	"github.com/tomvodi/limepipes/internal/common"
@@ -44,7 +44,7 @@ var _ = Describe("DbDataService Import", func() {
 
 	Context("having a music model with one tune without tune file data", func() {
 		BeforeEach(func() {
-			fileInfo, err = common.NewImportFileInfo("testfile.bww", file_type.Type_BWW, []byte(`BagpipeReader:1.0`))
+			fileInfo, err = common.NewImportFileInfo("testfile.bww", fileformat.Format_BWW, []byte(`BagpipeReader:1.0`))
 			Expect(err).ShouldNot(HaveOccurred())
 			importTunes = []*messages.ImportedTune{
 				model.TestImportedTune("tune 1"),
@@ -65,7 +65,7 @@ var _ = Describe("DbDataService Import", func() {
 
 	Context("having a music model with two tunes", func() {
 		BeforeEach(func() {
-			fileInfo, err = common.NewImportFileInfo("testfile.bww", file_type.Type_BWW, []byte(`BagpipeReader:1.0`))
+			fileInfo, err = common.NewImportFileInfo("testfile.bww", fileformat.Format_BWW, []byte(`BagpipeReader:1.0`))
 			Expect(err).ShouldNot(HaveOccurred())
 			importTunes = []*messages.ImportedTune{
 				model.TestImportedTune("tune 1"),
@@ -88,7 +88,7 @@ var _ = Describe("DbDataService Import", func() {
 				BeforeEach(func() {
 					tuneFile, err = service.GetTuneFile(
 						returnTunes[0].Id,
-						file_type.Type_MUSIC_MODEL,
+						fileformat.Format_MUSIC_MODEL,
 					)
 				})
 
@@ -169,7 +169,7 @@ var _ = Describe("DbDataService Import", func() {
 					BeforeEach(func() {
 						tuneFile, getTuneFileErr = service.GetTuneFile(
 							returnTunes[0].Id,
-							file_type.Type_BWW,
+							fileformat.Format_BWW,
 						)
 					})
 
@@ -184,7 +184,7 @@ var _ = Describe("DbDataService Import", func() {
 
 	Context("having a music model with three tunes, where two of them have the same title", func() {
 		BeforeEach(func() {
-			fileInfo, err = common.NewImportFileInfo("testfile.bww", file_type.Type_BWW, []byte(`BagpipeReader:1.0`))
+			fileInfo, err = common.NewImportFileInfo("testfile.bww", fileformat.Format_BWW, []byte(`BagpipeReader:1.0`))
 			Expect(err).ShouldNot(HaveOccurred())
 			importTunes = []*messages.ImportedTune{
 				model.TestImportedTune("scotty"),
