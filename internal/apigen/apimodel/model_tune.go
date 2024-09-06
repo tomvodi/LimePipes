@@ -8,14 +8,15 @@
  */
 
 package apimodel
+
 import "github.com/google/uuid"
 
 type Tune struct {
 
 	// Unique identifier for an object
-	Id uuid.UUID `json:"id"`
+	Id uuid.UUID `json:"id" binding:"required"`
 
-	Title string `json:"title"`
+	Title string `json:"title" binding:"required"`
 
 	Type string `json:"type,omitempty"`
 

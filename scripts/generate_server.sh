@@ -52,6 +52,41 @@ for model_file in "${API_MODEL_DIR}"/*.go; do
   fi
 done
 
+# Add necessary binding struct tags
+# Update models
+gomodifytags -w -file ${API_MODEL_DIR}/model_update_set.go -struct UpdateSet -field Title \
+  -add-tags binding -template "required"
+gomodifytags -w -file ${API_MODEL_DIR}/model_update_tune.go -struct UpdateTune -field Title \
+  -add-tags binding -template "required"
+
+# Create models
+gomodifytags -w -file ${API_MODEL_DIR}/model_create_set.go -struct CreateSet -field Title \
+  -add-tags binding -template "required"
+gomodifytags -w -file ${API_MODEL_DIR}/model_create_tune.go -struct CreateTune -field Title \
+  -add-tags binding -template "required"
+
+# Tune models
+gomodifytags -w -file ${API_MODEL_DIR}/model_tune.go -struct Tune -field Id \
+  -add-tags binding -template "required"
+gomodifytags -w -file ${API_MODEL_DIR}/model_tune.go -struct Tune -field Title \
+  -add-tags binding -template "required"
+gomodifytags -w -file ${API_MODEL_DIR}/model_import_tune.go -struct ImportTune -field Id \
+  -add-tags binding -template "required"
+gomodifytags -w -file ${API_MODEL_DIR}/model_import_tune.go -struct ImportTune -field Title \
+  -add-tags binding -template "required"
+
+# Set models
+gomodifytags -w -file ${API_MODEL_DIR}/model_basic_music_set.go -struct BasicMusicSet -field Id \
+  -add-tags binding -template "required"
+gomodifytags -w -file ${API_MODEL_DIR}/model_basic_music_set.go -struct BasicMusicSet -field Title \
+  -add-tags binding -template "required"
+gomodifytags -w -file ${API_MODEL_DIR}/model_music_set.go -struct MusicSet -field Id \
+  -add-tags binding -template "required"
+gomodifytags -w -file ${API_MODEL_DIR}/model_music_set.go -struct MusicSet -field Title \
+  -add-tags binding -template "required"
+
+gomodifytags -w -file ${API_MODEL_DIR}/model_import_file.go -struct ImportFile -field Name \
+  -add-tags binding -template "required"
 
 # Remove unnecessary files and directories
 rm  ${API_GEN_DIR}/go.mod  ${API_GEN_DIR}/main.go \
@@ -60,3 +95,11 @@ rm  ${API_GEN_DIR}/go.mod  ${API_GEN_DIR}/main.go \
 rm -rf ${API_GEN_DIR}/api
 rm -rf ${API_GEN_DIR}/.openapi-generator
 rm -rf ${API_GEN_DIR}/go
+rm -f ${API_MODEL_DIR}/model_basic_set_properties.go
+rm -f ${API_MODEL_DIR}/model_create_update_set_properties.go
+rm -f ${API_MODEL_DIR}/model_health_200_*.go
+rm -f ${API_MODEL_DIR}/model_health_status.go
+rm -f ${API_MODEL_DIR}/model_import_info.go
+rm -f ${API_MODEL_DIR}/model_object_id.go
+rm -f ${API_MODEL_DIR}/model_set_properties.go
+rm -f ${API_MODEL_DIR}/model_tune_properties.go

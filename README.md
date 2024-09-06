@@ -55,6 +55,8 @@ variables from this file directly set to the environment of the application.
 In order to build the server code from the OpenAPI spec, you need to have the [OpenAPI Generator installed](https://openapi-generator.tech/docs/installation/) 
 and in your PATH. You also have to run `git submodule init` and `git submodule update` to get the OpenAPI spec.
 the `scripts` directory contains a script `generate_server.sh` to generate the server code from the OpenAPI spec.
+This script also needs the [gomodifytags](https://github.com/fatih/gomodifytags) tool to modify the struct tags 
+for the generated code.
 
 Mocks are generated with `[vektra/mockery](https://vektra.github.io/mockery/latest/installation)` this also has to 
 be in your PATH.

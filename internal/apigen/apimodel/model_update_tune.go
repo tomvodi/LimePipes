@@ -10,8 +10,7 @@
 package apimodel
 
 type UpdateTune struct {
-
-	Title string `json:"title"`
+	Title string `json:"title" binding:"required"`
 
 	Type string `json:"type,omitempty"`
 
