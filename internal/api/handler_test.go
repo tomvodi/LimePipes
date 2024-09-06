@@ -40,6 +40,7 @@ var _ = Describe("Api Handler", func() {
 	var api *Handler
 	var testID1 uuid.UUID
 	var dataService *mocks.DataService
+	var healthChecker *mocks.HealthChecker
 	var pluginLoader *mocks.PluginLoader
 	var lpPlugin *pmocks.LimePipesPlugin
 
@@ -49,12 +50,275 @@ var _ = Describe("Api Handler", func() {
 		httpRec = httptest.NewRecorder()
 		c, _ = gin.CreateTestContext(httpRec)
 		dataService = mocks.NewDataService(GinkgoT())
+		healthChecker = mocks.NewHealthChecker(GinkgoT())
 		pluginLoader = mocks.NewPluginLoader(GinkgoT())
 		lpPlugin = pmocks.NewLimePipesPlugin(GinkgoT())
 		api = &Handler{
-			service:      dataService,
-			pluginLoader: pluginLoader,
+			service:       dataService,
+			healthChecker: healthChecker,
+			pluginLoader:  pluginLoader,
 		}
+	})
+
+	Context("Home", func() {
+		JustBeforeEach(func() {
+			api.Home(c)
+		})
+
+		It("should return ok", func() {
+			Expect(httpRec.Code).To(Equal(http.StatusOK))
+		})
+	})
+
+	Context("Health", func() {
+		JustBeforeEach(func() {
+			api.Health(c)
+		})
+
+		When("health checker returns an error", func() {
+			BeforeEach(func() {
+				healthChecker.EXPECT().GetCheckHandler().
+					Return(nil, fmt.Errorf("xxx"))
+			})
+
+			It("should return a server error", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusInternalServerError))
+			})
+		})
+
+		When("health checker returns a handler", func() {
+			BeforeEach(func() {
+				healthChecker.EXPECT().GetCheckHandler().
+					Return(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+						w.WriteHeader(http.StatusOK)
+					}), nil)
+			})
+
+			It("should return ok", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusOK))
+			})
+		})
+	})
+
+	Context("Get Tune", func() {
+		var tuneID uuid.UUID
+
+		JustBeforeEach(func() {
+			api.GetTune(c)
+		})
+
+		BeforeEach(func() {
+			tuneID = testID1
+			c.Params = gin.Params{
+				{Key: "tuneID", Value: tuneID.String()},
+			}
+		})
+
+		When("no uuid as tuneID", func() {
+			BeforeEach(func() {
+				c.Params = gin.Params{
+					{Key: "tuneID", Value: "not a uuid"},
+				}
+			})
+
+			It("should return BadRequest", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusBadRequest))
+			})
+		})
+
+		When("service returns an error", func() {
+			BeforeEach(func() {
+				dataService.EXPECT().GetTune(tuneID).
+					Return(nil, fmt.Errorf("xxx"))
+			})
+
+			It("should return a server error", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusInternalServerError))
+			})
+		})
+
+		When("service returns a tune", func() {
+			BeforeEach(func() {
+				dataService.EXPECT().GetTune(tuneID).
+					Return(&apimodel.Tune{
+						Id:    tuneID,
+						Title: "test title",
+					}, nil)
+			})
+
+			It("should return ok and the tune", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusOK))
+				data, err := io.ReadAll(httpRec.Body)
+				Expect(err).ShouldNot(HaveOccurred())
+				Expect(string(data)).To(Equal("{\"id\":\"00000000-0000-0000-0000-000000000001\",\"title\":\"test title\"}"))
+			})
+		})
+	})
+
+	Context("List Tunes", func() {
+		JustBeforeEach(func() {
+			api.ListTunes(c)
+		})
+
+		When("service returns an error", func() {
+			BeforeEach(func() {
+				dataService.EXPECT().Tunes().
+					Return(nil, fmt.Errorf("xxx"))
+			})
+
+			It("should return a server error", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusInternalServerError))
+			})
+		})
+
+		When("service returns tunes", func() {
+			BeforeEach(func() {
+				dataService.EXPECT().Tunes().
+					Return([]*apimodel.Tune{
+						{
+							Id:    testID1,
+							Title: "test title",
+						},
+					}, nil)
+			})
+
+			It("should return ok and the tunes", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusOK))
+				data, err := io.ReadAll(httpRec.Body)
+				Expect(err).ShouldNot(HaveOccurred())
+				Expect(string(data)).To(Equal("[{\"id\":\"00000000-0000-0000-0000-000000000001\",\"title\":\"test title\"}]"))
+			})
+		})
+	})
+
+	Context("Update Tune", func() {
+		var tuneID uuid.UUID
+
+		JustBeforeEach(func() {
+			api.UpdateTune(c)
+		})
+
+		BeforeEach(func() {
+			tuneID = testID1
+			c.Params = gin.Params{
+				{Key: "tuneID", Value: tuneID.String()},
+			}
+		})
+
+		When("updating a tune without a title", func() {
+			var tune apimodel.UpdateTune
+
+			BeforeEach(func() {
+				tune = apimodel.UpdateTune{
+					Title: "",
+				}
+				mockJSONPost(c, http.MethodPut, tune)
+			})
+
+			It("should return BadRequest", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusBadRequest))
+			})
+		})
+
+		When("updating a tune", func() {
+			var tune apimodel.UpdateTune
+
+			BeforeEach(func() {
+				tune = apimodel.UpdateTune{
+					Title: "test title",
+				}
+				mockJSONPost(c, http.MethodPut, tune)
+			})
+
+			When("no uuid as tuneID", func() {
+				BeforeEach(func() {
+					c.Params = gin.Params{
+						{Key: "tuneID", Value: "not a uuid"},
+					}
+				})
+
+				It("should return BadRequest", func() {
+					Expect(httpRec.Code).To(Equal(http.StatusBadRequest))
+				})
+			})
+
+			When("service returns an error on update", func() {
+				BeforeEach(func() {
+					dataService.EXPECT().UpdateTune(tuneID, tune).
+						Return(nil, fmt.Errorf("xxx"))
+				})
+
+				It("should return a server error", func() {
+					Expect(httpRec.Code).To(Equal(http.StatusInternalServerError))
+				})
+			})
+
+			When("service successfully updates tune", func() {
+				BeforeEach(func() {
+					dataService.EXPECT().UpdateTune(tuneID, tune).
+						Return(&apimodel.Tune{
+							Id:    testID1,
+							Title: tune.Title,
+						}, nil)
+				})
+
+				It("should return ok and the tune", func() {
+					Expect(httpRec.Code).To(Equal(http.StatusOK))
+					data, err := io.ReadAll(httpRec.Body)
+					Expect(err).ShouldNot(HaveOccurred())
+					Expect(string(data)).To(Equal("{\"id\":\"00000000-0000-0000-0000-000000000001\",\"title\":\"test title\"}"))
+				})
+			})
+		})
+	})
+
+	Context("Delete Tune", func() {
+		var tuneID uuid.UUID
+
+		JustBeforeEach(func() {
+			api.DeleteTune(c)
+		})
+
+		BeforeEach(func() {
+			tuneID = testID1
+			c.Params = gin.Params{
+				{Key: "tuneID", Value: tuneID.String()},
+			}
+		})
+
+		When("no uuid as tuneID", func() {
+			BeforeEach(func() {
+				c.Params = gin.Params{
+					{Key: "tuneID", Value: "not a uuid"},
+				}
+			})
+
+			It("should return BadRequest", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusBadRequest))
+			})
+		})
+
+		When("service returns an error", func() {
+			BeforeEach(func() {
+				dataService.EXPECT().DeleteTune(tuneID).
+					Return(fmt.Errorf("xxx"))
+			})
+
+			It("should return a server error", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusInternalServerError))
+			})
+		})
+
+		When("service successfully deletes tune", func() {
+			BeforeEach(func() {
+				dataService.EXPECT().DeleteTune(tuneID).
+					Return(nil)
+			})
+
+			It("should return ok", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusOK))
+			})
+		})
 	})
 
 	Context("Create Tune", func() {
@@ -63,8 +327,19 @@ var _ = Describe("Api Handler", func() {
 		})
 
 		Context("no data given", func() {
+			It("should return BadRequest", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusBadRequest))
+			})
+		})
+
+		Context("creating a tune without a title", func() {
+			var tune apimodel.CreateTune
+
 			BeforeEach(func() {
-				api.CreateTune(c)
+				tune = apimodel.CreateTune{
+					Title: "",
+				}
+				mockJSONPost(c, http.MethodPost, tune)
 			})
 
 			It("should return BadRequest", func() {
@@ -112,10 +387,296 @@ var _ = Describe("Api Handler", func() {
 		})
 	})
 
-	Context("Assign tunes to a set", func() {
-		var tuneIDs []string
-		var tuneIDsUUID []uuid.UUID
+	Context("Get Set", func() {
 		var setID uuid.UUID
+
+		JustBeforeEach(func() {
+			api.GetSet(c)
+		})
+
+		BeforeEach(func() {
+			setID = testID1
+			c.Params = gin.Params{
+				{Key: "setID", Value: setID.String()},
+			}
+		})
+
+		When("no uuid as setID", func() {
+			BeforeEach(func() {
+				c.Params = gin.Params{
+					{Key: "setID", Value: "not a uuid"},
+				}
+			})
+
+			It("should return BadRequest", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusBadRequest))
+			})
+		})
+
+		When("service returns an error", func() {
+			BeforeEach(func() {
+				dataService.EXPECT().GetMusicSet(setID).
+					Return(nil, fmt.Errorf("xxx"))
+			})
+
+			It("should return a server error", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusInternalServerError))
+			})
+		})
+
+		When("service returns a set", func() {
+			BeforeEach(func() {
+				dataService.EXPECT().GetMusicSet(setID).
+					Return(&apimodel.MusicSet{
+						Id:    setID,
+						Title: "test title",
+					}, nil)
+			})
+
+			It("should return ok and the set", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusOK))
+				data, err := io.ReadAll(httpRec.Body)
+				Expect(err).ShouldNot(HaveOccurred())
+				Expect(string(data)).To(Equal("{\"id\":\"00000000-0000-0000-0000-000000000001\",\"title\":\"test title\"}"))
+			})
+		})
+	})
+
+	Context("Create Set", func() {
+		JustBeforeEach(func() {
+			api.CreateSet(c)
+		})
+
+		Context("no data given", func() {
+			It("should return BadRequest", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusBadRequest))
+			})
+		})
+
+		Context("creating a set without a title", func() {
+			var set apimodel.CreateSet
+
+			BeforeEach(func() {
+				set = apimodel.CreateSet{
+					Title: "",
+				}
+				mockJSONPost(c, http.MethodPost, set)
+			})
+
+			It("should return BadRequest", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusBadRequest))
+			})
+		})
+
+		Context("creating a set", func() {
+			var set apimodel.CreateSet
+
+			BeforeEach(func() {
+				set = apimodel.CreateSet{
+					Title: "test title",
+				}
+				mockJSONPost(c, http.MethodPost, set)
+			})
+
+			When("service returns an error on creation", func() {
+				BeforeEach(func() {
+					dataService.EXPECT().CreateMusicSet(set, (*model.ImportFile)(nil)).
+						Return(nil, fmt.Errorf("xxx"))
+				})
+
+				It("should return a server error", func() {
+					Expect(httpRec.Code).To(Equal(http.StatusInternalServerError))
+				})
+			})
+
+			When("service successfully creates set", func() {
+				BeforeEach(func() {
+					dataService.EXPECT().CreateMusicSet(set, (*model.ImportFile)(nil)).
+						Return(&apimodel.MusicSet{
+							Id:    testID1,
+							Title: set.Title,
+						}, nil)
+				})
+
+				It("should return ok and the set", func() {
+					Expect(httpRec.Code).To(Equal(http.StatusOK))
+					data, err := io.ReadAll(httpRec.Body)
+					Expect(err).ShouldNot(HaveOccurred())
+					Expect(string(data)).To(Equal("{\"id\":\"00000000-0000-0000-0000-000000000001\",\"title\":\"test title\"}"))
+				})
+			})
+		})
+	})
+
+	Context("List Sets", func() {
+		JustBeforeEach(func() {
+			api.ListSets(c)
+		})
+
+		When("service returns an error", func() {
+			BeforeEach(func() {
+				dataService.EXPECT().MusicSets().
+					Return(nil, fmt.Errorf("xxx"))
+			})
+
+			It("should return a server error", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusInternalServerError))
+			})
+		})
+
+		When("service returns sets", func() {
+			BeforeEach(func() {
+				dataService.EXPECT().MusicSets().
+					Return([]*apimodel.MusicSet{
+						{
+							Id:    testID1,
+							Title: "test title",
+						},
+					}, nil)
+			})
+
+			It("should return ok and the sets", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusOK))
+				data, err := io.ReadAll(httpRec.Body)
+				Expect(err).ShouldNot(HaveOccurred())
+				Expect(string(data)).To(Equal("[{\"id\":\"00000000-0000-0000-0000-000000000001\",\"title\":\"test title\"}]"))
+			})
+		})
+	})
+
+	Context("Update Set", func() {
+		var setID uuid.UUID
+
+		JustBeforeEach(func() {
+			api.UpdateSet(c)
+		})
+
+		BeforeEach(func() {
+			setID = testID1
+			c.Params = gin.Params{
+				{Key: "setID", Value: setID.String()},
+			}
+		})
+
+		When("updating a set without a title", func() {
+			var set apimodel.UpdateSet
+
+			BeforeEach(func() {
+				set = apimodel.UpdateSet{
+					Title: "",
+				}
+				mockJSONPost(c, http.MethodPut, set)
+			})
+
+			It("should return BadRequest", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusBadRequest))
+			})
+		})
+
+		When("updating a set", func() {
+			var set apimodel.UpdateSet
+
+			BeforeEach(func() {
+				set = apimodel.UpdateSet{
+					Title: "test title",
+				}
+				mockJSONPost(c, http.MethodPut, set)
+			})
+
+			When("no uuid as setID", func() {
+				BeforeEach(func() {
+					c.Params = gin.Params{
+						{Key: "setID", Value: "not a uuid"},
+					}
+				})
+
+				It("should return BadRequest", func() {
+					Expect(httpRec.Code).To(Equal(http.StatusBadRequest))
+				})
+			})
+
+			When("service returns an error on update", func() {
+				BeforeEach(func() {
+					dataService.EXPECT().UpdateMusicSet(setID, set).
+						Return(nil, fmt.Errorf("xxx"))
+				})
+
+				It("should return a server error", func() {
+					Expect(httpRec.Code).To(Equal(http.StatusInternalServerError))
+				})
+			})
+
+			When("service successfully updates set", func() {
+				BeforeEach(func() {
+					dataService.EXPECT().UpdateMusicSet(setID, set).
+						Return(&apimodel.MusicSet{
+							Id:    testID1,
+							Title: set.Title,
+						}, nil)
+				})
+
+				It("should return ok and the set", func() {
+					Expect(httpRec.Code).To(Equal(http.StatusOK))
+					data, err := io.ReadAll(httpRec.Body)
+					Expect(err).ShouldNot(HaveOccurred())
+					Expect(string(data)).To(Equal("{\"id\":\"00000000-0000-0000-0000-000000000001\",\"title\":\"test title\"}"))
+				})
+			})
+		})
+	})
+
+	Context("Delete Set", func() {
+		var setID uuid.UUID
+
+		JustBeforeEach(func() {
+			api.DeleteSet(c)
+		})
+
+		BeforeEach(func() {
+			setID = testID1
+			c.Params = gin.Params{
+				{Key: "setID", Value: setID.String()},
+			}
+		})
+
+		When("no uuid as setID", func() {
+			BeforeEach(func() {
+				c.Params = gin.Params{
+					{Key: "setID", Value: "not a uuid"},
+				}
+			})
+
+			It("should return BadRequest", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusBadRequest))
+			})
+		})
+
+		When("service returns an error", func() {
+			BeforeEach(func() {
+				dataService.EXPECT().DeleteMusicSet(setID).
+					Return(fmt.Errorf("xxx"))
+			})
+
+			It("should return a server error", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusInternalServerError))
+			})
+		})
+
+		When("service successfully deletes set", func() {
+			BeforeEach(func() {
+				dataService.EXPECT().DeleteMusicSet(setID).
+					Return(nil)
+			})
+
+			It("should return ok", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusOK))
+			})
+		})
+	})
+
+	Context("Assign Tunes To Set", func() {
+		var setID uuid.UUID
+		var testID2 uuid.UUID
 
 		JustBeforeEach(func() {
 			api.AssignTunesToSet(c)
@@ -123,35 +684,68 @@ var _ = Describe("Api Handler", func() {
 
 		BeforeEach(func() {
 			setID = testID1
-			tuneIDs = []string{
-				"00000000-0000-0000-0000-000000000002",
-				"00000000-0000-0000-0000-000000000003",
-			}
-			tuneIDsUUID = []uuid.UUID{
-				uuid.MustParse(tuneIDs[0]),
-				uuid.MustParse(tuneIDs[1]),
-			}
-			mockJSONPost(c, http.MethodPut, tuneIDs)
-
+			testID2 = uuid.MustParse("00000000-0000-0000-0000-000000000002")
 			c.Params = gin.Params{
 				{Key: "setID", Value: setID.String()},
 			}
 		})
 
-		When("service successfully assignes tunes", func() {
+		When("no valid tune IDs given", func() {
 			BeforeEach(func() {
-				dataService.EXPECT().AssignTunesToMusicSet(setID, tuneIDsUUID).
-					Return(&apimodel.MusicSet{
-						Id:    setID,
-						Title: "set 1",
-					}, nil)
+				mockJSONPost(c, http.MethodPost, []string{"xxx", "yyy"})
 			})
 
-			It("should return ok and the tune", func() {
-				Expect(httpRec.Code).To(Equal(http.StatusOK))
-				data, err := io.ReadAll(httpRec.Body)
-				Expect(err).ShouldNot(HaveOccurred())
-				Expect(string(data)).To(Equal("{\"id\":\"00000000-0000-0000-0000-000000000001\",\"title\":\"set 1\"}"))
+			It("should return BadRequest", func() {
+				Expect(httpRec.Code).To(Equal(http.StatusBadRequest))
+			})
+		})
+
+		When("valid tune IDs given", func() {
+			BeforeEach(func() {
+				mockJSONPost(c, http.MethodPost, []uuid.UUID{
+					testID1,
+					testID2,
+				})
+			})
+
+			When("no uuid as setID", func() {
+				BeforeEach(func() {
+					c.Params = gin.Params{
+						{Key: "setID", Value: "not a uuid"},
+					}
+				})
+
+				It("should return BadRequest", func() {
+					Expect(httpRec.Code).To(Equal(http.StatusBadRequest))
+				})
+			})
+
+			When("service returns an error", func() {
+				BeforeEach(func() {
+					dataService.EXPECT().AssignTunesToMusicSet(setID, []uuid.UUID{testID1, testID2}).
+						Return(nil, fmt.Errorf("xxx"))
+				})
+
+				It("should return a server error", func() {
+					Expect(httpRec.Code).To(Equal(http.StatusInternalServerError))
+				})
+			})
+
+			When("service successfully assigns tunes to set", func() {
+				BeforeEach(func() {
+					dataService.EXPECT().AssignTunesToMusicSet(setID, []uuid.UUID{testID1, testID2}).
+						Return(&apimodel.MusicSet{
+							Id:    testID1,
+							Title: "test music set",
+						}, nil)
+				})
+
+				It("should return ok and the set", func() {
+					Expect(httpRec.Code).To(Equal(http.StatusOK))
+					data, err := io.ReadAll(httpRec.Body)
+					Expect(err).ShouldNot(HaveOccurred())
+					Expect(string(data)).To(Equal("{\"id\":\"00000000-0000-0000-0000-000000000001\",\"title\":\"test music set\"}"))
+				})
 			})
 		})
 	})
