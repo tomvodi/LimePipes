@@ -37,7 +37,6 @@ func Test_NewImportFileInfoFromLocalFile(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(*testing.T) {
-
 			f := &fields{}
 
 			if tt.prepare != nil {
@@ -90,7 +89,6 @@ func Test_NewImportFileInfo(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(*testing.T) {
-
 			f := &fields{}
 
 			if tt.prepare != nil {

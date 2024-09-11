@@ -34,6 +34,7 @@ linters-settings:
       - name: dot-imports
       - name: early-return
       - name: empty-block
+      - name: empty-lines
       - name: error-return
       - name: error-strings
       - name: error-naming

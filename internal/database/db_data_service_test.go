@@ -107,7 +107,6 @@ func Test_musicSetTitleFromTunes(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(*testing.T) {
-
 			f := &fields{}
 
 			if tt.prepare != nil {

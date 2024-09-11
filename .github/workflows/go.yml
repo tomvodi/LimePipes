@@ -12,8 +12,8 @@ on:
     branches: [ "master" ]
 
 jobs:
-  golangci:
-    name: lint
+  linting:
+    name: Linting with golangci-lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,23 +25,8 @@ jobs:
         with:
           version: v1.60
 
-  name: Go test coverage check
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-go@v5
-      with:
-        go-version: ${{ env.GO_VERSION }}
-
-    - name: generate test coverage
-      run: go test ./... -coverprofile=./cover.out -covermode=atomic -coverpkg=./...
-
-    - name: check test coverage
-      uses: vladopajic/go-test-coverage@v2
-      with:
-        config: ./.testcoverage.yaml
-
-  runner-job:
+  test-and-coverage:
+    name: Go test and coverage check
     runs-on: ubuntu-latest
 
     services:
@@ -59,25 +44,35 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
 
       - name: Create default config
         run: cp limepipes.env.default limepipes.env
+
+      - name: generate test coverage
+        run: go test ./... -coverprofile=./cover.out -covermode=atomic -coverpkg=./...
+        env:
+          DB_PASSWORD: postgres
+          DB_USER: postgres
+          DB_NAME: postgres
+
+      - name: check test coverage
+        uses: vladopajic/go-test-coverage@v2
+        with:
+          config: ./.testcoverage.yaml
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
   
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
-  
-      - name: Test
-        run: go test -v ./...
-        env:
-          DB_PASSWORD: postgres
-          DB_USER: postgres
-          DB_NAME: postgres
         
       - name: Build
         run: go build -v ./...
-
-
-
-

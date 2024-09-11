@@ -89,7 +89,7 @@ var _ = Describe("Api Handler", func() {
 		When("health checker returns a handler", func() {
 			BeforeEach(func() {
 				healthChecker.EXPECT().GetCheckHandler().
-					Return(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+					Return(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 						w.WriteHeader(http.StatusOK)
 					}), nil)
 			})

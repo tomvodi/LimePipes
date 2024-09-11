@@ -22,7 +22,6 @@ var _ = Describe("DbDataService", func() {
 	var musicSet *apimodel.MusicSet
 
 	BeforeEach(func() {
-
 		cfg, err = config.InitTest()
 		Expect(err).ShouldNot(HaveOccurred())
 		gormDb, err = GetInitTestPostgreSQLDB(cfg.DbConfig(), "testdb")
@@ -222,8 +221,6 @@ var _ = Describe("DbDataService", func() {
 					})
 				})
 			})
-
 		})
 	})
-
 })

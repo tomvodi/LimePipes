@@ -207,7 +207,6 @@ func (d *Service) DeleteTune(id uuid.UUID) error {
 func (d *Service) getOrCreateTuneType(
 	name string,
 ) (*model.TuneType, error) {
-
 	tuneType, err := d.getTuneTypeByName(name)
 	if errors.Is(err, common.ErrNotFound) {
 		return d.createTuneType(name)

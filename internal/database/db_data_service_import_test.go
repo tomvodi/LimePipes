@@ -153,7 +153,6 @@ var _ = Describe("DbDataService Import", func() {
 			})
 
 			When("importing this music model", func() {
-
 				BeforeEach(func() {
 					returnTunes, returnSet, err = service.ImportTunes(importTunes, fileInfo)
 				})
