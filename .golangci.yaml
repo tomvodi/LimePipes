@@ -20,6 +20,7 @@ linters-settings:
     enable-all-rules: false
     ignore-generated-header: false
     severity: error
+    confidence: 0.8
     rules:
       - name: argument-limit
         arguments: [3]
@@ -33,6 +34,7 @@ linters-settings:
       - name: dot-imports
       - name: early-return
       - name: empty-block
+      - name: empty-lines
       - name: error-return
       - name: error-strings
       - name: error-naming

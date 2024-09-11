@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"fmt"
+	"github.com/spf13/afero"
 	"io"
-	"os"
 	"path/filepath"
 	"strings"
 )
@@ -17,8 +17,11 @@ func FilenameFromPath(file string) string {
 	return strings.TrimSuffix(onlyFile, filepath.Ext(onlyFile))
 }
 
-func HashFromFile(fp string) (string, error) {
-	f, err := os.Open(fp)
+func HashFromFile(
+	afp afero.Fs,
+	fp string,
+) (string, error) {
+	f, err := afp.Open(fp)
 	if err != nil {
 		return "", err
 	}
@@ -45,7 +48,7 @@ func HashFromData(data []byte) (string, error) {
 
 func RemoveDuplicates[T comparable](sliceList []T) []T {
 	allKeys := make(map[T]bool)
-	list := []T{}
+	var list []T
 	for _, item := range sliceList {
 		if _, value := allKeys[item]; !value {
 			allKeys[item] = true

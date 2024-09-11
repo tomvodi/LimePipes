@@ -15,18 +15,17 @@ var _ = Describe("DbDataService", func() {
 	var cfg *config.Config
 	var service *Service
 	var gormDb *gorm.DB
-	var validator *mocks.ApiModelValidator
+	var validator *mocks.APIModelValidator
 	var tune1 *apimodel.Tune
 	var tune2 *apimodel.Tune
 	var tune3 *apimodel.Tune
 	var musicSet *apimodel.MusicSet
 
 	BeforeEach(func() {
-
 		cfg, err = config.InitTest()
 		Expect(err).ShouldNot(HaveOccurred())
 		gormDb, err = GetInitTestPostgreSQLDB(cfg.DbConfig(), "testdb")
-		validator = mocks.NewApiModelValidator(GinkgoT())
+		validator = mocks.NewAPIModelValidator(GinkgoT())
 
 		service = &Service{
 			db:        gormDb,
@@ -222,8 +221,6 @@ var _ = Describe("DbDataService", func() {
 					})
 				})
 			})
-
 		})
 	})
-
 })

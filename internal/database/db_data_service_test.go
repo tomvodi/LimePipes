@@ -101,13 +101,12 @@ func Test_musicSetTitleFromTunes(t *testing.T) {
 						Type: "Jig",
 					},
 				}
-				f.want = "Slow Air - Unknown Type - Jig"
+				f.want = "Slow Air - Unknown Format - Jig"
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(*testing.T) {
-
 			f := &fields{}
 
 			if tt.prepare != nil {

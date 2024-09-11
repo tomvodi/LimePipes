@@ -5,6 +5,8 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
+	"github.com/spf13/afero"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/fileformat"
 	"github.com/tomvodi/limepipes/internal/api"
 	"github.com/tomvodi/limepipes/internal/apigen"
 	"github.com/tomvodi/limepipes/internal/config"
@@ -29,13 +31,24 @@ func setupGinEngine() *gin.Engine {
 
 func main() {
 	utils.SetupConsoleLogger()
+	fs := afero.NewOsFs()
 
 	cfg, err := config.Init()
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed init configuration")
 	}
 
-	pluginLoader := pluginloader.NewPluginLoader()
+	// TODO: Load plugins from config
+	LoadPlugins := []string{
+		fileformat.Format_BWW.String(),
+	}
+
+	var pluginProcHandler interfaces.PluginProcessHandler = pluginloader.NewProcessHandler(LoadPlugins)
+	var pluginLoader interfaces.PluginLoader = pluginloader.NewPluginLoader(
+		fs,
+		pluginProcHandler,
+		LoadPlugins,
+	)
 	err = pluginLoader.LoadPluginsFromDir(cfg.PluginsDirectoryPath)
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed loading plugins")

@@ -6,7 +6,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/helper"
-	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/fileformat"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
 	"github.com/tomvodi/limepipes/internal/apigen/apimodel"
 	"github.com/tomvodi/limepipes/internal/common"
@@ -22,13 +22,13 @@ var _ = Describe("DbDataService CRUD", func() {
 	var cfg *config.Config
 	var service *Service
 	var gormDb *gorm.DB
-	var validator *mocks.ApiModelValidator
+	var validator *mocks.APIModelValidator
 
 	BeforeEach(func() {
 		cfg, err = config.InitTest()
 		Expect(err).ShouldNot(HaveOccurred())
 		gormDb, err = GetInitTestPostgreSQLDB(cfg.DbConfig(), "testdb")
-		validator = mocks.NewApiModelValidator(GinkgoT())
+		validator = mocks.NewAPIModelValidator(GinkgoT())
 
 		service = &Service{
 			db:        gormDb,
@@ -246,7 +246,7 @@ var _ = Describe("DbDataService CRUD", func() {
 
 			When("retrieving that tune file again", func() {
 				BeforeEach(func() {
-					returnTuneFile, err = service.GetTuneFile(tune.Id, file_type.Type_MUSIC_MODEL)
+					returnTuneFile, err = service.GetTuneFile(tune.Id, fileformat.Format_MUSIC_MODEL)
 				})
 
 				It("should contain that same music model tune", func() {
@@ -258,7 +258,7 @@ var _ = Describe("DbDataService CRUD", func() {
 
 			When("deleting that file", func() {
 				BeforeEach(func() {
-					err = service.DeleteFileFromTune(tune.Id, file_type.Type_MUSIC_MODEL)
+					err = service.DeleteFileFromTune(tune.Id, fileformat.Format_MUSIC_MODEL)
 				})
 
 				It("should succeed", func() {

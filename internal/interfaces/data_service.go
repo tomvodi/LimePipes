@@ -2,7 +2,7 @@ package interfaces
 
 import (
 	"github.com/google/uuid"
-	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/fileformat"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
 	"github.com/tomvodi/limepipes/internal/apigen/apimodel"
 	"github.com/tomvodi/limepipes/internal/common"
@@ -17,8 +17,8 @@ type DataService interface {
 	DeleteTune(id uuid.UUID) error
 
 	AddFileToTune(tuneID uuid.UUID, tFile *model.TuneFile) error
-	DeleteFileFromTune(tuneID uuid.UUID, fType file_type.Type) error
-	GetTuneFile(tuneID uuid.UUID, fType file_type.Type) (*model.TuneFile, error)
+	DeleteFileFromTune(tuneID uuid.UUID, fType fileformat.Format) error
+	GetTuneFile(tuneID uuid.UUID, fType fileformat.Format) (*model.TuneFile, error)
 	GetTuneFiles(tuneID uuid.UUID) ([]*model.TuneFile, error)
 
 	MusicSets() ([]*apimodel.MusicSet, error)

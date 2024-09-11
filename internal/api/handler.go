@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/fileformat"
 	"github.com/tomvodi/limepipes/internal/apigen/apimodel"
 	"github.com/tomvodi/limepipes/internal/common"
 	"github.com/tomvodi/limepipes/internal/interfaces"
@@ -53,7 +53,7 @@ func (a *Handler) ImportFile(c *gin.Context) {
 		return
 	}
 
-	fType, err := a.pluginLoader.FileTypeForFileExtension(fExt)
+	fType, err := a.pluginLoader.FileFormatForFileExtension(fExt)
 	if err != nil {
 		c.JSON(http.StatusBadRequest,
 			apimodel.Error{
@@ -96,7 +96,7 @@ func (a *Handler) ImportFile(c *gin.Context) {
 
 func (a *Handler) createImportFileInfo(
 	iFile *multipart.FileHeader,
-	fType file_type.Type,
+	fFormat fileformat.Format,
 ) (*common.ImportFileInfo, error) {
 	fileReader, err := iFile.Open()
 	if err != nil {
@@ -109,7 +109,7 @@ func (a *Handler) createImportFileInfo(
 		return nil, fmt.Errorf("failed reading file %s: %s", iFile.Filename, err.Error())
 	}
 
-	fInfo, err := common.NewImportFileInfo(iFile.Filename, fType, fileData)
+	fInfo, err := common.NewImportFileInfo(iFile.Filename, fFormat, fileData)
 	if err != nil {
 		return nil, fmt.Errorf("failed creating import file info for file %s: %s", iFile.Filename, err.Error())
 	}

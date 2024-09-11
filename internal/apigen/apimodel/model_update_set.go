@@ -8,12 +8,13 @@
  */
 
 package apimodel
+
 import "github.com/google/uuid"
 
 type UpdateSet struct {
 
 	// The name of the Set
-	Title string `json:"title"`
+	Title string `json:"title" binding:"required"`
 
 	// A description of the Set
 	Description string `json:"description,omitempty"`

@@ -9,29 +9,29 @@ import (
 	"github.com/tomvodi/limepipes/internal/utils"
 )
 
-func NewImportCmd(opts *Options) *cobra.Command {
-	importCmd := &cobra.Command{
-		Use:   "import [paths...]",
-		Short: "Import given files into database",
-		Long: `Given files will be parsed and stored in the database. 
+func NewParseCmd(opts *Options) *cobra.Command {
+	parseCmd := &cobra.Command{
+		Use:   "parse [paths...]",
+		Short: "Tests parsing given bww files",
+		Long: `A bww parser testing command. Parses bww files and moves successful parses into an output directory.
+
 When given directory paths, it will import all files of that directory. It will also include 
 subdirectories when given the recursive flag.
-If a given file that has an extension which is not in the import-file-types, it will be ignored. 
-`,
-		Args: cobra.MinimumNArgs(1),
-		RunE: newImportRunFunc(opts),
+If a given file that has an extension which is not in the import-file-types, it will be ignored.`,
+		RunE: newParseRunFunc(opts),
 	}
 
-	addVerbose(importCmd, opts)
-	addDryRun(importCmd, opts)
-	addRecursive(importCmd, opts)
-	addImportFileTypes(importCmd, opts)
-	addSkipFailedFiles(importCmd, opts)
+	addVerbose(parseCmd, opts)
+	addDryRun(parseCmd, opts)
+	addRecursive(parseCmd, opts)
+	addImportFileTypes(parseCmd, opts)
+	addSkipFailedFiles(parseCmd, opts)
+	addOutputDir(parseCmd, opts)
 
-	return importCmd
+	return parseCmd
 }
 
-func newImportRunFunc(opts *Options) func(*cobra.Command, []string) error {
+func newParseRunFunc(opts *Options) func(*cobra.Command, []string) error {
 	return func(_ *cobra.Command, paths []string) error {
 		utils.SetupConsoleLogger()
 		afs := afero.NewOsFs()
@@ -48,19 +48,13 @@ func newImportRunFunc(opts *Options) func(*cobra.Command, []string) error {
 		}
 		defer pluginLoaderUnload(pluginLoader)
 
-		var dbService interfaces.DataService
-		dbService, err = setupDbService(cfg.DbConfig())
-		if err != nil {
-			return fmt.Errorf("failed setting up database service: %s", err.Error())
-		}
-
-		fp := NewFileProcessor(afs, pluginLoader, dbService)
+		fp := NewFileProcessor(afs, pluginLoader, nil)
 
 		return fp.ProcessFiles(
 			&ProcessFilesOptions{
 				ArgPaths:        paths,
-				MoveToOutputDir: false,
-				ImportToDb:      true,
+				MoveToOutputDir: true,
+				ImportToDb:      false,
 			},
 			opts,
 		)

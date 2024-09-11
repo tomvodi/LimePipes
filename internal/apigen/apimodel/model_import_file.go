@@ -12,7 +12,7 @@ package apimodel
 type ImportFile struct {
 
 	// the imported filename
-	Name string `json:"name"`
+	Name string `json:"name" binding:"required"`
 
 	Set BasicMusicSet `json:"set,omitempty"`
 

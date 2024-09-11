@@ -3,9 +3,7 @@
 package mocks
 
 import (
-	file_type "github.com/tomvodi/limepipes-plugin-api/plugin/v1/file_type"
-
-	messages "github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
+	fileformat "github.com/tomvodi/limepipes-plugin-api/plugin/v1/fileformat"
 
 	mock "github.com/stretchr/testify/mock"
 
@@ -25,23 +23,81 @@ func (_m *PluginLoader) EXPECT() *PluginLoader_Expecter {
 	return &PluginLoader_Expecter{mock: &_m.Mock}
 }
 
-// FileTypeForFileExtension provides a mock function with given fields: fileExtension
-func (_m *PluginLoader) FileTypeForFileExtension(fileExtension string) (file_type.Type, error) {
+// FileExtensionsForFileFormat provides a mock function with given fields: format
+func (_m *PluginLoader) FileExtensionsForFileFormat(format fileformat.Format) ([]string, error) {
+	ret := _m.Called(format)
+
+	if len(ret) == 0 {
+		panic("no return value specified for FileExtensionsForFileFormat")
+	}
+
+	var r0 []string
+	var r1 error
+	if rf, ok := ret.Get(0).(func(fileformat.Format) ([]string, error)); ok {
+		return rf(format)
+	}
+	if rf, ok := ret.Get(0).(func(fileformat.Format) []string); ok {
+		r0 = rf(format)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]string)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(fileformat.Format) error); ok {
+		r1 = rf(format)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// PluginLoader_FileExtensionsForFileFormat_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FileExtensionsForFileFormat'
+type PluginLoader_FileExtensionsForFileFormat_Call struct {
+	*mock.Call
+}
+
+// FileExtensionsForFileFormat is a helper method to define mock.On call
+//   - format fileformat.Format
+func (_e *PluginLoader_Expecter) FileExtensionsForFileFormat(format interface{}) *PluginLoader_FileExtensionsForFileFormat_Call {
+	return &PluginLoader_FileExtensionsForFileFormat_Call{Call: _e.mock.On("FileExtensionsForFileFormat", format)}
+}
+
+func (_c *PluginLoader_FileExtensionsForFileFormat_Call) Run(run func(format fileformat.Format)) *PluginLoader_FileExtensionsForFileFormat_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(fileformat.Format))
+	})
+	return _c
+}
+
+func (_c *PluginLoader_FileExtensionsForFileFormat_Call) Return(_a0 []string, _a1 error) *PluginLoader_FileExtensionsForFileFormat_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *PluginLoader_FileExtensionsForFileFormat_Call) RunAndReturn(run func(fileformat.Format) ([]string, error)) *PluginLoader_FileExtensionsForFileFormat_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// FileFormatForFileExtension provides a mock function with given fields: fileExtension
+func (_m *PluginLoader) FileFormatForFileExtension(fileExtension string) (fileformat.Format, error) {
 	ret := _m.Called(fileExtension)
 
 	if len(ret) == 0 {
-		panic("no return value specified for FileTypeForFileExtension")
+		panic("no return value specified for FileFormatForFileExtension")
 	}
 
-	var r0 file_type.Type
+	var r0 fileformat.Format
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (file_type.Type, error)); ok {
+	if rf, ok := ret.Get(0).(func(string) (fileformat.Format, error)); ok {
 		return rf(fileExtension)
 	}
-	if rf, ok := ret.Get(0).(func(string) file_type.Type); ok {
+	if rf, ok := ret.Get(0).(func(string) fileformat.Format); ok {
 		r0 = rf(fileExtension)
 	} else {
-		r0 = ret.Get(0).(file_type.Type)
+		r0 = ret.Get(0).(fileformat.Format)
 	}
 
 	if rf, ok := ret.Get(1).(func(string) error); ok {
@@ -53,30 +109,30 @@ func (_m *PluginLoader) FileTypeForFileExtension(fileExtension string) (file_typ
 	return r0, r1
 }
 
-// PluginLoader_FileTypeForFileExtension_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FileTypeForFileExtension'
-type PluginLoader_FileTypeForFileExtension_Call struct {
+// PluginLoader_FileFormatForFileExtension_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FileFormatForFileExtension'
+type PluginLoader_FileFormatForFileExtension_Call struct {
 	*mock.Call
 }
 
-// FileTypeForFileExtension is a helper method to define mock.On call
+// FileFormatForFileExtension is a helper method to define mock.On call
 //   - fileExtension string
-func (_e *PluginLoader_Expecter) FileTypeForFileExtension(fileExtension interface{}) *PluginLoader_FileTypeForFileExtension_Call {
-	return &PluginLoader_FileTypeForFileExtension_Call{Call: _e.mock.On("FileTypeForFileExtension", fileExtension)}
+func (_e *PluginLoader_Expecter) FileFormatForFileExtension(fileExtension interface{}) *PluginLoader_FileFormatForFileExtension_Call {
+	return &PluginLoader_FileFormatForFileExtension_Call{Call: _e.mock.On("FileFormatForFileExtension", fileExtension)}
 }
 
-func (_c *PluginLoader_FileTypeForFileExtension_Call) Run(run func(fileExtension string)) *PluginLoader_FileTypeForFileExtension_Call {
+func (_c *PluginLoader_FileFormatForFileExtension_Call) Run(run func(fileExtension string)) *PluginLoader_FileFormatForFileExtension_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(string))
 	})
 	return _c
 }
 
-func (_c *PluginLoader_FileTypeForFileExtension_Call) Return(_a0 file_type.Type, _a1 error) *PluginLoader_FileTypeForFileExtension_Call {
+func (_c *PluginLoader_FileFormatForFileExtension_Call) Return(_a0 fileformat.Format, _a1 error) *PluginLoader_FileFormatForFileExtension_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *PluginLoader_FileTypeForFileExtension_Call) RunAndReturn(run func(string) (file_type.Type, error)) *PluginLoader_FileTypeForFileExtension_Call {
+func (_c *PluginLoader_FileFormatForFileExtension_Call) RunAndReturn(run func(string) (fileformat.Format, error)) *PluginLoader_FileFormatForFileExtension_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -123,53 +179,6 @@ func (_c *PluginLoader_LoadPluginsFromDir_Call) Return(_a0 error) *PluginLoader_
 }
 
 func (_c *PluginLoader_LoadPluginsFromDir_Call) RunAndReturn(run func(string) error) *PluginLoader_LoadPluginsFromDir_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// LoadedPlugins provides a mock function with given fields:
-func (_m *PluginLoader) LoadedPlugins() []*messages.PluginInfoResponse {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for LoadedPlugins")
-	}
-
-	var r0 []*messages.PluginInfoResponse
-	if rf, ok := ret.Get(0).(func() []*messages.PluginInfoResponse); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*messages.PluginInfoResponse)
-		}
-	}
-
-	return r0
-}
-
-// PluginLoader_LoadedPlugins_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'LoadedPlugins'
-type PluginLoader_LoadedPlugins_Call struct {
-	*mock.Call
-}
-
-// LoadedPlugins is a helper method to define mock.On call
-func (_e *PluginLoader_Expecter) LoadedPlugins() *PluginLoader_LoadedPlugins_Call {
-	return &PluginLoader_LoadedPlugins_Call{Call: _e.mock.On("LoadedPlugins")}
-}
-
-func (_c *PluginLoader_LoadedPlugins_Call) Run(run func()) *PluginLoader_LoadedPlugins_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *PluginLoader_LoadedPlugins_Call) Return(_a0 []*messages.PluginInfoResponse) *PluginLoader_LoadedPlugins_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-func (_c *PluginLoader_LoadedPlugins_Call) RunAndReturn(run func() []*messages.PluginInfoResponse) *PluginLoader_LoadedPlugins_Call {
 	_c.Call.Return(run)
 	return _c
 }
