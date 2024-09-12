@@ -661,7 +661,7 @@ func tunesOrderedByIDs(tunes []model.Tune, tuneIDs []uuid.UUID) []model.Tune {
 }
 
 func (d *Service) ImportTunes(
-	tunes []*messages.ImportedTune,
+	parsedTunes []*messages.ParsedTune,
 	fileInfo *common.ImportFileInfo,
 ) ([]*apimodel.ImportTune, *apimodel.BasicMusicSet, error) {
 	if fileInfo == nil {
@@ -676,11 +676,11 @@ func (d *Service) ImportTunes(
 		return nil, nil, fmt.Errorf("file %s already imported", fileInfo.Name)
 	}
 
-	return d.importTunesToDatabase(tunes, fileInfo)
+	return d.importTunesToDatabase(parsedTunes, fileInfo)
 }
 
 func (d *Service) importTunesToDatabase(
-	tunes []*messages.ImportedTune,
+	parsedTunes []*messages.ParsedTune,
 	fInfo *common.ImportFileInfo,
 ) ([]*apimodel.ImportTune, *apimodel.BasicMusicSet, error) {
 	var apiTunes []*apimodel.ImportTune
@@ -692,7 +692,7 @@ func (d *Service) importTunesToDatabase(
 			return err
 		}
 
-		apiTunes, err = d.importTunes(tunes, importFile, fInfo.FileFormat)
+		apiTunes, err = d.importTunes(parsedTunes, importFile, fInfo.FileFormat)
 		if err != nil {
 			return err
 		}
@@ -714,13 +714,13 @@ func (d *Service) importTunesToDatabase(
 }
 
 func (d *Service) importTunes(
-	tunes []*messages.ImportedTune,
+	parsedTunes []*messages.ParsedTune,
 	importFile *model.ImportFile,
 	fFormat fileformat.Format,
 ) ([]*apimodel.ImportTune, error) {
 	var apiTunes []*apimodel.ImportTune
-	for _, impTune := range tunes {
-		importTune, err := d.importTune(impTune, importFile, fFormat)
+	for _, pTune := range parsedTunes {
+		importTune, err := d.importTune(pTune, importFile, fFormat)
 		if err != nil {
 			return nil, err
 		}
@@ -733,12 +733,12 @@ func (d *Service) importTunes(
 // importTune imports a single tune to the database if it not already exists.
 // If it already exists, it returns the existing tune.
 func (d *Service) importTune(
-	impTune *messages.ImportedTune,
+	pTune *messages.ParsedTune,
 	importFile *model.ImportFile,
 	fFormat fileformat.Format,
 ) (*apimodel.ImportTune, error) {
 	existingTune, err := d.getImportTuneBySingleFileData(
-		impTune.TuneFileData,
+		pTune.TuneFileData,
 	)
 	if err != nil {
 		return nil, err
@@ -747,7 +747,7 @@ func (d *Service) importTune(
 		return existingTune, nil
 	}
 
-	apiTune, err := d.createTuneWithFiles(impTune, importFile, fFormat)
+	apiTune, err := d.createTuneWithFiles(pTune, importFile, fFormat)
 	if err != nil {
 		return nil, err
 	}
@@ -757,17 +757,17 @@ func (d *Service) importTune(
 	if err != nil {
 		return nil, err
 	}
-	setMessagesToAPITune(importTune, impTune.Tune)
+	setMessagesToAPITune(importTune, pTune.Tune)
 
 	return importTune, nil
 }
 
 func (d *Service) createTuneWithFiles(
-	impTune *messages.ImportedTune,
+	pTune *messages.ParsedTune,
 	importFile *model.ImportFile,
 	fFormat fileformat.Format,
 ) (*apimodel.Tune, error) {
-	t := impTune.Tune
+	t := pTune.Tune
 	createTune := apimodel.CreateTune{}
 	err := copier.Copy(&createTune, t)
 	if err != nil {
@@ -788,10 +788,10 @@ func (d *Service) createTuneWithFiles(
 		return nil, err
 	}
 
-	if impTune.TuneFileData != nil {
+	if pTune.TuneFileData != nil {
 		muMoTuneFile = &model.TuneFile{
 			Format:         fFormat,
-			Data:           impTune.TuneFileData,
+			Data:           pTune.TuneFileData,
 			SingleTuneData: true,
 		}
 		if err = d.AddFileToTune(apiTune.Id, muMoTuneFile); err != nil {

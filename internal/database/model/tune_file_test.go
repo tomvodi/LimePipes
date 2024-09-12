@@ -12,10 +12,10 @@ import (
 var _ = Describe("TuneFile", func() {
 	var tf *TuneFile
 	var err error
-	var tune *messages.ImportedTune
+	var parsedTune *messages.ParsedTune
 	var gotTune *mumotune.Tune
 
-	Context("having an empty tune file with correct type", func() {
+	Context("having an empty parsedTune file with correct type", func() {
 		BeforeEach(func() {
 			tf = &TuneFile{
 				Format: fileformat.Format_MUSIC_MODEL,
@@ -36,8 +36,8 @@ var _ = Describe("TuneFile", func() {
 
 	Context("a TuneFile created from a music model", func() {
 		BeforeEach(func() {
-			tune = TestImportedTune("tune 1")
-			tf, err = TuneFileFromMusicModelTune(tune.Tune)
+			parsedTune = TestParsedTune("parsedTune 1")
+			tf, err = TuneFileFromMusicModelTune(parsedTune.Tune)
 		})
 
 		It("should have the correct file type", func() {
@@ -48,7 +48,7 @@ var _ = Describe("TuneFile", func() {
 			Expect(err).ShouldNot(HaveOccurred())
 		})
 
-		When("getting the MusicModelTune from the tune file", func() {
+		When("getting the MusicModelTune from the parsedTune file", func() {
 			BeforeEach(func() {
 				gotTune, err = tf.MusicModelTune()
 			})
@@ -58,16 +58,16 @@ var _ = Describe("TuneFile", func() {
 			})
 
 			It("should return the same MusicModelTune", func() {
-				Expect(gotTune).To(BeComparableTo(tune.Tune, helper.MusicModelCompareOptions))
+				Expect(gotTune).To(BeComparableTo(parsedTune.Tune, helper.MusicModelCompareOptions))
 			})
 		})
 
-		Context("the tune file has the wrong file type", func() {
+		Context("the parsedTune file has the wrong file type", func() {
 			BeforeEach(func() {
 				tf.Format = fileformat.Format_BWW
 			})
 
-			When("getting the MusicModelTune from tune file", func() {
+			When("getting the MusicModelTune from parsedTune file", func() {
 				BeforeEach(func() {
 					gotTune, err = tf.MusicModelTune()
 				})

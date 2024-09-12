@@ -228,14 +228,14 @@ var _ = Describe("DbDataService CRUD", func() {
 		})
 
 		When("adding a file to that tune", func() {
-			var testTune *messages.ImportedTune
+			var parsedTune *messages.ParsedTune
 			var tuneFile *model.TuneFile
 			var tuneFiles []*model.TuneFile
 			var returnTuneFile *model.TuneFile
 
 			BeforeEach(func() {
-				testTune = model.TestImportedTune("test tune")
-				tuneFile, err = model.TuneFileFromMusicModelTune(testTune.Tune)
+				parsedTune = model.TestParsedTune("test tune")
+				tuneFile, err = model.TuneFileFromMusicModelTune(parsedTune.Tune)
 				Expect(err).ShouldNot(HaveOccurred())
 				err = service.AddFileToTune(tune.Id, tuneFile)
 			})
@@ -252,7 +252,7 @@ var _ = Describe("DbDataService CRUD", func() {
 				It("should contain that same music model tune", func() {
 					returnTune, err := returnTuneFile.MusicModelTune()
 					Expect(err).ShouldNot(HaveOccurred())
-					Expect(returnTune).Should(BeComparableTo(testTune.Tune, helper.MusicModelCompareOptions))
+					Expect(returnTune).Should(BeComparableTo(parsedTune.Tune, helper.MusicModelCompareOptions))
 				})
 			})
 

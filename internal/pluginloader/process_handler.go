@@ -6,7 +6,7 @@ import (
 	wzerolog "github.com/jkratz55/konsul/log/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/common"
-	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/grpc_plugin"
+	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/grpcplugin"
 	plugininterfaces "github.com/tomvodi/limepipes-plugin-api/plugin/v1/interfaces"
 	"os/exec"
 )
@@ -99,7 +99,7 @@ func buildPluginSet(
 ) plugin.PluginSet {
 	allPlugins := plugin.PluginSet{}
 	for _, pID := range supportedPlugins {
-		allPlugins[pID] = grpc_plugin.NewGrpcPlugin(nil)
+		allPlugins[pID] = grpcplugin.NewGrpcPlugin(nil)
 	}
 
 	return allPlugins

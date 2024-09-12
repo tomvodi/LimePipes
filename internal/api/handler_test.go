@@ -867,7 +867,7 @@ var _ = Describe("Api Handler", func() {
 					Return(nil, common.ErrNotFound)
 				pluginLoader.EXPECT().PluginForFileExtension(".bww").
 					Return(lpPlugin, nil)
-				lpPlugin.EXPECT().Import([]byte("test file content")).
+				lpPlugin.EXPECT().Parse([]byte("test file content")).
 					Return(nil, fmt.Errorf("failed parsing file test.bww: xxx"))
 			})
 
@@ -892,7 +892,7 @@ var _ = Describe("Api Handler", func() {
 					Return(nil, common.ErrNotFound)
 				pluginLoader.EXPECT().PluginForFileExtension(".bww").
 					Return(lpPlugin, nil)
-				importTunes := []*messages.ImportedTune{
+				parsedTunes := []*messages.ParsedTune{
 					{
 						Tune: &tune.Tune{
 							Title: "test title",
@@ -900,11 +900,9 @@ var _ = Describe("Api Handler", func() {
 						TuneFileData: []byte("test file content"),
 					},
 				}
-				lpPlugin.EXPECT().Import([]byte("test file content")).
-					Return(&messages.ImportFileResponse{
-						ImportedTunes: importTunes,
-					}, nil)
-				dataService.EXPECT().ImportTunes(importTunes, mock.Anything).
+				lpPlugin.EXPECT().Parse([]byte("test file content")).
+					Return(parsedTunes, nil)
+				dataService.EXPECT().ImportTunes(parsedTunes, mock.Anything).
 					Return([]*apimodel.ImportTune{
 						{
 							Id:    testID1,

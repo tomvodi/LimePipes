@@ -684,9 +684,9 @@ func (_c *DataService_GetTuneFiles_Call) RunAndReturn(run func(uuid.UUID) ([]*mo
 	return _c
 }
 
-// ImportTunes provides a mock function with given fields: tunes, fileInfo
-func (_m *DataService) ImportTunes(tunes []*messages.ImportedTune, fileInfo *common.ImportFileInfo) ([]*apimodel.ImportTune, *apimodel.BasicMusicSet, error) {
-	ret := _m.Called(tunes, fileInfo)
+// ImportTunes provides a mock function with given fields: parsedTunes, fileInfo
+func (_m *DataService) ImportTunes(parsedTunes []*messages.ParsedTune, fileInfo *common.ImportFileInfo) ([]*apimodel.ImportTune, *apimodel.BasicMusicSet, error) {
+	ret := _m.Called(parsedTunes, fileInfo)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ImportTunes")
@@ -695,27 +695,27 @@ func (_m *DataService) ImportTunes(tunes []*messages.ImportedTune, fileInfo *com
 	var r0 []*apimodel.ImportTune
 	var r1 *apimodel.BasicMusicSet
 	var r2 error
-	if rf, ok := ret.Get(0).(func([]*messages.ImportedTune, *common.ImportFileInfo) ([]*apimodel.ImportTune, *apimodel.BasicMusicSet, error)); ok {
-		return rf(tunes, fileInfo)
+	if rf, ok := ret.Get(0).(func([]*messages.ParsedTune, *common.ImportFileInfo) ([]*apimodel.ImportTune, *apimodel.BasicMusicSet, error)); ok {
+		return rf(parsedTunes, fileInfo)
 	}
-	if rf, ok := ret.Get(0).(func([]*messages.ImportedTune, *common.ImportFileInfo) []*apimodel.ImportTune); ok {
-		r0 = rf(tunes, fileInfo)
+	if rf, ok := ret.Get(0).(func([]*messages.ParsedTune, *common.ImportFileInfo) []*apimodel.ImportTune); ok {
+		r0 = rf(parsedTunes, fileInfo)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*apimodel.ImportTune)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func([]*messages.ImportedTune, *common.ImportFileInfo) *apimodel.BasicMusicSet); ok {
-		r1 = rf(tunes, fileInfo)
+	if rf, ok := ret.Get(1).(func([]*messages.ParsedTune, *common.ImportFileInfo) *apimodel.BasicMusicSet); ok {
+		r1 = rf(parsedTunes, fileInfo)
 	} else {
 		if ret.Get(1) != nil {
 			r1 = ret.Get(1).(*apimodel.BasicMusicSet)
 		}
 	}
 
-	if rf, ok := ret.Get(2).(func([]*messages.ImportedTune, *common.ImportFileInfo) error); ok {
-		r2 = rf(tunes, fileInfo)
+	if rf, ok := ret.Get(2).(func([]*messages.ParsedTune, *common.ImportFileInfo) error); ok {
+		r2 = rf(parsedTunes, fileInfo)
 	} else {
 		r2 = ret.Error(2)
 	}
@@ -729,15 +729,15 @@ type DataService_ImportTunes_Call struct {
 }
 
 // ImportTunes is a helper method to define mock.On call
-//   - tunes []*messages.ImportedTune
+//   - parsedTunes []*messages.ParsedTune
 //   - fileInfo *common.ImportFileInfo
-func (_e *DataService_Expecter) ImportTunes(tunes interface{}, fileInfo interface{}) *DataService_ImportTunes_Call {
-	return &DataService_ImportTunes_Call{Call: _e.mock.On("ImportTunes", tunes, fileInfo)}
+func (_e *DataService_Expecter) ImportTunes(parsedTunes interface{}, fileInfo interface{}) *DataService_ImportTunes_Call {
+	return &DataService_ImportTunes_Call{Call: _e.mock.On("ImportTunes", parsedTunes, fileInfo)}
 }
 
-func (_c *DataService_ImportTunes_Call) Run(run func(tunes []*messages.ImportedTune, fileInfo *common.ImportFileInfo)) *DataService_ImportTunes_Call {
+func (_c *DataService_ImportTunes_Call) Run(run func(parsedTunes []*messages.ParsedTune, fileInfo *common.ImportFileInfo)) *DataService_ImportTunes_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].([]*messages.ImportedTune), args[1].(*common.ImportFileInfo))
+		run(args[0].([]*messages.ParsedTune), args[1].(*common.ImportFileInfo))
 	})
 	return _c
 }
@@ -747,7 +747,7 @@ func (_c *DataService_ImportTunes_Call) Return(_a0 []*apimodel.ImportTune, _a1 *
 	return _c
 }
 
-func (_c *DataService_ImportTunes_Call) RunAndReturn(run func([]*messages.ImportedTune, *common.ImportFileInfo) ([]*apimodel.ImportTune, *apimodel.BasicMusicSet, error)) *DataService_ImportTunes_Call {
+func (_c *DataService_ImportTunes_Call) RunAndReturn(run func([]*messages.ParsedTune, *common.ImportFileInfo) ([]*apimodel.ImportTune, *apimodel.BasicMusicSet, error)) *DataService_ImportTunes_Call {
 	_c.Call.Return(run)
 	return _c
 }

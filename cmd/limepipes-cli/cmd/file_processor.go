@@ -257,7 +257,7 @@ func (fp *FileProcessor) processFile(
 func (fp *FileProcessor) parseProcessFile(
 	pfc *ProcessFileContext,
 	opts *Options,
-) ([]*messages.ImportedTune, error) {
+) ([]*messages.ParsedTune, error) {
 	tunes, err := fp.parseFile(pfc)
 	if err != nil {
 		if opts.SkipFailedFiles {
@@ -273,7 +273,7 @@ func (fp *FileProcessor) parseProcessFile(
 
 func (fp *FileProcessor) parseFile(
 	pfc *ProcessFileContext,
-) ([]*messages.ImportedTune, error) {
+) ([]*messages.ParsedTune, error) {
 	fExt := filepath.Ext(pfc.Filepath)
 	if fExt == "" {
 		return nil, fmt.Errorf(
@@ -293,19 +293,19 @@ func (fp *FileProcessor) parseFile(
 		return nil, fmt.Errorf("failed reading file %s", pfc.Filepath)
 	}
 
-	tunesImport, err := filePlugin.Import(fileData)
+	parsedTunes, err := filePlugin.Parse(fileData)
 	if err != nil {
 		return nil, fmt.Errorf("failed parsing file %s", pfc.Filepath)
 	}
 
-	return tunesImport.ImportedTunes, nil
+	return parsedTunes, nil
 }
 
 // importTunesFromFile imports the given tunes into the database.
 // If the import fails, it will return an error if the skip failed files flag is not set.
 // If the skip failed files flag is set, it will log the error and return common.ErrSkipped error.
 func (fp *FileProcessor) importTunesFromFile(
-	tunes []*messages.ImportedTune,
+	parsedTunes []*messages.ParsedTune,
 	pfc *ProcessFileContext,
 	opts *Options,
 ) error {
@@ -319,14 +319,14 @@ func (fp *FileProcessor) importTunesFromFile(
 		return fmt.Errorf("failed getting file info for file %s: %v", pfc.Filepath, err)
 	}
 
-	_, _, err = fp.ds.ImportTunes(tunes, fInfo)
+	_, _, err = fp.ds.ImportTunes(parsedTunes, fInfo)
 	if err != nil {
 		if opts.SkipFailedFiles {
-			log.Error().Err(err).Msgf("failed importing tunes from file %s", pfc.Filepath)
+			log.Error().Err(err).Msgf("failed importing parsedTunes from file %s", pfc.Filepath)
 			return common.ErrSkipped
 		}
 
-		return fmt.Errorf("failed importing tunes from file %s: %v", pfc.Filepath, err)
+		return fmt.Errorf("failed importing parsedTunes from file %s: %v", pfc.Filepath, err)
 	}
 
 	return nil

@@ -21,7 +21,7 @@ var _ = Describe("DbDataService Import", func() {
 	var tuneFile *model.TuneFile
 	var tuneFileTune *tune.Tune
 	var service *Service
-	var importTunes []*messages.ImportedTune
+	var parsedTunes []*messages.ParsedTune
 	var musicSet *apimodel.MusicSet
 	var fileInfo *common.ImportFileInfo
 	var gormDb *gorm.DB
@@ -46,14 +46,14 @@ var _ = Describe("DbDataService Import", func() {
 		BeforeEach(func() {
 			fileInfo, err = common.NewImportFileInfo("testfile.bww", fileformat.Format_BWW, []byte(`BagpipeReader:1.0`))
 			Expect(err).ShouldNot(HaveOccurred())
-			importTunes = []*messages.ImportedTune{
-				model.TestImportedTune("tune 1"),
+			parsedTunes = []*messages.ParsedTune{
+				model.TestParsedTune("tune 1"),
 			}
 		})
 
 		When("importing this music model", func() {
 			BeforeEach(func() {
-				returnTunes, returnSet, err = service.ImportTunes(importTunes, fileInfo)
+				returnTunes, returnSet, err = service.ImportTunes(parsedTunes, fileInfo)
 			})
 
 			It("should return one apimodel tune", func() {
@@ -67,15 +67,15 @@ var _ = Describe("DbDataService Import", func() {
 		BeforeEach(func() {
 			fileInfo, err = common.NewImportFileInfo("testfile.bww", fileformat.Format_BWW, []byte(`BagpipeReader:1.0`))
 			Expect(err).ShouldNot(HaveOccurred())
-			importTunes = []*messages.ImportedTune{
-				model.TestImportedTune("tune 1"),
-				model.TestImportedTune("tune 2"),
+			parsedTunes = []*messages.ParsedTune{
+				model.TestParsedTune("tune 1"),
+				model.TestParsedTune("tune 2"),
 			}
 		})
 
 		When("importing this music model", func() {
 			BeforeEach(func() {
-				returnTunes, returnSet, err = service.ImportTunes(importTunes, fileInfo)
+				returnTunes, returnSet, err = service.ImportTunes(parsedTunes, fileInfo)
 			})
 
 			It("should return two apimodel tunes", func() {
@@ -103,7 +103,7 @@ var _ = Describe("DbDataService Import", func() {
 
 					It("should return the same data as for the imported music model tune", func() {
 						Expect(err).ShouldNot(HaveOccurred())
-						Expect(tuneFileTune).Should(BeComparableTo(importTunes[0].Tune, helper.MusicModelCompareOptions))
+						Expect(tuneFileTune).Should(BeComparableTo(parsedTunes[0].Tune, helper.MusicModelCompareOptions))
 						Expect(returnSet).ShouldNot(BeNil())
 					})
 				})
@@ -111,7 +111,7 @@ var _ = Describe("DbDataService Import", func() {
 
 			When("importing this music model a second time", func() {
 				BeforeEach(func() {
-					_, _, err = service.ImportTunes(importTunes, fileInfo)
+					_, _, err = service.ImportTunes(parsedTunes, fileInfo)
 				})
 
 				It("should return an error", func() {
@@ -121,9 +121,9 @@ var _ = Describe("DbDataService Import", func() {
 
 			When("having a a tune with title of already imported tune but with another arranger", func() {
 				BeforeEach(func() {
-					tune1 := importTunes[0]
+					tune1 := parsedTunes[0]
 					tune1.Tune.Arranger = "another arranger"
-					importTunes = []*messages.ImportedTune{
+					parsedTunes = []*messages.ParsedTune{
 						tune1,
 					}
 				})
@@ -131,7 +131,7 @@ var _ = Describe("DbDataService Import", func() {
 				When("importing that tune with different arranger", func() {
 					BeforeEach(func() {
 						fileInfo.Hash = "another hash because of different arranger"
-						returnTunes, returnSet, err = service.ImportTunes(importTunes, fileInfo)
+						returnTunes, returnSet, err = service.ImportTunes(parsedTunes, fileInfo)
 					})
 
 					It("should succeed", func() {
@@ -148,13 +148,13 @@ var _ = Describe("DbDataService Import", func() {
 
 		Context("having bww tune file data", func() {
 			BeforeEach(func() {
-				importTunes[0].TuneFileData = []byte("& LA_4 !t")
-				importTunes[1].TuneFileData = []byte("& B_4 !t")
+				parsedTunes[0].TuneFileData = []byte("& LA_4 !t")
+				parsedTunes[1].TuneFileData = []byte("& B_4 !t")
 			})
 
 			When("importing this music model", func() {
 				BeforeEach(func() {
-					returnTunes, returnSet, err = service.ImportTunes(importTunes, fileInfo)
+					returnTunes, returnSet, err = service.ImportTunes(parsedTunes, fileInfo)
 				})
 
 				It("should return two apimodel tunes", func() {
@@ -174,7 +174,7 @@ var _ = Describe("DbDataService Import", func() {
 
 					It("should return the tune file data", func() {
 						Expect(getTuneFileErr).ShouldNot(HaveOccurred())
-						Expect(tuneFile.Data).To(Equal(importTunes[0].TuneFileData))
+						Expect(tuneFile.Data).To(Equal(parsedTunes[0].TuneFileData))
 					})
 				})
 			})
@@ -185,23 +185,23 @@ var _ = Describe("DbDataService Import", func() {
 		BeforeEach(func() {
 			fileInfo, err = common.NewImportFileInfo("testfile.bww", fileformat.Format_BWW, []byte(`BagpipeReader:1.0`))
 			Expect(err).ShouldNot(HaveOccurred())
-			importTunes = []*messages.ImportedTune{
-				model.TestImportedTune("scotty"),
-				model.TestImportedTune("wings"),
-				model.TestImportedTune("scotty"),
+			parsedTunes = []*messages.ParsedTune{
+				model.TestParsedTune("scotty"),
+				model.TestParsedTune("wings"),
+				model.TestParsedTune("scotty"),
 			}
 		})
 
 		Context("when tunes with duplicate title have different file data", func() {
 			BeforeEach(func() {
-				importTunes[0].TuneFileData = []byte("& LA_4 !t")
-				importTunes[1].TuneFileData = []byte("& B_4 !t")
-				importTunes[2].TuneFileData = []byte("& C_4 !t")
+				parsedTunes[0].TuneFileData = []byte("& LA_4 !t")
+				parsedTunes[1].TuneFileData = []byte("& B_4 !t")
+				parsedTunes[2].TuneFileData = []byte("& C_4 !t")
 			})
 
 			When("importing this music model", func() {
 				BeforeEach(func() {
-					returnTunes, returnSet, err = service.ImportTunes(importTunes, fileInfo)
+					returnTunes, returnSet, err = service.ImportTunes(parsedTunes, fileInfo)
 				})
 
 				It("should return three apimodel tunes", func() {
@@ -233,14 +233,14 @@ var _ = Describe("DbDataService Import", func() {
 
 		Context("when tunes with duplicate title have the same file data", func() {
 			BeforeEach(func() {
-				importTunes[0].TuneFileData = []byte("& LA_4 !t")
-				importTunes[1].TuneFileData = []byte("& B_4 !t")
-				importTunes[2].TuneFileData = []byte("& LA_4 !t")
+				parsedTunes[0].TuneFileData = []byte("& LA_4 !t")
+				parsedTunes[1].TuneFileData = []byte("& B_4 !t")
+				parsedTunes[2].TuneFileData = []byte("& LA_4 !t")
 			})
 
 			When("importing this music model", func() {
 				BeforeEach(func() {
-					returnTunes, returnSet, err = service.ImportTunes(importTunes, fileInfo)
+					returnTunes, returnSet, err = service.ImportTunes(parsedTunes, fileInfo)
 				})
 
 				It("should return three apimodel tunes", func() {

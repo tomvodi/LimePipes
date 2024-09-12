@@ -31,7 +31,7 @@ type DataService interface {
 
 	GetImportFileByHash(fHash string) (*model.ImportFile, error)
 	ImportTunes(
-		tunes []*messages.ImportedTune,
+		parsedTunes []*messages.ParsedTune,
 		fileInfo *common.ImportFileInfo,
 	) ([]*apimodel.ImportTune, *apimodel.BasicMusicSet, error)
 }

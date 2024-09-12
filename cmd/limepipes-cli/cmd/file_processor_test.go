@@ -27,7 +27,7 @@ var _ = Describe("FileProcessor", func() {
 	var pl *mocks.PluginLoader
 	var filePlug *pmocks.LimePipesPlugin
 	var ds *mocks.DataService
-	var importTunes []*messages.ImportedTune
+	var parsedTunes []*messages.ParsedTune
 
 	BeforeEach(func() {
 		afs = afero.NewMemMapFs()
@@ -117,7 +117,7 @@ var _ = Describe("FileProcessor", func() {
 
 				When("the plugin returns an import error", func() {
 					BeforeEach(func() {
-						filePlug.EXPECT().Import([]byte("tune1.bww testdata")).
+						filePlug.EXPECT().Parse([]byte("tune1.bww testdata")).
 							Return(nil, fmt.Errorf("import error"))
 					})
 
@@ -138,7 +138,7 @@ var _ = Describe("FileProcessor", func() {
 
 				When("the plugin returns a tune", func() {
 					BeforeEach(func() {
-						importTunes = []*messages.ImportedTune{
+						parsedTunes = []*messages.ParsedTune{
 							{
 								Tune: &tune.Tune{
 									Title: "tune1",
@@ -146,10 +146,8 @@ var _ = Describe("FileProcessor", func() {
 								TuneFileData: []byte("tune1.bww testdata"),
 							},
 						}
-						filePlug.EXPECT().Import([]byte("tune1.bww testdata")).
-							Return(&messages.ImportFileResponse{
-								ImportedTunes: importTunes,
-							}, nil)
+						filePlug.EXPECT().Parse([]byte("tune1.bww testdata")).
+							Return(parsedTunes, nil)
 					})
 
 					It("should not return an error", func() {
@@ -202,7 +200,7 @@ var _ = Describe("FileProcessor", func() {
 
 							When("the tune can not be imported to database", func() {
 								BeforeEach(func() {
-									ds.EXPECT().ImportTunes(importTunes, mock.Anything).
+									ds.EXPECT().ImportTunes(parsedTunes, mock.Anything).
 										Return(nil, nil, fmt.Errorf("import error"))
 								})
 
@@ -223,7 +221,7 @@ var _ = Describe("FileProcessor", func() {
 
 							When("the tune can be imported to database", func() {
 								BeforeEach(func() {
-									ds.EXPECT().ImportTunes(importTunes, mock.Anything).
+									ds.EXPECT().ImportTunes(parsedTunes, mock.Anything).
 										Return(nil, nil, nil)
 								})
 

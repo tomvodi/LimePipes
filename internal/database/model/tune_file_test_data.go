@@ -9,13 +9,13 @@ import (
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/symbols/accidental"
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/symbols/embellishment"
 	"github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/symbols/tie"
-	importtune "github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
+	parsetune "github.com/tomvodi/limepipes-plugin-api/musicmodel/v1/tune"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
 )
 
-func TestImportedTune(title string) *messages.ImportedTune {
-	return &messages.ImportedTune{
-		Tune: &importtune.Tune{
+func TestParsedTune(title string) *messages.ParsedTune {
+	return &messages.ParsedTune{
+		Tune: &parsetune.Tune{
 			Title:      title,
 			Type:       "march",
 			Composer:   "someone",

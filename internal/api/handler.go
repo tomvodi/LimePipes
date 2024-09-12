@@ -126,12 +126,12 @@ func (a *Handler) importFile(
 		return nil, nil, fmt.Errorf("fileData extension %s is currently not supported (no plugin): %s", fileExt, err.Error())
 	}
 
-	parsedTunes, err := filePlugin.Import(fInfo.Data)
+	parsedTunes, err := filePlugin.Parse(fInfo.Data)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed parsing fileData %s: %s", fInfo.Name, err.Error())
 	}
 
-	return a.service.ImportTunes(parsedTunes.ImportedTunes, fInfo)
+	return a.service.ImportTunes(parsedTunes, fInfo)
 }
 
 func httpErrorResponse(c *gin.Context, code int, err error) {
