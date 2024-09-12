@@ -9,33 +9,37 @@ There has been a bww2mxml tool that ships with [MuseScore](https://musescore.org
 
 ## Project Structure
 
+This repository contains the backend service for the LimePipes application. The main parts of it are a REST API server that implements die REST API defined in the [limepipes-api](https://github.com/tomvodi/limepipes-api) project. 
+The second part is the database access to store and retrieve the music data. 
+Additionally, for testing purposes, there is a command line application that can parse and import many tunes at once without the need for a GUI.
+
+The different supported file formats (Bagpipe Music Writer, MusicXML, ...) are handled by plugins. 
+These plugins use the [LimePipes plugin API](https://github.com/tomvodi/limepipes-plugin-api) to interact with the LimePipes application.
+The underlying communication is done via [Hashicorp's Go Plugin System](https://github.com/hashicorp/go-plugin) and uses [gRPC](https://grpc.io/) for communication.
+
+### Directory Structure
+
 `cmd`
 
-The project uses the API defined in the [limepipes-api](https://github.com/tomvodi/limepipes-api) project and creates the backend service for it in the directory `limepipes`. The `limepipes-cli` directory contains a command line application which makes it easy to import many tunes at once without the need for a GUI.
-
-`internal/api`
-
-The generated code from the OpenAPI spec and the implementation of the REST service.
-
-`internal/bww`
-
-All the lexing and parsing of `.bww` files is taking place here.
-
-`common/music_model`
-
-This directory contains a music model definition which represents the parsed tunes from a `.bww` file.
-
-`internal/database`
-
-Currently, the parsed tunes are stored in a SQlite database but can be changed to any backend for [GORM](https://gorm.io).
-
-`exporter/musicxml`
-
-Everything used to export the internal music model to a MusicXML file.
+The `limepipes` directory contains the backend REST service for the LimePipes application. 
+The `limepipes-cli` directory contains a command line application.
 
 `limepipes-api`
 
 The git submodule that contains the OpenAPI spec for the REST API.
+
+`internal/apigen`
+
+The generated code from the OpenAPI spec in the `limepipes-api` directory will be placed here.
+
+`internal/api`
+
+The implementation of the REST service using the generated code from the OpenAPI spec in `internal/apigen`.
+
+`internal/database`
+
+The parsed tunes are stored in a PostgreSQL with help of [GORM](https://gorm.io). This directory contains the database access code.
+
 
 ## Build
 
@@ -84,8 +88,8 @@ The `test` directory contains `.http` test files used by GoLand from JetBrains t
 ### Source Code
 
 As previously mentioned, the application uses an intermediate music model for storing the parsed `.bww` tunes. 
-This model is defined in the `common/music_model` directory and has struct tags to be exported to `.yaml` files. This 
-is used by many tests to compare the parsed tunes with the expected output.
+This model is defined in the [limepipes-plugin-api](https://github.com/tomvodi/limepipes-plugin-api) project 
+and is included as a Go module.
 
 All enums that have to be serialized and deserialized to and from yaml, are handled with [Enumer](https://github.com/dmarkham/enumer)
 generate the necessary code.
@@ -93,6 +97,7 @@ generate the necessary code.
 ### Used libraries and tools
 
 - [GORM](https://gorm.io) for database access
+- [Go Plugin System](https://github.com/hashicorp/go-plugin) for plugin handling
 - [OpenAPI Generator](https://openapi-generator.tech) for the REST API
 - [Enumer](https://github.com/dmarkham/enumer) for enum handling like serializing and deserializing
 - [Cobra](https://github.com/spf13/cobra) for command line argument parsing
