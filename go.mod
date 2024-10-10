@@ -1,8 +1,8 @@
 module github.com/tomvodi/limepipes
 
-go 1.22
+go 1.23
 
-toolchain go1.22.4
+toolchain go1.23.1
 
 require (
 	github.com/SamuelTissot/sqltime v0.1.0
@@ -22,7 +22,7 @@ require (
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.9.0
-	github.com/tomvodi/limepipes-plugin-api v1.0.0-alpha2
+	github.com/tomvodi/limepipes-plugin-api v1.0.0-beta1
 	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56
 	gorm.io/driver/postgres v1.5.9
 	gorm.io/gorm v1.25.11
