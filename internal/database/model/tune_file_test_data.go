@@ -16,14 +16,14 @@ import (
 func TestParsedTune(title string) *messages.ParsedTune {
 	return &messages.ParsedTune{
 		Tune: &parsetune.Tune{
-			Title:      title,
-			Type:       "march",
-			Composer:   "someone",
-			Arranger:   "someone arranged it",
-			Footer:     []string{"footer tune 1"},
-			Comments:   []string{"comment 1", "comment 2"},
-			InlineText: []string{"inline text 1", "inline text 2"},
-			Tempo:      80,
+			Title:       title,
+			Type:        "march",
+			Composer:    "someone",
+			Arranger:    "someone arranged it",
+			Footer:      []string{"footer tune 1"},
+			Comments:    []string{"comment 1", "comment 2"},
+			InlineTexts: []string{"inline text 1", "inline text 2"},
+			Tempo:       80,
 			Measures: []*measure.Measure{
 				{
 					LeftBarline: &barline.Barline{
@@ -54,17 +54,17 @@ func TestParsedTune(title string) *messages.ParsedTune {
 									Weight:  embellishment.Weight_Light,
 								},
 								Movement: nil,
-								Comment:  "",
 							},
 							Rest:        nil,
 							Tuplet:      nil,
 							Timeline:    nil,
 							TempoChange: nil,
+							Comments:    []string{""},
 						},
 					},
-					Comments:   []string{"comment measure 1", "comment measure 2"},
-					InlineText: []string{"inline text measure 1", "inline text measure 2"},
-					ImportMessages: []*measure.ImportMessage{
+					Comments:    []string{"comment measure 1", "comment measure 2"},
+					InlineTexts: []string{"inline text measure 1", "inline text measure 2"},
+					ParserMessages: []*measure.ParserMessage{
 						{
 							Symbol:   "^te",
 							Severity: measure.Severity_Warning,
