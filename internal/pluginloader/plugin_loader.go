@@ -7,6 +7,7 @@ import (
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/fileformat"
 	plugininterfaces "github.com/tomvodi/limepipes-plugin-api/plugin/v1/interfaces"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/messages"
+	"github.com/tomvodi/limepipes/internal/common"
 	"github.com/tomvodi/limepipes/internal/interfaces"
 	"golang.org/x/exp/maps"
 	"os"
@@ -125,7 +126,7 @@ func (l *Loader) FileExtensionsForFileFormat(
 func NewPluginLoader(
 	afs afero.Fs,
 	processHandler interfaces.PluginProcessHandler,
-	supportedPlugins []string,
+	supportedPlugins common.PluginList,
 ) *Loader {
 	return &Loader{
 		afs:              afs,

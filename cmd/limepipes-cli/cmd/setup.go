@@ -3,17 +3,16 @@ package cmd
 import (
 	"fmt"
 	"github.com/rs/zerolog/log"
-	"github.com/spf13/afero"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/fileformat"
 	"github.com/tomvodi/limepipes/internal/api"
 	"github.com/tomvodi/limepipes/internal/config"
 	"github.com/tomvodi/limepipes/internal/database"
+	"github.com/tomvodi/limepipes/internal/initialize"
 	"github.com/tomvodi/limepipes/internal/interfaces"
 	"github.com/tomvodi/limepipes/internal/pluginloader"
 )
 
 func setupPluginLoader(
-	afs afero.Fs,
 	cfg *config.Config,
 ) (*pluginloader.Loader, error) {
 	// TODO: Load plugins from config
@@ -21,12 +20,7 @@ func setupPluginLoader(
 		fileformat.Format_BWW.String(),
 	}
 
-	var pluginProcHandler interfaces.PluginProcessHandler = pluginloader.NewProcessHandler(LoadPlugins)
-	pluginLoader := pluginloader.NewPluginLoader(
-		afs,
-		pluginProcHandler,
-		LoadPlugins,
-	)
+	pluginLoader := initialize.PluginLoader(LoadPlugins)
 	err := pluginLoader.LoadPluginsFromDir(cfg.PluginsDirectoryPath)
 	if err != nil {
 		return nil, fmt.Errorf("failed loading plugins: %w", err)

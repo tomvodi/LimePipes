@@ -39,3 +39,4 @@ exclude:
     - ^cmd/limepipes-cli/main.go$ # only setup code
     - ^cmd/limepipes-cli/cmd/setup.go$ # only setup code
     - ^internal/api/common.go$ # only setup code
+    - ^internal/initialize # only setup code

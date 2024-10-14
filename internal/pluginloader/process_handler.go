@@ -8,6 +8,7 @@ import (
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/common"
 	"github.com/tomvodi/limepipes-plugin-api/plugin/v1/grpcplugin"
 	plugininterfaces "github.com/tomvodi/limepipes-plugin-api/plugin/v1/interfaces"
+	lpcommon "github.com/tomvodi/limepipes/internal/common"
 	"os/exec"
 )
 
@@ -95,7 +96,7 @@ func (p *ProcessHandler) RunPlugin(
 }
 
 func buildPluginSet(
-	supportedPlugins []string,
+	supportedPlugins lpcommon.PluginList,
 ) plugin.PluginSet {
 	allPlugins := plugin.PluginSet{}
 	for _, pID := range supportedPlugins {
@@ -106,7 +107,7 @@ func buildPluginSet(
 }
 
 func NewProcessHandler(
-	supportedPlugins []string,
+	supportedPlugins lpcommon.PluginList,
 ) *ProcessHandler {
 	return &ProcessHandler{
 		pluginSet:     buildPluginSet(supportedPlugins),

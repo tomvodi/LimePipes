@@ -42,7 +42,7 @@ func newParseRunFunc(opts *Options) func(*cobra.Command, []string) error {
 		}
 
 		var pluginLoader interfaces.PluginLoader
-		pluginLoader, err = setupPluginLoader(afs, cfg)
+		pluginLoader, err = setupPluginLoader(cfg)
 		if err != nil {
 			return fmt.Errorf("failed setting up plugin loader: %s", err.Error())
 		}
